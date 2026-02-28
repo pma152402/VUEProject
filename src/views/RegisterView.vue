@@ -44,15 +44,16 @@ const paso = ref(1);
 // Funciones avanzar, volver y controlar el formulario
 function siguiente() {
 
-    let hayError = false;
+    let hayError = true
+    
+    // Nombre;
     nombre.value = nombre.value.trim();
-
-    // Nombre
+    
     if (!nombre.value) {
         errorNombre.value="El nombre no puede quedar vacío";
     } 
-    else if (nombre.value.length > 50) {
-        errorNombre.value="El nombre no puede superar los 50 carácteres";
+    else if (nombre.value.length > 45) {
+        errorNombre.value="El nombre no puede superar los 45 carácteres";
     }
     else if (!regex.test(nombre.value)) {
         errorNombre.value="El nombre no puede contener números ni carácteres especiales";
@@ -61,15 +62,30 @@ function siguiente() {
         errorNombre.value="El nombre no puede incluir espacios dobles"
     }
     else {
-        // si todo va bien..
+        // si todo va bien QUITO el error
         hayError = false;
     }
 
-    // Apellidos
+
+    // Apellidos;
+    apellidos.value = apellidos.value.trim();
+    
     if (!apellidos.value) {
         errorApellidos.value="Los apellidos no pueden quedar vacíos";
-        hayError = true;
     } 
+    else if (apellidos.value.length > 100) {
+        errorApellidos.value="Los apellidos no pueden superar los 100 carácteres";
+    }
+    else if (!regex.test(apellidos.value)) {
+        errorApellidos.value="Los apellidos no pueden contener números ni carácteres especiales";
+    }
+    else if (apellidos.value.includes("  ")){
+        errorApellidos.value="Los apellidos no pueden incluir espacios dobles"
+    }
+    else {
+        // si todo va bien QUITO el error
+        hayError = false;
+    }
 
     // Email
     if (!email.value) {
@@ -80,7 +96,7 @@ function siguiente() {
     if (hayError) {
         return
     }
-    paso++;
+    paso.value++;
 }
 
 function volver() {
