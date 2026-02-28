@@ -9,7 +9,7 @@
     <input
       type="password"
       placeholder="Contraseña"
-      class="mb-6 mt-2 border rounded-lg p-1 text-sm w-full italic font-extralight"
+      class="mb-6 mt-2 border rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
     />
   </div>
 
@@ -21,7 +21,7 @@
     <input
       type="password"
       placeholder="Repetir contraseña"
-      class="mb-6 mt-2 border rounded-lg p-1 text-sm w-full italic font-extralight"
+      class="mb-6 mt-2 border rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
     />
   </div>
 </template>
