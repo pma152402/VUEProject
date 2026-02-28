@@ -4,14 +4,52 @@ import { House } from "lucide-vue-next";
 import FormPaso1 from "../components/register/FormPaso1.vue";
 import FormPaso2 from "../components/register/FormPaso2.vue";
 
+// Variables reactivas que creo en el padre para guardar los datos y validarlos
+const nombre = ref("");
+const apellidos = ref("");
+const email = ref("");
+const contrasena = ref("");
+const repetir = ref("");
+
+const errorNombre = ref("");
+const errorApellidos = ref("");
+const errorEmail = ref("");
+const errorContrasena = ref("");
+const errorRepetir = ref("");
+
+// Controlar el paso en el que estamos
 const paso = ref(1);
 
+// Funciones avanzar, volver y controlar el formulario
 function siguiente() {
-  paso.value++;
+
+    let hayError = false;
+
+    if (!nombre.value) {
+        errorNombre.value="El nombre no puede quedar vacío";
+        hayError = true;
+    } 
+    if (!apellidos.value) {
+        errorApellidos.value="Los apellidos no pueden quedar vacíos";
+        hayError = true;
+    } 
+    if (!email.value) {
+        errorEmail.value="El email no puede quedar vacío";
+        hayError = true;
+    } 
+    
+    if (hayError) {
+        return
+    }
+    paso++;
 }
 
 function volver() {
   paso.value--;
+}
+
+function finalizar() {
+  paso.value++;
 }
 </script>
 
@@ -34,14 +72,23 @@ function volver() {
           <h1 class="font-bold text-5xl text-gray-900">ORGANIZER</h1>
         </div>
 
+        <!-- Nombre, Apellidos, Email -->
         <div v-if="paso === 1" class="flex-col w-full">
-          <!-- Nombre, Apellidos, Email -->
-          <FormPaso1 />
+          <!-- Le pasamos las variables al componente hijo -->
+
+          <FormPaso1 
+          v-model:nombre="nombre" 
+          v-model:apellidos="apellidos" 
+          v-model:email="email" 
+          v-model:errorNombre="errorNombre"
+          v-model:errorApellidos="errorApellidos" 
+          v-model:errorEmail="errorEmail"
+          />
         </div>
 
         <div v-if="paso === 2" class="flex-col w-full">
           <!-- Contraseña -->
-          <FormPaso2 />
+          <FormPaso2 v-model:contrasena="contrasena" v-model:repetir="repetir" />
         </div>
 
         <div v-if="paso === 3" class="pb-5">
@@ -61,14 +108,14 @@ function volver() {
           <button
             v-if="paso < 2"
             @click="siguiente"
-            class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
+            class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold "
           >
             Siguiente
           </button>
 
           <button
             v-if="(paso > 1) & (paso < 3)"
-            @click="siguiente"
+            @click="finalizar"
             class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
           >
             Finalizar
