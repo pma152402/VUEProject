@@ -5,7 +5,8 @@ import { House } from "lucide-vue-next";
 import FormPaso1 from "../components/register/FormPaso1.vue";
 import FormPaso2 from "../components/register/FormPaso2.vue";
 
-import siguiente from "../utils/siguiente";
+import siguiente from "../utils/siguiente.js";
+import finalizar from "../utils/finalizar.js";
 
 // Variables reactivas que creo en el padre para guardar los datos y validarlos
 const nombre = ref("");
@@ -43,7 +44,11 @@ const paso = ref(1);
 
 // Funciones avanzar, volver y controlar el formulario
 
-function avanzar() {
+function volver() {
+  paso.value--;
+}
+
+function comprobarPaso1() {
     siguiente({
         nombre,
         apellidos,
@@ -51,17 +56,30 @@ function avanzar() {
         errorNombre,
         errorApellidos,
         errorEmail,
-        paso
+        paso,
+        contrasena,
+        repetir,
+        errorContrasena,
+        errorRepetir
     })
 }
 
-function volver() {
-  paso.value--;
+function comprobarPaso2() {
+    finalizar({
+        nombre,
+        apellidos,
+        email,
+        errorNombre,
+        errorApellidos,
+        errorEmail,
+        paso,
+        contrasena,
+        repetir,
+        errorContrasena,
+        errorRepetir
+    })
 }
 
-function finalizar() {
-  paso.value++;
-}
 </script>
 
 <template>
@@ -85,8 +103,8 @@ function finalizar() {
 
         <!-- Nombre, Apellidos, Email -->
         <div v-if="paso === 1" class="flex-col w-full">
-          <!-- Le pasamos las variables al componente hijo -->
-
+        
+        <!-- Le paso las variables al componente hijo -->
           <FormPaso1 
           v-model:nombre="nombre" 
           v-model:apellidos="apellidos" 
@@ -98,18 +116,23 @@ function finalizar() {
         </div>
 
         <div v-if="paso === 2" class="flex-col w-full">
-          <!-- Contraseña -->
-          <FormPaso2 v-model:contrasena="contrasena" v-model:repetir="repetir" />
+          <!-- Contraseña y repetirla -->
+          <FormPaso2 
+          v-model:contrasena="contrasena" 
+          v-model:repetir="repetir"
+          v-model:errorContrasena="errorContrasena"
+          v-model:errorRepetir="errorRepetir" 
+          />
         </div>
 
-        <div v-if="paso === 3" class="pb-5">
+        <div v-if="paso === 3" class="pb-10">
           <h3>¡Enhorabuena!</h3>
           <p>Te has registrado correctamente.</p>
         </div>
 
         <div class="flex gap-3">
           <button
-            v-if="(paso > 1) & (paso < 3)"
+            v-if="(paso > 1) && (paso < 3)"
             @click="volver"
             class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
           >
@@ -118,15 +141,15 @@ function finalizar() {
 
           <button
             v-if="paso < 2"
-            @click="avanzar"
+            @click="comprobarPaso1"
             class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold "
           >
             Siguiente
           </button>
 
           <button
-            v-if="(paso > 1) & (paso < 3)"
-            @click="finalizar"
+            v-if="(paso > 1) && (paso < 3)"
+            @click="comprobarPaso2"
             class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
           >
             Finalizar
