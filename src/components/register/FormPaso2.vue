@@ -1,4 +1,7 @@
-<script setup></script>
+<script setup>
+  defineProps(["contrasena", "repetir", "errorContrasena", "errorRepetir"])
+  defineEmits(["update:contrasena", "update:repetir"])
+</script>
 
 <template>
   <!-- Contraseña -->
@@ -7,10 +10,16 @@
       Contraseña
     </span>
     <input
+      :value="contrasena"
+      @input="$emit('update:contrasena', $event.target.value)"
+
       type="password"
       placeholder="Contraseña"
-      class="mb-6 mt-2 border rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
+      class="mt-2 border border-neutral-400 rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
     />
+    <span class="mb-5 text-red-400 text-[10px]">
+      {{ errorContrasena }}
+    </span>
   </div>
 
   <!-- Repetir contraseña -->
@@ -19,9 +28,15 @@
       Repetir contraseña
     </span>
     <input
+      :value="repetir"
+      @input="$emit('update:repetir', $event.target.value)"
+
       type="password"
       placeholder="Repetir contraseña"
-      class="mb-6 mt-2 border rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
+      class="mt-2 border border-neutral-400 rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
     />
+    <span class="mb-5 text-red-400 text-[10px]">
+      {{ errorRepetir }}
+    </span>
   </div>
 </template>
