@@ -15,7 +15,7 @@
 
               type="text"
               placeholder="Pablo"
-              class=" mt-2 border rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
+              class="mt-2 border border-neutral-400 rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
             />
             <span class=" mb-5 text-red-400 text-[10px]">
               {{ errorNombre }}
@@ -36,7 +36,7 @@
 
               type="text"
               placeholder="Monís Álvarez"
-              class="mt-2 border rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
+              class="mt-2 border border-neutral-400 rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
             />
             <span class="mb-5 text-red-400 text-[10px]">
               {{ errorApellidos }}
@@ -54,7 +54,7 @@
 
               type="email"
               placeholder="pma152402@gmail.com"
-              class="mt-2 border rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
+              class="mt-2 border border-neutral-400 rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
             />
             <span class=" mb-5 text-red-400 text-[10px]">
               {{ errorEmail }}

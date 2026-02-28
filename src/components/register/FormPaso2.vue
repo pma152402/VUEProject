@@ -15,7 +15,7 @@
 
       type="password"
       placeholder="Contraseña"
-      class="mb-6 mt-2 border rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
+      class="mb-6 mt-2 border border-neutral-400 rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
     />
   </div>
 
@@ -30,7 +30,7 @@
 
       type="password"
       placeholder="Repetir contraseña"
-      class="mb-6 mt-2 border rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
+      class="mb-6 mt-2 border border-neutral-400 rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
     />
   </div>
 </template>

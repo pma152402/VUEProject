@@ -1,60 +1,82 @@
-export default function siguiente() {
+export default function siguiente({
+  nombre,
+  apellidos,
+  email,
+  errorNombre,
+  errorApellidos,
+  errorEmail,
+  paso,
+}) {
 
-    let hayError = true
-    
-    // Nombre;
-    nombre.value = nombre.value.trim();
-    
-    if (!nombre.value) {
-        errorNombre.value="El nombre no puede quedar vacío";
-    } 
-    else if (nombre.value.length > 45) {
-        errorNombre.value="El nombre no puede superar los 45 carácteres";
-    }
-    else if (!regex.test(nombre.value)) {
-        errorNombre.value="El nombre no puede contener números ni carácteres especiales";
-    }
-    else if (nombre.value.includes("  ")){
-        errorNombre.value="El nombre no puede incluir espacios dobles"
-    }
-    else {
-        // si todo va bien QUITO el error
-        hayError = false;
-    }
+  let hayError = false;
 
-    // Apellidos;
-    apellidos.value = apellidos.value.trim();
-    
-    if (!apellidos.value) {
-        errorApellidos.value="Los apellidos no pueden quedar vacíos";
-    } 
-    else if (apellidos.value.length > 100) {
-        errorApellidos.value="Los apellidos no pueden superar los 100 carácteres";
-    }
-    else if (!regex.test(apellidos.value)) {
-        errorApellidos.value="Los apellidos no pueden contener números ni carácteres especiales";
-    }
-    else if (apellidos.value.includes("  ")){
-        errorApellidos.value="Los apellidos no pueden incluir espacios dobles"
-    }
-    else {
-        // si todo va bien QUITO el error
-        hayError = false;
-    }
+  const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    // Email
-    if (!email.value) {
-        errorEmail.value="El email no puede quedar vacío";
-    } 
-    else if(email.value.length > 120) {
-        errorEmail.value="El email no puede superar los 120 carácteres"
-    }
-    else if(!regexEmail.test(email.value)) {
-        errorEmail.value="Introduce un patrón de email válido"
-    }
-    else {
-        // si todo va bien QUITO el error
-        hayError = false;
-    }
-    paso.value++;
+  // Nombre
+  nombre.value = nombre.value.trim();
+
+  if (!nombre.value) {
+    errorNombre.value = "El nombre no puede quedar vacío";
+    hayError = true;
+  } 
+  else if (nombre.value.length > 45) {
+    errorNombre.value = "El nombre no puede superar los 45 caracteres";
+    hayError = true;
+  } 
+  else if (!regex.test(nombre.value)) {
+    errorNombre.value = "El nombre no puede contener números ni caracteres especiales";
+    hayError = true;
+  } 
+  else if (nombre.value.includes("  ")) {
+    errorNombre.value = "El nombre no puede incluir espacios dobles";
+    hayError = true;
+  } 
+  else {
+    errorNombre.value = "";
+  }
+
+  // Apellidos
+  apellidos.value = apellidos.value.trim();
+
+  if (!apellidos.value) {
+    errorApellidos.value = "Los apellidos no pueden quedar vacíos";
+    hayError = true;
+  } 
+  else if (apellidos.value.length > 100) {
+    errorApellidos.value = "Los apellidos no pueden superar los 100 caracteres";
+    hayError = true;
+  } 
+  else if (!regex.test(apellidos.value)) {
+    errorApellidos.value = "Los apellidos no pueden contener números ni caracteres especiales";
+    hayError = true;
+  } 
+  else if (apellidos.value.includes("  ")) {
+    errorApellidos.value = "Los apellidos no pueden incluir espacios dobles";
+    hayError = true;
+  } 
+  else {
+    errorApellidos.value = "";
+  }
+
+  // Email
+  if (!email.value) {
+    errorEmail.value = "El email no puede quedar vacío";
+    hayError = true;
+  } 
+  else if (email.value.length > 120) {
+    errorEmail.value = "El email no puede superar los 120 caracteres";
+    hayError = true;
+  } 
+  else if (!regexEmail.test(email.value)) {
+    errorEmail.value = "Introduce un email válido";
+    hayError = true;
+  } 
+  else {
+    errorEmail.value = "";
+  }
+
+  if (hayError) return;
+
+  paso.value++;
 }

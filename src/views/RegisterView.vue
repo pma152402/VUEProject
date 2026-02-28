@@ -37,15 +37,23 @@ watch (repetir, () => {
     errorRepetir.value = "";
 });
 
-// Regex para 1.nombre/apellidos y 2.email
-const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
-const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Controlar el paso en el que estamos
 const paso = ref(1);
 
 // Funciones avanzar, volver y controlar el formulario
 
+function avanzar() {
+    siguiente({
+        nombre,
+        apellidos,
+        email,
+        errorNombre,
+        errorApellidos,
+        errorEmail,
+        paso
+    })
+}
 
 function volver() {
   paso.value--;
@@ -110,7 +118,7 @@ function finalizar() {
 
           <button
             v-if="paso < 2"
-            @click="siguiente"
+            @click="avanzar"
             class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold "
           >
             Siguiente
