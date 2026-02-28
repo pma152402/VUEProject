@@ -5,6 +5,8 @@ import { House } from "lucide-vue-next";
 import FormPaso1 from "../components/register/FormPaso1.vue";
 import FormPaso2 from "../components/register/FormPaso2.vue";
 
+import siguiente from "../utils/siguiente";
+
 // Variables reactivas que creo en el padre para guardar los datos y validarlos
 const nombre = ref("");
 const apellidos = ref("");
@@ -35,69 +37,15 @@ watch (repetir, () => {
     errorRepetir.value = "";
 });
 
-// Para comprobar nombre y apellidos
-const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/
+// Regex para 1.nombre/apellidos y 2.email
+const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Controlar el paso en el que estamos
 const paso = ref(1);
 
 // Funciones avanzar, volver y controlar el formulario
-function siguiente() {
 
-    let hayError = true
-    
-    // Nombre;
-    nombre.value = nombre.value.trim();
-    
-    if (!nombre.value) {
-        errorNombre.value="El nombre no puede quedar vacío";
-    } 
-    else if (nombre.value.length > 45) {
-        errorNombre.value="El nombre no puede superar los 45 carácteres";
-    }
-    else if (!regex.test(nombre.value)) {
-        errorNombre.value="El nombre no puede contener números ni carácteres especiales";
-    }
-    else if (nombre.value.includes("  ")){
-        errorNombre.value="El nombre no puede incluir espacios dobles"
-    }
-    else {
-        // si todo va bien QUITO el error
-        hayError = false;
-    }
-
-
-    // Apellidos;
-    apellidos.value = apellidos.value.trim();
-    
-    if (!apellidos.value) {
-        errorApellidos.value="Los apellidos no pueden quedar vacíos";
-    } 
-    else if (apellidos.value.length > 100) {
-        errorApellidos.value="Los apellidos no pueden superar los 100 carácteres";
-    }
-    else if (!regex.test(apellidos.value)) {
-        errorApellidos.value="Los apellidos no pueden contener números ni carácteres especiales";
-    }
-    else if (apellidos.value.includes("  ")){
-        errorApellidos.value="Los apellidos no pueden incluir espacios dobles"
-    }
-    else {
-        // si todo va bien QUITO el error
-        hayError = false;
-    }
-
-    // Email
-    if (!email.value) {
-        errorEmail.value="El email no puede quedar vacío";
-        hayError = true;
-    } 
-    
-    if (hayError) {
-        return
-    }
-    paso.value++;
-}
 
 function volver() {
   paso.value--;
