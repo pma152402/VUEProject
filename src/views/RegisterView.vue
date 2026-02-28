@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from "vue";
+// RECUERDA PONER LA PRIMERA MAYUSCULA EN NOMBRE Y APELLIDOS PARA MANDAR A BBDD
+import { ref, watch } from "vue";
 import { House } from "lucide-vue-next";
 import FormPaso1 from "../components/register/FormPaso1.vue";
 import FormPaso2 from "../components/register/FormPaso2.vue";
@@ -17,6 +18,26 @@ const errorEmail = ref("");
 const errorContrasena = ref("");
 const errorRepetir = ref("");
 
+// Limpiar el error cuando se escriba en cada campo (tengo q pasarlo a otro componente)
+watch (nombre, () => {
+    errorNombre.value = "";
+});
+watch (apellidos, () => {
+    errorApellidos.value = "";
+});
+watch (email, () => {
+    errorEmail.value = "";
+});
+watch (contrasena, () => {
+    errorContrasena.value = "";
+});
+watch (repetir, () => {
+    errorRepetir.value = "";
+});
+
+// Para comprobar nombre y apellidos
+const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/
+
 // Controlar el paso en el que estamos
 const paso = ref(1);
 
@@ -24,15 +45,33 @@ const paso = ref(1);
 function siguiente() {
 
     let hayError = false;
+    nombre.value = nombre.value.trim();
 
+    // Nombre
     if (!nombre.value) {
         errorNombre.value="El nombre no puede quedar vacío";
-        hayError = true;
     } 
+    else if (nombre.value.length > 50) {
+        errorNombre.value="El nombre no puede superar los 50 carácteres";
+    }
+    else if (!regex.test(nombre.value)) {
+        errorNombre.value="El nombre no puede contener números ni carácteres especiales";
+    }
+    else if (nombre.value.includes("  ")){
+        errorNombre.value="El nombre no puede incluir espacios dobles"
+    }
+    else {
+        // si todo va bien..
+        hayError = false;
+    }
+
+    // Apellidos
     if (!apellidos.value) {
         errorApellidos.value="Los apellidos no pueden quedar vacíos";
         hayError = true;
     } 
+
+    // Email
     if (!email.value) {
         errorEmail.value="El email no puede quedar vacío";
         hayError = true;
