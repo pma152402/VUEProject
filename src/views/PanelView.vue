@@ -57,7 +57,7 @@ watch(contrasena, () => {
             <tr class="hover:bg-blue-100/60">
               <td class="text-sm lg:text-base">Planing de mi casa</td>
               <td class="text-sm lg:text-base">13/06/2025</td>
-              <td class="flex justify-between">
+              <td class="flex justify-between ml-1">
                 <Pencil
                   class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
                 />
@@ -75,7 +75,7 @@ watch(contrasena, () => {
             <tr class="hover:bg-blue-100/60">
               <td class="text-sm lg:text-base">Proyecto de programación</td>
               <td class="text-sm lg:text-base">09/10/2025</td>
-              <td class="flex justify-between">
+              <td class="flex justify-between ml-1">
                 <Pencil
                   class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
                 />
@@ -93,9 +93,9 @@ watch(contrasena, () => {
             <tr class="hover:bg-blue-100/60">
               <td class="text-sm lg:text-base">Cumpleaños de Marta</td>
               <td class="text-sm lg:text-base">11/03/2026</td>
-              <td class="flex justify-between">
+              <td class="flex justify-between ml-1">
                 <Pencil
-                  class="w-4 lg:w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
+                  class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
                 />
                 <Copy
                   class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
