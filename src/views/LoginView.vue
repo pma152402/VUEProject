@@ -9,33 +9,18 @@ import siguiente from "../utils/siguiente.js";
 import finalizar from "../utils/finalizar.js";
 
 // Variables reactivas que creo en el padre para guardar los datos y validarlos
-const nombre = ref("");
-const apellidos = ref("");
 const email = ref("");
 const contrasena = ref("");
-const repetir = ref("");
 
-const errorNombre = ref("");
-const errorApellidos = ref("");
 const errorEmail = ref("");
 const errorContrasena = ref("");
-const errorRepetir = ref("");
 
 // Limpiar el error cuando se escriba en cada campo (tengo q pasarlo a otro componente)
-watch(nombre, () => {
-  errorNombre.value = "";
-});
-watch(apellidos, () => {
-  errorApellidos.value = "";
-});
 watch(email, () => {
   errorEmail.value = "";
 });
 watch(contrasena, () => {
   errorContrasena.value = "";
-});
-watch(repetir, () => {
-  errorRepetir.value = "";
 });
 
 // Controlar el paso en el que estamos
@@ -47,35 +32,13 @@ function volver() {
   paso.value--;
 }
 
-function comprobarPaso1() {
-  siguiente({
-    nombre,
-    apellidos,
-    email,
-    errorNombre,
-    errorApellidos,
-    errorEmail,
+function comprobar() {
+  contrasenaCheck({
     paso,
-    contrasena,
-    repetir,
-    errorContrasena,
-    errorRepetir,
-  });
-}
-
-function comprobarPaso2() {
-  finalizar({
-    nombre,
-    apellidos,
     email,
-    errorNombre,
-    errorApellidos,
     errorEmail,
-    paso,
     contrasena,
-    repetir,
     errorContrasena,
-    errorRepetir,
   });
 }
 </script>
@@ -110,9 +73,7 @@ function comprobarPaso2() {
             placeholder="pma152402@gmail.com"
             class="mt-2 border border-neutral-400 rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
           />
-          <span class=" text-red-400 text-[10px]">
-
-          </span>
+          <span class="text-red-400 text-[10px]"> </span>
         </div>
         <!-- contrasena -->
         <div class="flex flex-col w-full">
@@ -124,9 +85,7 @@ function comprobarPaso2() {
             placeholder="Contraseña"
             class="mt-2 border border-neutral-400 rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
           />
-          <span class="mb-5 text-red-400 text-[10px]">
-            
-          </span>
+          <span class="mb-5 text-red-400 text-[10px]"> </span>
         </div>
 
         <div v-if="paso === 3" class="pb-10">
@@ -135,11 +94,13 @@ function comprobarPaso2() {
         </div>
 
         <div class="flex gap-3">
-          <button
-            class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
-          >
-            Iniciar sesión
-          </button>
+          <RouterLink to="/select">
+            <button
+              class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
+            >
+              Iniciar sesión
+            </button>
+          </RouterLink>
         </div>
       </div>
     </div>
