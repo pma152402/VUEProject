@@ -100,27 +100,33 @@ function comprobarPaso2() {
           <h1 class="font-bold text-5xl text-gray-900">ORGANIZER</h1>
         </div>
 
-        <!-- Nombre, Apellidos, Email -->
-        <div v-if="paso === 1" class="flex-col w-full">
-          <!-- Le paso las variables al componente hijo -->
-          <FormPaso1
-            v-model:nombre="nombre"
-            v-model:apellidos="apellidos"
-            v-model:email="email"
-            v-model:errorNombre="errorNombre"
-            v-model:errorApellidos="errorApellidos"
-            v-model:errorEmail="errorEmail"
+        <!-- correo -->
+        <div class="flex flex-col w-full">
+          <span class="font-semibold border-l-4 border-blue-400 leading-none pl-2 pb-0.5">
+            Correo electrónico
+          </span>
+          <input
+            type="email"
+            placeholder="pma152402@gmail.com"
+            class="mt-2 border border-neutral-400 rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
           />
-        </div>
+          <span class=" text-red-400 text-[10px]">
 
-        <div v-if="paso === 2" class="flex-col w-full">
-          <!-- Contraseña y repetirla -->
-          <FormPaso2
-            v-model:contrasena="contrasena"
-            v-model:repetir="repetir"
-            v-model:errorContrasena="errorContrasena"
-            v-model:errorRepetir="errorRepetir"
+          </span>
+        </div>
+        <!-- contrasena -->
+        <div class="flex flex-col w-full">
+          <span class="font-semibold border-l-4 border-blue-400 leading-none pl-2 pb-0.5">
+            Contraseña
+          </span>
+          <input
+            type="password"
+            placeholder="Contraseña"
+            class="mt-2 border border-neutral-400 rounded-lg p-1 text-sm w-full italic font-extralight focus:outline-blue-200"
           />
+          <span class="mb-5 text-red-400 text-[10px]">
+            
+          </span>
         </div>
 
         <div v-if="paso === 3" class="pb-10">
@@ -134,7 +140,6 @@ function comprobarPaso2() {
           >
             Iniciar sesión
           </button>
-
         </div>
       </div>
     </div>
