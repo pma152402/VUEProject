@@ -22,22 +22,21 @@ const errorContrasena = ref("");
 const errorRepetir = ref("");
 
 // Limpiar el error cuando se escriba en cada campo (tengo q pasarlo a otro componente)
-watch (nombre, () => {
-    errorNombre.value = "";
+watch(nombre, () => {
+  errorNombre.value = "";
 });
-watch (apellidos, () => {
-    errorApellidos.value = "";
+watch(apellidos, () => {
+  errorApellidos.value = "";
 });
-watch (email, () => {
-    errorEmail.value = "";
+watch(email, () => {
+  errorEmail.value = "";
 });
-watch (contrasena, () => {
-    errorContrasena.value = "";
+watch(contrasena, () => {
+  errorContrasena.value = "";
 });
-watch (repetir, () => {
-    errorRepetir.value = "";
+watch(repetir, () => {
+  errorRepetir.value = "";
 });
-
 
 // Controlar el paso en el que estamos
 const paso = ref(1);
@@ -49,37 +48,36 @@ function volver() {
 }
 
 function comprobarPaso1() {
-    siguiente({
-        nombre,
-        apellidos,
-        email,
-        errorNombre,
-        errorApellidos,
-        errorEmail,
-        paso,
-        contrasena,
-        repetir,
-        errorContrasena,
-        errorRepetir
-    })
+  siguiente({
+    nombre,
+    apellidos,
+    email,
+    errorNombre,
+    errorApellidos,
+    errorEmail,
+    paso,
+    contrasena,
+    repetir,
+    errorContrasena,
+    errorRepetir,
+  });
 }
 
 function comprobarPaso2() {
-    finalizar({
-        nombre,
-        apellidos,
-        email,
-        errorNombre,
-        errorApellidos,
-        errorEmail,
-        paso,
-        contrasena,
-        repetir,
-        errorContrasena,
-        errorRepetir
-    })
+  finalizar({
+    nombre,
+    apellidos,
+    email,
+    errorNombre,
+    errorApellidos,
+    errorEmail,
+    paso,
+    contrasena,
+    repetir,
+    errorContrasena,
+    errorRepetir,
+  });
 }
-
 </script>
 
 <template>
@@ -90,12 +88,13 @@ function comprobarPaso2() {
       <div
         class="relative ml-3 rounded-lg bg-neutral-100 flex flex-col items-center px-8 pt-8 pb-4 gap-5 shadow-xl"
       >
-        <a
-          class="absolute bottom-4 left-8 mr-20 font-semibold flex flex-nowrap transition-transform duration-200 ease-in-out hover:scale-105 hover:cursor-pointer"
-        >
-          < <House class="w-4" />
-        </a>
-
+        <RouterLink to="/">
+          <a
+            class="absolute bottom-4 left-8 mr-20 font-semibold flex flex-nowrap transition-transform duration-200 ease-in-out hover:scale-105 hover:cursor-pointer"
+          >
+            < <House class="w-4" />
+          </a>
+        </RouterLink>
         <div class="flex-col items-center mb-6">
           <h1 class="font-light text-2xl text-gray-900">Regístrate en</h1>
           <h1 class="font-bold text-5xl text-gray-900">ORGANIZER</h1>
@@ -103,25 +102,24 @@ function comprobarPaso2() {
 
         <!-- Nombre, Apellidos, Email -->
         <div v-if="paso === 1" class="flex-col w-full">
-        
-        <!-- Le paso las variables al componente hijo -->
-          <FormPaso1 
-          v-model:nombre="nombre" 
-          v-model:apellidos="apellidos" 
-          v-model:email="email" 
-          v-model:errorNombre="errorNombre"
-          v-model:errorApellidos="errorApellidos" 
-          v-model:errorEmail="errorEmail"
+          <!-- Le paso las variables al componente hijo -->
+          <FormPaso1
+            v-model:nombre="nombre"
+            v-model:apellidos="apellidos"
+            v-model:email="email"
+            v-model:errorNombre="errorNombre"
+            v-model:errorApellidos="errorApellidos"
+            v-model:errorEmail="errorEmail"
           />
         </div>
 
         <div v-if="paso === 2" class="flex-col w-full">
           <!-- Contraseña y repetirla -->
-          <FormPaso2 
-          v-model:contrasena="contrasena" 
-          v-model:repetir="repetir"
-          v-model:errorContrasena="errorContrasena"
-          v-model:errorRepetir="errorRepetir" 
+          <FormPaso2
+            v-model:contrasena="contrasena"
+            v-model:repetir="repetir"
+            v-model:errorContrasena="errorContrasena"
+            v-model:errorRepetir="errorRepetir"
           />
         </div>
 
@@ -132,7 +130,7 @@ function comprobarPaso2() {
 
         <div class="flex gap-3">
           <button
-            v-if="(paso > 1) && (paso < 3)"
+            v-if="paso > 1 && paso < 3"
             @click="volver"
             class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
           >
@@ -142,13 +140,13 @@ function comprobarPaso2() {
           <button
             v-if="paso < 2"
             @click="comprobarPaso1"
-            class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold "
+            class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
           >
             Siguiente
           </button>
 
           <button
-            v-if="(paso > 1) && (paso < 3)"
+            v-if="paso > 1 && paso < 3"
             @click="comprobarPaso2"
             class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
           >
