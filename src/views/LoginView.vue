@@ -94,7 +94,7 @@ function comprobar() {
         </div>
 
         <div class="flex gap-3">
-          <RouterLink to="/select">
+          <RouterLink to="/panel">
             <button
               class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
             >
