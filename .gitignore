@@ -14,6 +14,11 @@ dist-ssr
 coverage
 *.local
 
+# Env 
+.env
+.env.local
+.env.*.local
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -37,3 +42,5 @@ __screenshots__/
 
 # Vite
 *.timestamp-*-*.mjs
+
+/src/generated/prisma
