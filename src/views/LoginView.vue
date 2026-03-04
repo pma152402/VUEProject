@@ -74,7 +74,7 @@ function comprobarLogin() {
           <RouterLink to="/">
             <a
               v-if="paso === 1"
-              class="absolute bottom-4 left-8 mr-20 font-semibold flex flex-nowrap transition-transform duration-200 ease-in-out hover:scale-105 hover:cursor-pointer"
+              class="text-gray-400 absolute bottom-4 left-8 mr-20 font-semibold flex flex-nowrap transition-transform duration-200 ease-in-out hover:scale-105 hover:cursor-pointer"
             >
               < <House class="w-4" />
             </a>
