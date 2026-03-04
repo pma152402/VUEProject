@@ -34,6 +34,7 @@ const typeDefs = `
   type Mutation {
     createUser(name: String!, email: String!, password: String!): User!
     createProject(name: String!, ownerId: Int!): Project!
+    login(email: String!, password: String!): User
   }
 `;
 
@@ -52,6 +53,7 @@ const resolvers = {
         },
       });
     },
+
     createUser: async (_: any, args: any) => {
       return prisma.user.create({
         data: {
@@ -60,6 +62,24 @@ const resolvers = {
           password: args.password,
         },
       });
+    },
+
+    login: async (_: any, args: any) => {
+      const user = await prisma.user.findUnique({
+        where: {
+          email: args.email,
+        },
+      });
+
+      if (!user) {
+        throw new Error("El usuario no se encuentra");
+      }
+
+      if (user.password !== args.password) {
+        throw new Error("La contraseña no es correcta");
+      }
+
+      return user;
     },
   },
 };

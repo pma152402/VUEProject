@@ -1,7 +1,22 @@
-export default function finalizar({ paso, contrasena, repetir, errorContrasena, errorRepetir }) {
+export default function checkLogin({ email, errorEmail, contrasena, errorContrasena }) {
   let hayError = false;
 
+  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const regexContrasena = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+
+  // Email
+  email.value = email.value.trim();
+
+  if (!email.value) {
+    errorEmail.value = "El email no puede quedar vacío";
+    hayError = true;
+  } else if (email.value.length > 120) {
+    errorEmail.value = "El email no puede superar los 120 caracteres";
+    hayError = true;
+  } else if (!regexEmail.test(email.value)) {
+    errorEmail.value = "Introduce un email válido";
+    hayError = true;
+  }
 
   // Contrasena
   if (!contrasena.value) {
@@ -16,18 +31,7 @@ export default function finalizar({ paso, contrasena, repetir, errorContrasena, 
     hayError = true;
   }
 
-  // Repetir
-  if (!repetir.value) {
-    errorRepetir.value = "Repetir contraseña no puede quedar vacío";
-    hayError = true;
-  } else if (contrasena.value != repetir.value) {
-    errorRepetir.value = "Las contraseñas no coinciden";
-    hayError = true;
-  }
-
   // salir
   if (hayError) return;
 
-  // solo llega  si no hay error
-  paso.value++;
 }
