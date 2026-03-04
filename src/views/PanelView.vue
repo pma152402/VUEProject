@@ -1,9 +1,10 @@
 <script setup>
 import { Trash2, Pencil, Copy, Share2, House } from "lucide-vue-next";
-
 import { ref, watch } from "vue";
-
 import Navbar from "../components/Navbar.vue";
+
+
+
 // Variables reactivas que creo en el padre para guardar los datos y validarlos
 const email = ref("");
 const contrasena = ref("");
@@ -24,16 +25,11 @@ watch(contrasena, () => {
   <div
     class="bg-gradient-to-t from-gray-400/50 to-gray-300/50 h-screen flex items-center justify-center"
   >
-
-
-
     <div class="bg-gradient-to-t from-blue-300 to-blue-200/80 rounded-2xl flex items-center">
       <div
         class="relative ml-3 rounded-lg bg-neutral-100 flex flex-col items-center px-8 pt-8 gap-5 shadow-xl pb-5"
       >
-        
-        
-    <Navbar></Navbar>
+        <Navbar></Navbar>
 
         <div class="pb-5 lg:pb-10">
           <h3 class="text-2xl font-bold pb-5">Panel de control</h3>
