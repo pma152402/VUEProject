@@ -44,3 +44,6 @@ __screenshots__/
 *.timestamp-*-*.mjs
 
 /src/generated/prisma
+
+.vercel
+.env*.local
