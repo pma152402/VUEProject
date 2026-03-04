@@ -1,9 +1,46 @@
 <script setup>
 import { Trash2, Pencil, Copy, Share2, House } from "lucide-vue-next";
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import Navbar from "../components/Navbar.vue";
 
+// ** onMounted para detectar usuario y proyectos para pasarlo de json a objeto **
+const usuario = ref(null);
+const proyectos = ref([]);
 
+onMounted(async () => {
+  const usuarioGuardado = localStorage.getItem("usuario");
+
+  if (usuarioGuardado) {
+    usuario.value = JSON.parse(usuarioGuardado);
+  }
+
+  const respuesta = await fetch("http://localhost:4000/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: `
+          query($userId: Int!) {
+            proyectosUsuario(userId: $userId) {
+              id
+              name
+              createdAt
+            }
+          }
+        `,
+      variables: {
+        userId: Number(usuario.value.id),
+      },
+    }),
+  });
+
+  const data = await respuesta.json();
+
+  console.log(data);
+
+  proyectos.value = data.data.proyectosUsuario;
+});
 
 // Variables reactivas que creo en el padre para guardar los datos y validarlos
 const email = ref("");
@@ -50,9 +87,15 @@ watch(contrasena, () => {
           </thead>
 
           <tbody>
-            <tr class="hover:bg-blue-100/60">
-              <td class="text-sm lg:text-base">Planing de mi casa</td>
-              <td class="text-sm lg:text-base">13/06/2025</td>
+            <tr 
+            v-for="proyecto in proyectos"
+            :key="proyecto.id"
+            class="hover:bg-blue-100/60">
+
+
+
+              <td class="text-sm lg:text-base">{{proyecto.name}}</td>
+              <td class="text-sm lg:text-base">{{proyecto.createdAt}}</td>
               <td class="flex justify-between ml-1">
                 <Pencil
                   class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
@@ -68,42 +111,7 @@ watch(contrasena, () => {
                 />
               </td>
             </tr>
-            <tr class="hover:bg-blue-100/60">
-              <td class="text-sm lg:text-base">Proyecto de programación</td>
-              <td class="text-sm lg:text-base">09/10/2025</td>
-              <td class="flex justify-between ml-1">
-                <Pencil
-                  class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
-                />
-                <Copy
-                  class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
-                />
-                <Share2
-                  class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
-                />
-                <Trash2
-                  class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
-                />
-              </td>
-            </tr>
-            <tr class="hover:bg-blue-100/60">
-              <td class="text-sm lg:text-base">Cumpleaños de Marta</td>
-              <td class="text-sm lg:text-base">11/03/2026</td>
-              <td class="flex justify-between ml-1">
-                <Pencil
-                  class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
-                />
-                <Copy
-                  class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
-                />
-                <Share2
-                  class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
-                />
-                <Trash2
-                  class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
-                />
-              </td>
-            </tr>
+            
           </tbody>
         </table>
         <div class="flex gap-3 mt-6 mb-2 w-1/2">

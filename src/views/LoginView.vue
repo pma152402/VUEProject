@@ -30,7 +30,7 @@ async function iniciarSesion() {
   console.log(usuario);
 
   if (usuario) {
-    // si hay usuario (ha pasado el login), lo guardo en localStorage
+    // si hay usuario (ha pasado el login), lo guardo en localStorage *******
     localStorage.setItem("usuario", JSON.stringify(usuario));
 
     paso.value = 2
