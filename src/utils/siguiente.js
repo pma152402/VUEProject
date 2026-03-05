@@ -1,9 +1,7 @@
 export default function siguiente({
   nombre,
-  apellidos,
   email,
   errorNombre,
-  errorApellidos,
   errorEmail,
   paso
 }) {
@@ -27,23 +25,6 @@ export default function siguiente({
       hayError = true;
     } else if (nombre.value.includes("  ")) {
       errorNombre.value = "El nombre no puede incluir espacios dobles";
-      hayError = true;
-    }
-
-    // Apellidos
-    apellidos.value = apellidos.value.trim();
-
-    if (!apellidos.value) {
-      errorApellidos.value = "Los apellidos no pueden quedar vacíos";
-      hayError = true;
-    } else if (apellidos.value.length > 100) {
-      errorApellidos.value = "Los apellidos no pueden superar los 100 caracteres";
-      hayError = true;
-    } else if (!regex.test(apellidos.value)) {
-      errorApellidos.value = "Los apellidos no pueden contener números ni caracteres especiales";
-      hayError = true;
-    } else if (apellidos.value.includes("  ")) {
-      errorApellidos.value = "Los apellidos no pueden incluir espacios dobles";
       hayError = true;
     }
 
