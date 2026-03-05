@@ -42,17 +42,21 @@ onMounted(async () => {
   proyectos.value = data.data.proyectosUsuario;
 });
 
-// crear proyectos, es asincrono
+// crear proyectos, es asincrono, no necesita nombreProyecto como parametro pq nombreProyecto es reactivo
 const nombreProyecto = ref("");
+const errorNombreProyecto = ref("");
 
-async function crearProyecto(nombreProyecto) {
-  const respuesta = await fetch("http://localhost:4000/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      query: `
+async function crearProyecto() {
+  const nombre = nombreProyecto.value.trim();
+
+  if (nombre !== "") {
+    const respuesta = await fetch("http://localhost:4000/graphql", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: `
           mutation($name: String!, $ownerId: Int!) {
             createProject(name: $name, ownerId: $ownerId) {
               id
@@ -61,36 +65,41 @@ async function crearProyecto(nombreProyecto) {
             }
           }
         `,
-      variables: {
-        name: nombreProyecto,
-        ownerId: Number(usuario.value.id),
-      },
-    }),
-  });
+        variables: {
+          name: nombre,
+          ownerId: Number(usuario.value.id),
+        },
+      }),
+    });
 
-  const data = await respuesta.json();
+    const data = await respuesta.json();
 
-  // añadir proyecto nuevo a la tabla sin recargar
-  proyectos.value.push(data.data.createProject);
+    // añadir proyecto nuevo a la tabla sin recargar
+    proyectos.value.push(data.data.createProject);
 
-  // limpiar
-  const nuevoProyecto = ref("");
+    // limpiar
+    nombreProyecto.value = "";
+    errorNombreProyecto.value = "";
+
+  } else {
+    errorNombreProyecto.value = "El nombre del proyecto no puede quedar vacío";
+  }
 }
 
-// Variables reactivas que creo en el padre para guardar los datos y validarlos
+// Variables reactivas
 const email = ref("");
 const contrasena = ref("");
 
 const errorEmail = ref("");
 const errorContrasena = ref("");
 
-// Limpiar el error cuando se escriba en cada campo (tengo q pasarlo a otro componente)
-watch(email, () => {
-  errorEmail.value = "";
+// Limpiar el error cuando se escriba
+watch(nombreProyecto, () => {
+  errorNombreProyecto.value = "";
 });
-watch(contrasena, () => {
-  errorContrasena.value = "";
-});
+
+//
+console.log(proyectos.value);
 </script>
 
 <template>
@@ -123,7 +132,6 @@ watch(contrasena, () => {
 
           <tbody>
             <tr v-for="proyecto in proyectos" :key="proyecto.id" class="hover:bg-blue-100/60">
-              {{console.log(proyectos.value)}}
               <td class="text-sm lg:text-base">{{ proyecto.name }}</td>
               <td class="text-sm lg:text-base">
                 {{ new Date(Number(proyecto.createdAt)).toLocaleDateString("es-ES") }}
@@ -145,20 +153,25 @@ watch(contrasena, () => {
             </tr>
           </tbody>
         </table>
-        <div class="flex gap-3 mt-6 mb-2 w-1/2">
-          <!-- asigno nuevoProyecto al input como v-model -->
-          <input
-            v-model="nuevoProyecto"
+        <div class="flex-col mt-6 mb-2 w-1/2">
+          <!-- asigno nombreProyecto al input como v-model -->
+          <div class="flex gap-3">
+            <input
+            v-model="nombreProyecto"
             type="text"
             placeholder="Nuevo proyecto"
             class="border border-neutral-400 rounded-lg text-sm w-full italic font-extralight focus:outline-blue-200 px-1"
           />
           <button
-            @click="crearProyecto(nuevoProyecto)"
+            @click="crearProyecto"
             class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
           >
             Crear
           </button>
+          </div>
+          <span class="mb-5 text-red-400 text-[10px]">
+            {{ errorNombreProyecto }}
+          </span>
         </div>
       </div>
     </div>
