@@ -45,7 +45,7 @@ onMounted(async () => {
 // crear proyectos, es asincrono
 const nombreProyecto = ref("");
 
-async function crearProyecto(nombreProyecto){
+async function crearProyecto(nombreProyecto) {
   const respuesta = await fetch("http://localhost:4000/graphql", {
     method: "POST",
     headers: {
@@ -63,12 +63,11 @@ async function crearProyecto(nombreProyecto){
         `,
       variables: {
         name: nombreProyecto,
-        ownerId: Number(usuario.value.id)
+        ownerId: Number(usuario.value.id),
       },
     }),
   });
 
-  
   const data = await respuesta.json();
 
   // añadir proyecto nuevo a la tabla sin recargar
@@ -76,7 +75,6 @@ async function crearProyecto(nombreProyecto){
 
   // limpiar
   const nuevoProyecto = ref("");
-
 }
 
 // Variables reactivas que creo en el padre para guardar los datos y validarlos
@@ -125,8 +123,11 @@ watch(contrasena, () => {
 
           <tbody>
             <tr v-for="proyecto in proyectos" :key="proyecto.id" class="hover:bg-blue-100/60">
+              {{console.log(proyectos.value)}}
               <td class="text-sm lg:text-base">{{ proyecto.name }}</td>
-              <td class="text-sm lg:text-base">{{ proyecto.createdAt }}</td>
+              <td class="text-sm lg:text-base">
+                {{ new Date(Number(proyecto.createdAt)).toLocaleDateString("es-ES") }}
+              </td>
               <td class="flex justify-between ml-1">
                 <Pencil
                   class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
