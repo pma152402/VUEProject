@@ -26,8 +26,10 @@ export default function finalizar({ paso, contrasena, repetir, errorContrasena, 
   }
 
   // salir
-  if (hayError) return;
+  if (hayError) return false;
 
   // solo llega  si no hay error
   paso.value++;
+
+  return true;
 }

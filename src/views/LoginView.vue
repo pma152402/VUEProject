@@ -1,5 +1,4 @@
 <script setup>
-// RECUERDA PONER LA PRIMERA MAYUSCULA EN NOMBRE Y APELLIDOS PARA MANDAR A BBDD
 import { ref, watch } from "vue";
 import { House } from "lucide-vue-next";
 

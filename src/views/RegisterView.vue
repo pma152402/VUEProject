@@ -1,5 +1,4 @@
 <script setup>
-// RECUERDA PONER LA PRIMERA MAYUSCULA EN NOMBRE Y APELLIDOS PARA MANDAR A BBDD
 import { ref, watch } from "vue";
 import { House } from "lucide-vue-next";
 import FormPaso1 from "../components/register/FormPaso1.vue";
@@ -10,13 +9,11 @@ import finalizar from "../utils/finalizar.js";
 
 // Variables reactivas que creo en el padre para guardar los datos y validarlos
 const nombre = ref("");
-const apellidos = ref("");
 const email = ref("");
 const contrasena = ref("");
 const repetir = ref("");
 
 const errorNombre = ref("");
-const errorApellidos = ref("");
 const errorEmail = ref("");
 const errorContrasena = ref("");
 const errorRepetir = ref("");
@@ -24,9 +21,6 @@ const errorRepetir = ref("");
 // Limpiar el error cuando se escriba en cada campo (tengo q pasarlo a otro componente)
 watch(nombre, () => {
   errorNombre.value = "";
-});
-watch(apellidos, () => {
-  errorApellidos.value = "";
 });
 watch(email, () => {
   errorEmail.value = "";
@@ -37,6 +31,36 @@ watch(contrasena, () => {
 watch(repetir, () => {
   errorRepetir.value = "";
 });
+
+// Funcion para crear usuario
+async function crearUsuario(nombre, email, contrasena) {
+  const respuesta = await fetch("http://localhost:4000/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: `
+          mutation($name: String!, $email: String!, $password: String!) {
+          createUser(name: $name, email: $email, password: $password) {
+            id
+            name
+            email
+          }
+        }
+        `,
+      variables: {
+        name: nombre.value,
+        email: email.value,
+        password: contrasena.value,
+      },
+    }),
+  });
+
+  const data = await respuesta.json();
+
+  console.log(data);
+}
 
 // Controlar el paso en el que estamos
 const paso = ref(1);
@@ -50,10 +74,8 @@ function volver() {
 function comprobarPaso1() {
   siguiente({
     nombre,
-    apellidos,
     email,
     errorNombre,
-    errorApellidos,
     errorEmail,
     paso,
     contrasena,
@@ -64,19 +86,23 @@ function comprobarPaso1() {
 }
 
 function comprobarPaso2() {
-  finalizar({
-    nombre,
-    apellidos,
-    email,
-    errorNombre,
-    errorApellidos,
-    errorEmail,
-    paso,
-    contrasena,
-    repetir,
-    errorContrasena,
-    errorRepetir,
-  });
+  if (
+    finalizar({
+      nombre,
+      email,
+      errorNombre,
+      errorEmail,
+      paso,
+      contrasena,
+      repetir,
+      errorContrasena,
+      errorRepetir,
+    })
+  ) {
+    console.log("dentro de finalizar: TODO HA IDO BIEN antes de CREACION DE USUARIO");
+
+    crearUsuario(nombre, email, contrasena);
+  }
 }
 </script>
 
@@ -100,15 +126,13 @@ function comprobarPaso2() {
           <h1 class="font-bold text-5xl text-gray-900">ORGANIZER</h1>
         </div>
 
-        <!-- Nombre, Apellidos, Email -->
+        <!-- Nombre, Email -->
         <div v-if="paso === 1" class="flex-col w-full">
           <!-- Le paso las variables al componente hijo -->
           <FormPaso1
             v-model:nombre="nombre"
-            v-model:apellidos="apellidos"
             v-model:email="email"
             v-model:errorNombre="errorNombre"
-            v-model:errorApellidos="errorApellidos"
             v-model:errorEmail="errorEmail"
           />
         </div>
@@ -123,9 +147,18 @@ function comprobarPaso2() {
           />
         </div>
 
-        <div v-if="paso === 3" class="pb-10">
+        <div v-if="paso === 3" class="-mt-2">
           <h3>¡Enhorabuena!</h3>
           <p>Te has registrado correctamente.</p>
+          <div class="flex items-center justify-center mt-6">
+            <RouterLink to="/login">
+              <button
+                class="rounded-full bg-blue-200/80 px-2 py-1 text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
+              >
+                Iniciar sesión
+              </button></RouterLink
+            >
+          </div>
         </div>
 
         <div class="flex gap-3">
