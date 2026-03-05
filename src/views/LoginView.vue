@@ -33,7 +33,7 @@ async function iniciarSesion() {
     // si hay usuario (ha pasado el login), lo guardo en localStorage *******
     localStorage.setItem("usuario", JSON.stringify(usuario));
 
-    paso.value = 2
+    paso.value = 2;
 
     // lo mando al panel con un timeout para que se vea la vista de paso == 2
     setTimeout(() => {

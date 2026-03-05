@@ -42,6 +42,43 @@ onMounted(async () => {
   proyectos.value = data.data.proyectosUsuario;
 });
 
+// crear proyectos, es asincrono
+const nombreProyecto = ref("");
+
+async function crearProyecto(nombreProyecto){
+  const respuesta = await fetch("http://localhost:4000/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: `
+          mutation($name: String!, $ownerId: Int!) {
+            createProject(name: $name, ownerId: $ownerId) {
+              id
+              name
+              createdAt
+            }
+          }
+        `,
+      variables: {
+        name: nombreProyecto,
+        ownerId: Number(usuario.value.id)
+      },
+    }),
+  });
+
+  
+  const data = await respuesta.json();
+
+  // añadir proyecto nuevo a la tabla sin recargar
+  proyectos.value.push(data.data.createProject);
+
+  // limpiar
+  const nuevoProyecto = ref("");
+
+}
+
 // Variables reactivas que creo en el padre para guardar los datos y validarlos
 const email = ref("");
 const contrasena = ref("");
@@ -87,15 +124,9 @@ watch(contrasena, () => {
           </thead>
 
           <tbody>
-            <tr 
-            v-for="proyecto in proyectos"
-            :key="proyecto.id"
-            class="hover:bg-blue-100/60">
-
-
-
-              <td class="text-sm lg:text-base">{{proyecto.name}}</td>
-              <td class="text-sm lg:text-base">{{proyecto.createdAt}}</td>
+            <tr v-for="proyecto in proyectos" :key="proyecto.id" class="hover:bg-blue-100/60">
+              <td class="text-sm lg:text-base">{{ proyecto.name }}</td>
+              <td class="text-sm lg:text-base">{{ proyecto.createdAt }}</td>
               <td class="flex justify-between ml-1">
                 <Pencil
                   class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
@@ -111,16 +142,18 @@ watch(contrasena, () => {
                 />
               </td>
             </tr>
-            
           </tbody>
         </table>
         <div class="flex gap-3 mt-6 mb-2 w-1/2">
+          <!-- asigno nuevoProyecto al input como v-model -->
           <input
+            v-model="nuevoProyecto"
             type="text"
             placeholder="Nuevo proyecto"
             class="border border-neutral-400 rounded-lg text-sm w-full italic font-extralight focus:outline-blue-200 px-1"
           />
           <button
+            @click="crearProyecto(nuevoProyecto)"
             class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
           >
             Crear
