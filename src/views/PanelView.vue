@@ -194,9 +194,11 @@ console.log(proyectos.value);
                 {{ new Date(Number(proyecto.createdAt)).toLocaleDateString("es-ES") }}
               </td>
               <td class="flex justify-between ml-1">
-                <Pencil
-                  class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
-                />
+                <RouterLink :to="`/projects/${proyecto.id}`" target="_blank">
+                  <Pencil
+                    class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
+                  />
+                </RouterLink>
                 <Copy
                   class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
                 />
