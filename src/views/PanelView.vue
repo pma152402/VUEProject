@@ -80,9 +80,41 @@ async function crearProyecto() {
     // limpiar
     nombreProyecto.value = "";
     errorNombreProyecto.value = "";
-
   } else {
     errorNombreProyecto.value = "El nombre del proyecto no puede quedar vacío";
+  }
+}
+
+// Borrar proyectos
+const proyectoABorrar = ref(null);
+const seguro = ref(false);
+
+async function borrarProyecto(idProyecto) {
+  if (idProyecto != null) {
+    const respuesta = await fetch("http://localhost:4000/graphql", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: `
+          mutation($id: Int!) {
+            deleteProject(id: $id) {
+              id
+            }
+          }
+        `,
+        variables: {
+          id: Number(idProyecto),
+        },
+      }),
+    });
+
+    // no recoje informacion
+    await respuesta.json();
+
+    // quitar proyecto del array en Vue
+    proyectos.value = proyectos.value.filter((proyecto) => proyecto.id !== idProyecto);
   }
 }
 
@@ -111,6 +143,31 @@ console.log(proyectos.value);
         class="relative ml-3 rounded-lg bg-neutral-100 flex flex-col items-center px-8 pt-8 gap-5 shadow-xl pb-5"
       >
         <Navbar></Navbar>
+
+        <div
+          v-if="seguro"
+          class="rounded-xl border-2 border-gray-400 bg-neutral-200 px-8 py-6 flex-col absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        >
+          ¿Eliminar el proyecto?
+
+          <div class="flex justify-center gap-3 text-sm mt-4">
+            <button
+              @click="
+                borrarProyecto(proyectoABorrar);
+                seguro = false;
+              "
+              class="bg-red-400 px-2 py-1 font-semibold rounded-full"
+            >
+              Eliminar
+            </button>
+            <button
+              @click="seguro = false"
+              class="bg-gray-400/80 px-2 py-1 font-semibold rounded-full"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
 
         <div class="pb-5 lg:pb-10">
           <h3 class="text-2xl font-bold pb-5">Panel de control</h3>
@@ -147,6 +204,10 @@ console.log(proyectos.value);
                   class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
                 />
                 <Trash2
+                  @click="
+                    proyectoABorrar = proyecto.id;
+                    seguro = true;
+                  "
                   class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
                 />
               </td>
@@ -157,17 +218,17 @@ console.log(proyectos.value);
           <!-- asigno nombreProyecto al input como v-model -->
           <div class="flex gap-3">
             <input
-            v-model="nombreProyecto"
-            type="text"
-            placeholder="Nuevo proyecto"
-            class="border border-neutral-400 rounded-lg text-sm w-full italic font-extralight focus:outline-blue-200 px-1"
-          />
-          <button
-            @click="crearProyecto"
-            class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
-          >
-            Crear
-          </button>
+              v-model="nombreProyecto"
+              type="text"
+              placeholder="Nuevo proyecto"
+              class="border border-neutral-400 rounded-lg text-sm w-full italic font-extralight focus:outline-blue-200 px-1"
+            />
+            <button
+              @click="crearProyecto"
+              class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
+            >
+              Crear
+            </button>
           </div>
           <span class="mb-5 text-red-400 text-[10px]">
             {{ errorNombreProyecto }}
