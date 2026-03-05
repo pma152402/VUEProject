@@ -86,6 +86,9 @@ async function crearProyecto() {
 }
 
 // Borrar proyectos
+const proyectoABorrar = ref(null);
+const seguro = ref(false);
+
 async function borrarProyecto(idProyecto) {
   if (idProyecto != null) {
     const respuesta = await fetch("http://localhost:4000/graphql", {
@@ -102,7 +105,7 @@ async function borrarProyecto(idProyecto) {
           }
         `,
         variables: {
-          id: Number(idProyecto)
+          id: Number(idProyecto),
         },
       }),
     });
@@ -111,9 +114,7 @@ async function borrarProyecto(idProyecto) {
     await respuesta.json();
 
     // quitar proyecto del array en Vue
-  proyectos.value = proyectos.value.filter(
-    proyecto => proyecto.id !== idProyecto
-  )
+    proyectos.value = proyectos.value.filter((proyecto) => proyecto.id !== idProyecto);
   }
 }
 
@@ -142,6 +143,31 @@ console.log(proyectos.value);
         class="relative ml-3 rounded-lg bg-neutral-100 flex flex-col items-center px-8 pt-8 gap-5 shadow-xl pb-5"
       >
         <Navbar></Navbar>
+
+        <div
+          v-if="seguro"
+          class="rounded-xl border-2 border-gray-400 bg-neutral-200 px-8 py-6 flex-col absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        >
+          ¿Eliminar el proyecto?
+
+          <div class="flex justify-center gap-3 text-sm mt-4">
+            <button
+              @click="
+                borrarProyecto(proyectoABorrar);
+                seguro = false;
+              "
+              class="bg-red-400 px-2 py-1 font-semibold rounded-full"
+            >
+              Eliminar
+            </button>
+            <button
+              @click="seguro = false"
+              class="bg-gray-400/80 px-2 py-1 font-semibold rounded-full"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
 
         <div class="pb-5 lg:pb-10">
           <h3 class="text-2xl font-bold pb-5">Panel de control</h3>
@@ -177,8 +203,11 @@ console.log(proyectos.value);
                 <Share2
                   class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
                 />
-                <Trash2 
-                  @click="borrarProyecto(proyecto.id)"
+                <Trash2
+                  @click="
+                    proyectoABorrar = proyecto.id;
+                    seguro = true;
+                  "
                   class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
                 />
               </td>
