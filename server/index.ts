@@ -35,6 +35,7 @@ const typeDefs = `
   type Mutation {
     createUser(name: String!, email: String!, password: String!): User!
     createProject(name: String!, ownerId: Int!): Project!
+    deleteProject(id: Int!): Project!
     login(email: String!, password: String!): User
   }
 `;
@@ -60,6 +61,14 @@ const resolvers = {
         data: {
           name: args.name,
           ownerId: args.ownerId,
+        },
+      });
+    },
+
+    deleteProject: async (_: any, args: any) => {
+      return prisma.project.delete({
+        where: {
+          id: args.id,
         },
       });
     },

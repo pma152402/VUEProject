@@ -80,9 +80,40 @@ async function crearProyecto() {
     // limpiar
     nombreProyecto.value = "";
     errorNombreProyecto.value = "";
-
   } else {
     errorNombreProyecto.value = "El nombre del proyecto no puede quedar vacío";
+  }
+}
+
+// Borrar proyectos
+async function borrarProyecto(idProyecto) {
+  if (idProyecto != null) {
+    const respuesta = await fetch("http://localhost:4000/graphql", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: `
+          mutation($id: Int!) {
+            deleteProject(id: $id) {
+              id
+            }
+          }
+        `,
+        variables: {
+          id: Number(idProyecto)
+        },
+      }),
+    });
+
+    // no recoje informacion
+    await respuesta.json();
+
+    // quitar proyecto del array en Vue
+  proyectos.value = proyectos.value.filter(
+    proyecto => proyecto.id !== idProyecto
+  )
   }
 }
 
@@ -146,7 +177,8 @@ console.log(proyectos.value);
                 <Share2
                   class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
                 />
-                <Trash2
+                <Trash2 
+                  @click="borrarProyecto(proyecto.id)"
                   class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
                 />
               </td>
@@ -157,17 +189,17 @@ console.log(proyectos.value);
           <!-- asigno nombreProyecto al input como v-model -->
           <div class="flex gap-3">
             <input
-            v-model="nombreProyecto"
-            type="text"
-            placeholder="Nuevo proyecto"
-            class="border border-neutral-400 rounded-lg text-sm w-full italic font-extralight focus:outline-blue-200 px-1"
-          />
-          <button
-            @click="crearProyecto"
-            class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
-          >
-            Crear
-          </button>
+              v-model="nombreProyecto"
+              type="text"
+              placeholder="Nuevo proyecto"
+              class="border border-neutral-400 rounded-lg text-sm w-full italic font-extralight focus:outline-blue-200 px-1"
+            />
+            <button
+              @click="crearProyecto"
+              class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
+            >
+              Crear
+            </button>
           </div>
           <span class="mb-5 text-red-400 text-[10px]">
             {{ errorNombreProyecto }}
