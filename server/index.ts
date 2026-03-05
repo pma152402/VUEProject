@@ -29,6 +29,7 @@ const typeDefs = `
 
   type Query {
     projects: [Project!]!
+    proyectosUsuario(userId: Int!): [Project!]!
   }
 
   type Mutation {
@@ -42,6 +43,15 @@ const resolvers = {
   Query: {
     projects: async () => {
       return prisma.project.findMany();
+    },
+
+    // proyectos por usuario
+    proyectosUsuario: async (_: any, args: any) => {
+      return prisma.project.findMany({
+        where: {
+          ownerId: args.userId,
+        },
+      });
     },
   },
   Mutation: {

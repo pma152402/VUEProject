@@ -1,8 +1,33 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import Usuario from "../assets/logo_organizer.png";
 import { Menu } from "lucide-vue-next";
 
+import { useRouter } from "vue-router"
+
+
+// cerrar sesion y redirijir con router
+const router = useRouter()
+
+function cerrarSesion() {
+
+  localStorage.removeItem("usuario");
+  router.push("/");
+
+}
+
+// ** onMounted para detectar el usuario y pasarlo de json a objeto **
+const usuario = ref(null);
+
+onMounted(() => {
+  const usuarioGuardado = localStorage.getItem("usuario");
+
+  if (usuarioGuardado) {
+    usuario.value = JSON.parse(usuarioGuardado);
+  }
+});
+
+//
 const estado = ref(false);
 
 function mostrarOpciones() {
@@ -11,7 +36,7 @@ function mostrarOpciones() {
 </script>
 <style scoped>
 .item-enter-active {
-  transition: all 0.3s ease;
+  transition: all 0.1s ease;
 }
 
 .item-enter-from {
@@ -38,8 +63,9 @@ function mostrarOpciones() {
       <div
         @click="mostrarOpciones"
         class="text-xs flex gap-2 items-center hover:cursor-pointer"
+        v-if="usuario"
       >
-        <span class="text-neutral-400">Pablo Monís Álvarez</span>
+        <span class="text-neutral-400">{{ usuario.email }}</span>
         <Menu class="text-neutral-400 w-4"></Menu>
       </div>
 
@@ -63,14 +89,13 @@ function mostrarOpciones() {
         </Transition>
 
         <Transition name="item">
-          <RouterLink to="/" v-if="estado" class="delay-2">
             <span
               v-if="estado"
-              class="block  text-xs text-neutral-400 hover:scale-110 transition-all ease-in-out hover:cursor-pointer hover:text-gray-900 duration-100"
+              @click="cerrarSesion"
+              class=" delay-2 block  text-xs text-neutral-400 hover:scale-110 transition-all ease-in-out hover:cursor-pointer hover:text-red-700 duration-100"
             >
               Cerrar sesión
             </span>
-          </RouterLink>
         </Transition>
       </div>
     </div>
