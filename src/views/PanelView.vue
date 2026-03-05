@@ -146,7 +146,7 @@ console.log(proyectos.value);
 
         <div
           v-if="seguro"
-          class="rounded-xl border-2 border-gray-400 bg-neutral-200 px-8 py-6 flex-col absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          class="shadow-xl hover:scale-105 font-semibold transition-all duration-200 ease-in-out rounded-xl border-2 border-gray-400 bg-neutral-200 px-8 py-6 flex-col absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
         >
           ¿Eliminar el proyecto?
 
@@ -156,13 +156,13 @@ console.log(proyectos.value);
                 borrarProyecto(proyectoABorrar);
                 seguro = false;
               "
-              class="bg-red-400 px-2 py-1 font-semibold rounded-full"
+              class="bg-red-400 px-2 py-1 font-semibold rounded-full hover:scale-110 transition-all duration-200 ease-in-out hover:cursor-pointer"
             >
               Eliminar
             </button>
             <button
               @click="seguro = false"
-              class="bg-gray-400/80 px-2 py-1 font-semibold rounded-full"
+              class="bg-gray-400/80 px-2 py-1 font-semibold rounded-full hover:scale-110 transition-all duration-200 ease-in-out hover:cursor-pointer"
             >
               Cancelar
             </button>
