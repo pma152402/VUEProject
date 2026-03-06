@@ -43,10 +43,19 @@ async function cargarProyecto(IDproyecto) {
 </script>
 <template>
   <div class="bg-gradient-to-t from-gray-400/50 to-gray-300/50 h-screen overflow-x-hidden">
-    <h1 class="text-5xl lg:text-6xl font-extrabold pb-5 text-gray-800">ORGANIZER</h1>
-    <div v-if="proyecto">
-      <h1>{{ proyecto.name }}</h1>
-      <p>Creado el: {{ proyecto.createdAt }}</p>
+    <div class="text-5xl lg:text-6xl flex pb-5 text-gray-800 p-10">
+      <span>Proyecto: </span>
+      <h1 v-if="proyecto" class="font-bold pl-4">{{ proyecto.name }}</h1>
+    </div>
+    <div v-if="proyecto" class="p-10 text-lg">
+      <p>Creado el: {{ new Date(Number(proyecto.createdAt)).toLocaleDateString("es-ES") }}</p>
+
+      <p>Descripción: (toDo)</p>
+
+      <p>Miembros: (toDo)</p>
+    </div>
+    <div class="bg-amber-200 flex items center justify-center">
+      <div class="bg-white px-4 py-2 rounded-xl"><span class="text-2xl font-semibold">Tarjeta 1</span></div>
     </div>
   </div>
 </template>
