@@ -73,19 +73,24 @@ async function cargarProyecto(IDproyecto) {
         </p>
       </div>
     </div>
-    <div class="bg-gray-100 flex items center justify-center gap-6">
-      <div class="bg-white px-4 py-2 rounded-xl">
-        <span class="text-2xl font-semibold border-b ">Tarjeta 1</span>
-        <ul class="AQUI">
-          <li class="mb-2">Lo primero</li>
-          <li class="mb-2">Lo segundo</li>
-          <li class="mb-2">Lo tercero</li>
+    <div class="flex items-center justify-center gap-6">
+      
+
+      <div class="bg-white px-4 py-6 rounded-xl w-1/6 border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-105 transition-all ease-in-out duration-350">
+        <span class="text-3xl font-semibold">Tarjeta 1</span>
+        <ul class="mt-5 text-lg">
+          <li class="mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:scale-102 transition-transform duration-200 ease-in-out">Lo primero</li>
+          <li class="mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:scale-102 transition-transform duration-200 ease-in-out">Lo segundo</li>
+          <li class="mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:scale-102 transition-transform duration-200 ease-in-out">Lo tercero</li>
         </ul>
-        <button class="rounded-xl px-2 py-1 mt-2 bg-neutral-200">+ Añadir tarea</button>
+        <button class="w-full mx-auto text-gray-400 rounded-sm bg-gray-100 px-2 py-1 mt-2 hover:cursor-pointer hover:scale-103 transition-transform duration-200 ease-in-out hover:bg-gray-200/80 hover:text-gray-500">+ Añadir tarea</button>
       </div>
-      <div class="bg-neutral-400/80 px-4 py-2 rounded-xl max-h-12">
-        <span class="text-2xl font-semibold">+ Nueva tarjeta</span>
+
+
+      
+      <div class="bg-gray-100 px-4 py-2 rounded-xl max-h-12 hover:cursor-pointer hover:scale-105 transition-transform duration-200 ease-in-out hover:bg-gray-200/80 hover:text-gray-500">
+        <span class="text-xl text-gray-400 ">+ Añadir tarjeta</span>
       </div>
-    </div>
+    </div> 
   </div>
 </template>
