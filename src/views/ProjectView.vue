@@ -52,45 +52,80 @@ async function cargarProyecto(IDproyecto) {
 </script>
 <template>
   <div class="bg-gradient-to-t from-gray-400/50 to-gray-300/50 h-screen overflow-x-hidden">
-    <div class="text-5xl lg:text-6xl flex flex-col md:flex-row pb-5 text-gray-800 p-10">
-      <span>Proyecto: </span>
-      <h1 v-if="proyecto" class="font-bold pl-4">{{ proyecto.name }}</h1>
-    </div>
-    <div class="p-10 text-lg">
-      <div class="flex gap-2">
-        <p class="font-semibold">Descripción:</p>
-        <p>Aún no puedes modificar las descripciones de tus proyectos</p>
-      </div>
-      <div class="flex gap-2">
-        <p class="font-semibold">Miembros:</p>
-        <p v-if="usuario">{{ usuario.name }}</p>
+    <!-- Cabecera -->
+    <div class="bg-neutral-100 shadow-xl border-b-4 border-blue-300/80 flex justify-between p-4">
+      <div class="flex flex-col pb-0 text-gray-800 p-10">
+        <span class="font-extralight text-2xl">Nombre del proyecto: </span>
+        <h1 v-if="proyecto" class="font-semibold text-4xl">{{ proyecto.name }}</h1>
+        <span class="mt-10"> <- Panel de control </span>
       </div>
 
-      <div class="flex gap-2">
-        <p class="font-semibold">Creado el:</p>
-        <p v-if="proyecto">
-          {{ new Date(Number(proyecto.createdAt)).toLocaleDateString("es-ES") }}
-        </p>
-      </div>
-    </div>
-    <div class="flex items-center justify-center gap-6">
-      
+      <table class="p-10 text-lg w-1/3">
+        <tr class="flex gap-2">
+          <td>
+            <p class="font-semibold">Miembros:</p>
+          </td>
+          <td>
+            <p v-if="usuario">{{ usuario.name }}</p>
+          </td>
+        </tr>
 
-      <div class="bg-white px-4 py-6 rounded-xl w-1/6 border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-105 transition-all ease-in-out duration-350">
+        <tr class="flex gap-2">
+          <td><p class="font-semibold">Descripción: </p></td>
+          <td>
+            <p>
+              Aún no puedes modificar las descripciones de tus proyectos pero es una función que se
+              implementará en futuras actualizaciones
+            </p>
+          </td>
+        </tr>
+        <tr class="flex gap-2">
+          <td>
+            <p class="font-semibold">Creado el:</p>
+          </td>
+          <td>
+            <p v-if="proyecto">
+              {{ new Date(Number(proyecto.createdAt)).toLocaleDateString("es-ES") }}
+            </p>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <!-- Tarjetas -->
+    <div class="flex items-center justify-center gap-6 mt-10">
+      <div
+        class="bg-neutral-100 px-4 py-6 rounded-xl w-1/6 border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-105 transition-all ease-in-out duration-350"
+      >
         <span class="text-3xl font-semibold">Tarjeta 1</span>
         <ul class="mt-5 text-lg">
-          <li class="mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:scale-102 transition-transform duration-200 ease-in-out">Lo primero</li>
-          <li class="mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:scale-102 transition-transform duration-200 ease-in-out">Lo segundo</li>
-          <li class="mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:scale-102 transition-transform duration-200 ease-in-out">Lo tercero</li>
+          <li
+            class="mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:scale-102 transition-transform duration-200 ease-in-out"
+          >
+            Lo primero
+          </li>
+          <li
+            class="mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:scale-102 transition-transform duration-200 ease-in-out"
+          >
+            Lo segundo
+          </li>
+          <li
+            class="mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:scale-102 transition-transform duration-200 ease-in-out"
+          >
+            Lo tercero
+          </li>
         </ul>
-        <button class="w-full mx-auto text-gray-400 rounded-sm bg-gray-100 px-2 py-1 mt-2 hover:cursor-pointer hover:scale-103 transition-transform duration-200 ease-in-out hover:bg-gray-200/80 hover:text-gray-500">+ Añadir tarea</button>
+        <button
+          class="w-full mx-auto text-gray-400 rounded-sm bg-gray-100 px-2 py-1 mt-2 hover:cursor-pointer hover:scale-103 transition-transform duration-200 ease-in-out hover:bg-gray-200/80 hover:text-gray-500"
+        >
+          + Añadir tarea
+        </button>
       </div>
 
-
-      
-      <div class="bg-gray-100 px-4 py-2 rounded-xl max-h-12 hover:cursor-pointer hover:scale-105 transition-transform duration-200 ease-in-out hover:bg-gray-200/80 hover:text-gray-500">
-        <span class="text-xl text-gray-400 ">+ Añadir tarjeta</span>
+      <div
+        class="bg-gray-100 px-4 py-2 rounded-xl max-h-12 hover:cursor-pointer hover:scale-105 transition-transform duration-200 ease-in-out hover:bg-gray-200/80 hover:text-gray-500"
+      >
+        <span class="text-xl text-gray-400">+ Añadir tarjeta</span>
       </div>
-    </div> 
+    </div>
   </div>
 </template>
