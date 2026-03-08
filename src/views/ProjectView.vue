@@ -74,7 +74,7 @@ async function cargarProyecto(IDproyecto) {
           <td><p class="font-semibold">Descripción: </p></td>
           <td>
             <p>
-              Aún no puedes modificar las descripciones de tus proyectos pero es una función que se
+              Aún no puedes modificar las descripciones de tus proyectos, pero es una función que se
               implementará en futuras actualizaciones
             </p>
           </td>
