@@ -16,13 +16,21 @@ const tarjetas = ref([
     tareas: ["Lo primero", "Lo segundo", "Lo tercero"],
   },
 ]);
-
+// tarjeta
 async function crearTarjeta() {
   tarjetas.value.push({
     id: Date.now(),
     titulo: "Nueva tarjeta",
     tareas: [],
   });
+}
+// tarea (le paso la tarjeta en la que se hace)
+function crearTarea(tarjeta) {
+  const nuevaTarea = prompt("Nueva tarea...");
+
+  if (nuevaTarea) {
+    tarjeta.tareas.push(nuevaTarea);
+  }
 }
 
 // en el montaje..
@@ -132,16 +140,15 @@ async function cargarProyecto(IDproyecto) {
         </button>
       </div>
 
-
       <div
         v-for="tarjeta in tarjetas"
         :key="tarjeta.id"
         class="bg-neutral-100 px-4 py-6 rounded-xl w-1/6 border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-105 transition-all ease-in-out duration-350"
       >
-        <span class="text-3xl font-semibold">{{tarjeta.titulo}}</span>
+        <span class="text-3xl font-semibold">{{ tarjeta.titulo }}</span>
         <ul class="mt-5 text-lg">
           <li
-            v-for="tarea in tareas"
+            v-for="(tarea, index) in tarjeta.tareas"
             :key="index"
             class="mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:scale-102 transition-transform duration-200 ease-in-out"
           >
@@ -149,15 +156,15 @@ async function cargarProyecto(IDproyecto) {
           </li>
         </ul>
         <button
+          @click="crearTarea(tarjeta)"
           class="w-full mx-auto text-gray-400 rounded-sm bg-gray-100 px-2 py-1 mt-2 hover:cursor-pointer hover:scale-103 transition-transform duration-200 ease-in-out hover:bg-gray-200/80 hover:text-gray-500"
         >
           + Añadir tarea
         </button>
       </div>
 
-
       <div
-         @click="crearTarjeta"
+        @click="crearTarjeta"
         class="bg-gray-100 px-4 py-2 rounded-xl max-h-12 hover:cursor-pointer hover:scale-105 transition-transform duration-200 ease-in-out hover:bg-gray-200/80 hover:text-gray-500"
       >
         <span class="text-xl text-gray-400">+ Añadir tarjeta</span>
