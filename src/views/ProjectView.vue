@@ -17,7 +17,7 @@ const tarjetas = ref([
   },
 ]);
 
-function crearTarjeta() {
+async function crearTarjeta() {
   tarjetas.value.push({
     id: Date.now(),
     titulo: "Nueva tarjeta",
@@ -157,6 +157,7 @@ async function cargarProyecto(IDproyecto) {
 
 
       <div
+         @click="crearTarjeta"
         class="bg-gray-100 px-4 py-2 rounded-xl max-h-12 hover:cursor-pointer hover:scale-105 transition-transform duration-200 ease-in-out hover:bg-gray-200/80 hover:text-gray-500"
       >
         <span class="text-xl text-gray-400">+ Añadir tarjeta</span>
