@@ -76,69 +76,106 @@ async function cargarProyecto(IDproyecto) {
   return data.data.project;
 }
 </script>
+
+<style>
+{
+scrollbar-width: thin;
+scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+transition: scrollbar-color 0.5s ease-in;
+
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--scrollbar-thumb), #8c589c);
+  border-radius: 10px;
+  border: 2px solid var(--scrollbar-track);
+  transition: background 0.3s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #c986da, #a268b3);
+}
+
+*::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track);
+}
+</style>
 <template>
-  <div class="bg-gradient-to-t from-gray-800/50 to-gray-500/50 h-screen overflow-x-hidden">
-    <div class="max-w-7xl flex flex-col mx-auto">
-      <Navbar></Navbar>
+  <div
+    class="bg-gradient-to-t from-gray-400/50 to-gray-300/50 min-h-screen overflow-x-hidden flex justify-center"
+  >
+    <div class="max-w-6xl flex flex-col relative">
+      <Navbar class="mt-2 mr-1"></Navbar>
       <!-- Cabecera -->
-      <div class="bg-neutral-100 shadow-xl flex flex-col justify-between p-4">
-
-
-        <div class="flex flex-row justify-between">
-          <!-- Titulo -->
-          <div class="flex flex-col pb-0 text-gray-800">
-            <span class="font-extralight text-2xl">Nombre del proyecto: </span>
-            <h1 v-if="proyecto" class="font-semibold text-4xl border-b pb-4">
-              {{ proyecto.name }}
-            </h1>
-          </div>
-
-          <!-- Fecha y Miembros -->
-
-          <div class="text-base py-2">
-            <div class="flex gap-20">
-              <div class="flex flex-col ">
-                <p class="font-semibold">Creado el:</p>
-                <p v-if="proyecto">
-                  {{ new Date(Number(proyecto.createdAt)).toLocaleDateString("es-ES") }}
-                </p>
-              </div>
-              <div class="flex flex-col">
-                <p class="font-semibold">Miembros:</p>
-                <p v-if="usuario">{{ usuario.name }}</p>
-              </div>
-            </div>
-          </div>
+      <div
+        class="bg-neutral-100 shadow-xl flex flex-col justify-between p-6 rounded-xl mt-2 border-l-6 border-blue-300"
+      >
+        <!-- Titulo -->
+        <div class="flex flex-col pb-0 text-gray-800">
+          <span class="font-extralight text-2xl">Nombre del proyecto: </span>
+          <h1 v-if="proyecto" class="font-semibold text-4xl border-b pb-4">
+            {{ proyecto.name }}
+          </h1>
         </div>
 
-
         <!-- Descripcion -->
-        <div class="flex gap-2 mt-2">
+        <div class="flex gap-2 mt-4">
           <p class="font-semibold">Descripción:</p>
           <p>
             Aún no puedes modificar las descripciones de tus proyectos, pero es una función que se
             implementará en futuras actualizaciones
           </p>
         </div>
+
+        <!-- Fecha y Miembros -->
+
+        <div class="text-base mt-2">
+          <div class="flex justify-between">
+            <div class="flex gap-2">
+              <p class="font-semibold">Miembros:</p>
+              <p v-if="usuario">{{ usuario.name }}</p>
+            </div>
+            <div class="flex gap-2">
+              <p class="font-semibold">Creado el:</p>
+              <p v-if="proyecto">
+                {{ new Date(Number(proyecto.createdAt)).toLocaleDateString("es-ES") }}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Tarjetas -->
-      <div class="flex items-start gap-6 mt-10 overflow-x-auto h-full pb-20">
+      <!-- Contenedor Tarjetas -->
+      <div class="grid grid-cols-3 gap-6 mt-10 overflow-x-auto h-full pb-20">
+        <!-- Tarjetas -->
         <div
           v-for="tarjeta in tarjetas"
           :key="tarjeta.id"
-          class="bg-neutral-100 px-4 py-6 rounded-xl border-t-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-105 transition-all ease-in-out duration-350 min-w-3xs"
+          class="h-fit bg-neutral-100 px-4 py-6 rounded-xl border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-101 transition-all ease-in-out duration-350 m-1"
         >
           <span class="text-3xl font-semibold">{{ tarjeta.titulo }}</span>
-          <ul class="mt-5 text-lg">
+
+          <!-- lista de Tareas -->
+          <ul class="mt-5 text-lg overflow-y-auto max-h-65 h-fit">
             <li
               v-for="(tarea, index) in tarjeta.tareas"
               :key="index"
-              class="mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:scale-102 transition-transform duration-200 ease-in-out"
+              class="mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 transition-all duration-150 ease-in-out"
             >
               {{ tarea }}
             </li>
           </ul>
+
+          <!-- crear Tarea -->
           <button
             @click="crearTarea(tarjeta)"
             class="w-full mx-auto text-gray-400 rounded-sm bg-gray-200/50 px-2 py-1 mt-2 hover:cursor-pointer hover:scale-103 transition-transform duration-200 ease-in-out hover:bg-gray-200/80 hover:text-gray-500"
@@ -146,13 +183,13 @@ async function cargarProyecto(IDproyecto) {
             + Añadir tarea
           </button>
         </div>
+      </div>
 
-        <div
-          @click="crearTarjeta"
-          class="bg-gray-100 px-4 py-2 rounded-xl max-h-12 hover:cursor-pointer hover:scale-105 transition-transform duration-200 ease-in-out hover:bg-white hover:text-gray-500"
-        >
-          <span class="text-xl text-gray-400">+ Añadir tarjeta</span>
-        </div>
+      <div
+        @click="crearTarjeta"
+        class="mb-6 bg-gray-100 px-4 py-2 rounded-xl max-h-12 hover:cursor-pointer hover:scale-105 transition-transform duration-200 ease-in-out hover:bg-white hover:text-gray-500 w-fit mx-auto"
+      >
+        <span class="text-xl text-gray-400">+ Añadir tarjeta</span>
       </div>
     </div>
   </div>
