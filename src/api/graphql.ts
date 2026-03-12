@@ -18,21 +18,40 @@ type Project {
   createdAt: String!
 }
 
+type Card {
+  id: ID!
+  title: String!
+  projectId: Int!
+}
+
 type Query {
   projects: [Project!]!
+  cards(projectId: Int!): [Card!]!
 }
+
+
 
 type Mutation {
   createProject(name: String!, ownerId: Int!): Project!
   login(email: String!, password: String!): User
   createUser(name: String!, email: String!, password: String!): User!
+  createCard(title: String!, projectId: Int!): Card!
 }
 `;
+console.log("SERVIDOR CON SCHEMA NUEVO");
 
 const resolvers = {
   Query: {
     projects: async () => {
       return prisma.project.findMany();
+    },
+
+    cards: async (_: any, args: any) => {
+      return prisma.card.findMany({
+        where: {
+          projectId: args.projectId,
+        },
+      });
     },
   },
   Mutation: {
@@ -41,6 +60,15 @@ const resolvers = {
         data: {
           name: args.name,
           ownerId: args.ownerId,
+        },
+      });
+    },
+
+    createCard: async (_: any, args: any) => {
+      return prisma.card.create({
+        data: {
+          title: args.title,
+          projectId: args.projectId,
         },
       });
     },
@@ -80,10 +108,11 @@ const yoga = createYoga({
     typeDefs,
     resolvers,
   }),
-  graphqlEndpoint: "/api/graphql",
+  graphqlEndpoint: "/graphql",
 });
 
 export default yoga;
 export const config = {
   runtime: "nodejs",
 };
+
