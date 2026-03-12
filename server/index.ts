@@ -67,7 +67,11 @@ const resolvers = {
     },
     // Obtener todos los proyectos
     projects: async () => {
-      return prisma.project.findMany();
+      return prisma.project.findMany({
+        orderBy: {
+          createdAt: "asc",
+        },
+      });
     },
 
     proyectosUsuario: async (_: any, args: any) => {
@@ -83,8 +87,15 @@ const resolvers = {
         where: {
           projectId: args.projectId,
         },
+        orderBy: {
+          id: "asc",
+        },
         include: {
-          tasks: true,
+          tasks: {
+            orderBy: {
+              id: "asc",
+            },
+          },
         },
       });
     },
@@ -152,11 +163,11 @@ const resolvers = {
     updateCardTitle: async (_: any, args: any) => {
       return prisma.card.update({
         where: {
-          id: args.cardId
+          id: args.cardId,
         },
         data: {
-          title: args.title
-        }
+          title: args.title,
+        },
       });
     },
 
@@ -172,15 +183,15 @@ const resolvers = {
     updateTask: async (_: any, args: any) => {
       return prisma.task.update({
         where: {
-          id: args.taskId
+          id: args.taskId,
         },
         data: {
-          text: args.text
-        }
+          text: args.text,
+        },
       });
     },
 
-    
+    //
     createUser: async (_: any, args: any) => {
       return prisma.user.create({
         data: {
@@ -190,6 +201,7 @@ const resolvers = {
         },
       });
     },
+    //
     login: async (_: any, args: any) => {
       const user = await prisma.user.findUnique({
         where: {

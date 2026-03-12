@@ -49,7 +49,6 @@ async function cargarProyecto(IDproyecto) {
 }
 
 // CARGAR TARJETAS
-
 async function cargarTarjetas(IDproyecto) {
 
   const respuesta = await fetch("http://localhost:4000/graphql", {
@@ -90,11 +89,10 @@ async function cargarTarjetas(IDproyecto) {
   return data.data.cards.map(card => ({
     id: card.id,
     titulo: card.title,
-    tareas: card.tasks.map(t => t.text)
+    tareas: card.tasks
   }));
 
 }
-
 
 // CREAR TARJETA
 async function crearTarjeta() {
@@ -131,6 +129,31 @@ const respuesta = await fetch("http://localhost:4000/graphql", {
   });
 }
 
+async function actTituloTarjeta(tarjeta) {
+
+  await fetch("http://localhost:4000/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      query: `
+        mutation($cardId: Int!, $title: String!) {
+          updateCardTitle(cardId: $cardId, title: $title) {
+            id
+            title
+          }
+        }
+      `,
+      variables: {
+        cardId: Number(tarjeta.id),
+        title: tarjeta.titulo
+      }
+    })
+  })
+
+}
+
 // CREAR TAREA
 async function crearTarea(cardId) {
 
@@ -164,6 +187,31 @@ async function crearTarea(cardId) {
   console.log(data);
 }
 
+async function actualizarTarea(tarea) {
+
+  await fetch("http://localhost:4000/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      query: `
+        mutation($taskId: Int!, $text: String!) {
+          updateTask(taskId: $taskId, text: $text) {
+            id
+            text
+          }
+        }
+      `,
+      variables: {
+        taskId: tarea.id,
+        text: tarea.text
+      }
+    })
+  })
+
+}
+
 
 // AL CARGAR
 onMounted(async () => {
@@ -185,7 +233,7 @@ onMounted(async () => {
 
 
 // variables para poder cambiar nombres al momento
-const editando = ref(false);
+const editando = ref(null);
 const descripcion = ref(
   "Aún no puedes modificar las descripciones de tus proyectos, pero es una función que se implementará en futuras actualizaciones",
 ); // AUN NO ESTA EN BBDD, prisma.scheme
@@ -248,9 +296,20 @@ const tituloTarjeta = ref("Nueva tarjeta");
           :key="tarjeta.id"
           class="h-fit bg-neutral-100 px-4 py-6 rounded-xl border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-101 transition-all ease-in-out duration-350 m-1"
         >
-          <span v-if="!editando" @click="editando = true" class="text-3xl font-semibold">{{ tarjeta.titulo }}</span>
-          <input v-else v-model="tarjeta.titulo" @blur="editando = false" class="w-full text-3xl font-semibold"></input>
+          <span 
+            v-if="editando !== tarjeta.id" 
+            @click="editando = tarjeta.id" 
+            class="text-3xl font-semibold"
+          >
+            {{ tarjeta.titulo }}
+          </span>
 
+          <input 
+            v-else 
+            v-model="tarjeta.titulo" 
+            @blur="editando = null; actTituloTarjeta(tarjeta)" 
+            class="w-full text-3xl font-semibold"
+          />
           <!-- lista de Tareas -->
           <ul class="mt-5 text-lg overflow-y-auto max-h-65 h-fit">
             <li
@@ -258,7 +317,7 @@ const tituloTarjeta = ref("Nueva tarjeta");
               :key="index"
               class="mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 transition-all duration-150 ease-in-out"
             >
-              {{ tarea }}
+              {{ tarea.text }}
             </li>
           </ul>
 
