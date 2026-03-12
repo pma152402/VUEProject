@@ -3,16 +3,15 @@ import { createServer } from "node:http";
 import { createYoga, createSchema } from "graphql-yoga";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL,
-});
-
-const prisma = new PrismaClient({
-  adapter,
-});
-
-const typeDefs = `
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
+const typeDefs = ` 
+  type Query {
+    projects: [Project!]!
+    project(id: Int!): Project
+    proyectosUsuario(userId: Int!): [Project!]!
+    cards(projectId: Int!): [Card!]!
+  }
   type User {
     id: ID!
     name: String!
@@ -20,34 +19,36 @@ const typeDefs = `
     password: String!
     createdAt: String!
   }
-
   type Project {
     id: ID!
     name: String!
+    description: String!
     createdAt: String!
   }
-
-  type Query {
-    projects: [Project!]!
-    proyectosUsuario(userId: Int!): [Project!]!
+  type Card {
+    id: ID!
+    title: String!
+    projectId: Int!
+    createdAt: String!}
+    type Query {
     project(id: Int!): Project
+    projects: [Project!]!
+    cards(projectId: Int!): [Card!]!
   }
 
   type Mutation {
-    createUser(name: String!, email: String!, password: String!): User!
     createProject(name: String!, ownerId: Int!): Project!
-    deleteProject(id: Int!): Project!
-    login(email: String!, password: String!): User
-  }
-`;
+    deleteProject(projectId: Int!): Project!
+    login(email: String!, password: String!): User 
+    createUser(name: String!, email: String!, password: String!): User! 
+    createCard(title: String!, projectId: Int!): Card!
+  }`;
+
+console.log("SERVIDOR CON SCHEMA NUEVO");
 
 const resolvers = {
   Query: {
-    projects: async () => {
-      return prisma.project.findMany();
-    },
-
-    // obtener proyecto findUniqui
+    // Obtener proyecto en concreto
     project: async (_: any, args: any) => {
       return prisma.project.findUnique({
         where: {
@@ -55,12 +56,23 @@ const resolvers = {
         },
       });
     },
+    // Obtener todos los proyectos
+    projects: async () => {
+      return prisma.project.findMany();
+    },
 
-    // proyectos por usuario findMany
     proyectosUsuario: async (_: any, args: any) => {
       return prisma.project.findMany({
         where: {
           ownerId: args.userId,
+        },
+      });
+    },
+
+    cards: async (_: any, args: any) => {
+      return prisma.card.findMany({
+        where: {
+          projectId: Number(args.projectId),
         },
       });
     },
@@ -74,15 +86,22 @@ const resolvers = {
         },
       });
     },
-
+    // DELETE FROM Project WHERE id = projectId
     deleteProject: async (_: any, args: any) => {
       return prisma.project.delete({
         where: {
-          id: args.id,
+          id: args.projectId,
         },
       });
     },
-
+    createCard: async (_: any, args: any) => {
+      return prisma.card.create({
+        data: {
+          title: args.title,
+          projectId: args.projectId,
+        },
+      });
+    },
     createUser: async (_: any, args: any) => {
       return prisma.user.create({
         data: {
@@ -92,7 +111,6 @@ const resolvers = {
         },
       });
     },
-
     login: async (_: any, args: any) => {
       const user = await prisma.user.findUnique({
         where: {
@@ -103,16 +121,13 @@ const resolvers = {
       if (!user) {
         throw new Error("El usuario no se encuentra");
       }
-
       if (user.password !== args.password) {
         throw new Error("La contraseña no es correcta");
       }
-
       return user;
     },
   },
 };
-
 const yoga = createYoga({
   schema: createSchema({
     typeDefs,

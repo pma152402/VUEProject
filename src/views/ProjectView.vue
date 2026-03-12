@@ -43,6 +43,8 @@ async function cargarProyecto(IDproyecto) {
 
   const data = await respuesta.json();
 
+  console.log(data);
+
   return data.data.project;
 }
 
@@ -74,7 +76,18 @@ async function cargarTarjetas(IDproyecto) {
 
   console.log(data);
 
-  return data.data.cards;
+  // Si hay error en GraphQL
+  if (!data.data) {
+    console.error(data.errors);
+    return [];
+  }
+
+  // Transformar datos para el frontend
+  return data.data.cards.map(card => ({
+    id: card.id,
+    titulo: card.title,
+    tareas: []
+  }));
 
 }
 
@@ -98,16 +111,18 @@ const respuesta = await fetch("http://localhost:4000/graphql", {
         `,
       variables: {
         title: "Nueva tarjeta",
-        projectId: (IDproyecto),
+        projectId: Number(IDproyecto),
       },
     }),
   });
 
   const data = await respuesta.json();
 
+  console.log(data);
+
   tarjetas.value.push({
-    id: Date.now(),
-    ...data.data.createCard,
+    id: data.data.createCard.id,
+    titulo: data.data.createCard.title,
     tareas: []
   });
 }
