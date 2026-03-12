@@ -98,20 +98,21 @@ async function borrarProyecto(idProyecto) {
       },
       body: JSON.stringify({
         query: `
-          mutation($id: Int!) {
-            deleteProject(id: $id) {
+          mutation($projectId: Int!) {
+            deleteProject(projectId: $projectId) {
               id
             }
           }
         `,
         variables: {
-          id: Number(idProyecto),
+          projectId: Number(idProyecto),
         },
       }),
     });
 
-    // no recoje informacion
-    await respuesta.json();
+    const data = await respuesta.json();
+
+    console.log(data);
 
     // quitar proyecto del array en Vue
     proyectos.value = proyectos.value.filter((proyecto) => proyecto.id !== idProyecto);

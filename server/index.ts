@@ -38,6 +38,7 @@ const typeDefs = `
 
   type Mutation {
     createProject(name: String!, ownerId: Int!): Project!
+    deleteProject(projectId: Int!): Project!
     login(email: String!, password: String!): User 
     createUser(name: String!, email: String!, password: String!): User! 
     createCard(title: String!, projectId: Int!): Card!
@@ -47,6 +48,7 @@ console.log("SERVIDOR CON SCHEMA NUEVO");
 
 const resolvers = {
   Query: {
+    // Obtener proyecto en concreto
     project: async (_: any, args: any) => {
       return prisma.project.findUnique({
         where: {
@@ -54,6 +56,7 @@ const resolvers = {
         },
       });
     },
+    // Obtener todos los proyectos
     projects: async () => {
       return prisma.project.findMany();
     },
@@ -65,6 +68,7 @@ const resolvers = {
         },
       });
     },
+
     cards: async (_: any, args: any) => {
       return prisma.card.findMany({
         where: {
@@ -79,6 +83,14 @@ const resolvers = {
         data: {
           name: args.name,
           ownerId: args.ownerId,
+        },
+      });
+    },
+    // DELETE FROM Project WHERE id = projectId
+    deleteProject: async (_: any, args: any) => {
+      return prisma.project.delete({
+        where: {
+          id: args.projectId,
         },
       });
     },

@@ -111,16 +111,18 @@ const respuesta = await fetch("http://localhost:4000/graphql", {
         `,
       variables: {
         title: "Nueva tarjeta",
-        projectId: (IDproyecto),
+        projectId: Number(IDproyecto),
       },
     }),
   });
 
   const data = await respuesta.json();
 
+  console.log(data);
+
   tarjetas.value.push({
-    id: Date.now(),
-    ...data.data.createCard,
+    id: data.data.createCard.id,
+    titulo: data.data.createCard.title,
     tareas: []
   });
 }
