@@ -1,4 +1,5 @@
 <script setup>
+import { Trash2 } from "lucide-vue-next";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import "../styles/scrollbar.css";
@@ -315,9 +316,15 @@ const tituloTarjeta = ref("Nueva tarjeta");
             <li
               v-for="(tarea, index) in tarjeta.tareas"
               :key="index"
-              class="mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 transition-all duration-150 ease-in-out"
+              class="relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 transition-all duration-150 ease-in-out"
             >
               {{ tarea.text }}
+
+                <div class="bg-amber-200 h-full absolute right-0 top-0 flex items-center px-2 rounded-md">
+                  <Trash2
+                    class=" w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
+                  />
+                </div>
             </li>
           </ul>
 
