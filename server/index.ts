@@ -46,6 +46,9 @@ const typeDefs = `
     login(email: String!, password: String!): User 
     createUser(name: String!, email: String!, password: String!): User! 
     createCard(title: String!, projectId: Int!): Card!
+    updateCardTitle(cardId: Int!, title: String!): Card!
+    createTask(text: String!, cardId: Int!): Task!
+    updateTask(taskId: Int!, text: String!): Task!
     createProject(name: String!, description: String!, ownerId: Int!): Project!
     updateProjectDescription(projectId: Int!, description: String!): Project!
   }`;
@@ -145,6 +148,39 @@ const resolvers = {
         },
       });
     },
+
+    updateCardTitle: async (_: any, args: any) => {
+      return prisma.card.update({
+        where: {
+          id: args.cardId
+        },
+        data: {
+          title: args.title
+        }
+      });
+    },
+
+    createTask: async (_: any, args: any) => {
+      return prisma.task.create({
+        data: {
+          text: args.text,
+          cardId: args.cardId,
+        },
+      });
+    },
+
+    updateTask: async (_: any, args: any) => {
+      return prisma.task.update({
+        where: {
+          id: args.taskId
+        },
+        data: {
+          text: args.text
+        }
+      });
+    },
+
+    
     createUser: async (_: any, args: any) => {
       return prisma.user.create({
         data: {
