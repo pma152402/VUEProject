@@ -213,7 +213,9 @@ async function actualizarTarea(tarea) {
 
 }
 
+// Contenedor general para referenciar las tarjetas y tareas
 
+const contenedorTareas = ref(null);
 // AL CARGAR
 onMounted(async () => {
   // proyecto
@@ -228,6 +230,13 @@ onMounted(async () => {
 
   // tarjetas
   tarjetas.value = await cargarTarjetas(IDproyecto);
+
+  // Si se hace click fuera limpiar papeleras de las tareas
+  document.addEventListener("click", (evento) => {
+    if (!contenedor.value.contains(evento.target)) {
+      tareaActiva.value = null;
+    }
+  })
 });
 
 
@@ -239,7 +248,10 @@ const descripcion = ref(
   "Aún no puedes modificar las descripciones de tus proyectos, pero es una función que se implementará en futuras actualizaciones",
 ); // AUN NO ESTA EN BBDD, prisma.scheme
 
-const tituloTarjeta = ref("Nueva tarjeta");
+
+// const tituloTarjeta = ref("Nueva tarjeta");
+
+const mostrarPapelera = ref(null);
 </script>
 
 
@@ -290,13 +302,14 @@ const tituloTarjeta = ref("Nueva tarjeta");
       </div>
 
       <!-- Contenedor Tarjetas -->
-      <div class="grid grid-cols-3 gap-6 mt-10 overflow-x-auto h-full pb-20">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10 overflow-x-auto h-full pb-20">
         <!-- Tarjetas -->
         <div
           v-for="tarjeta in tarjetas"
           :key="tarjeta.id"
           class="h-fit bg-neutral-100 px-4 py-6 rounded-xl border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-101 transition-all ease-in-out duration-350 m-1"
         >
+        <!-- Titulo -->
           <span 
             v-if="editando !== tarjeta.id" 
             @click="editando = tarjeta.id" 
@@ -304,25 +317,35 @@ const tituloTarjeta = ref("Nueva tarjeta");
           >
             {{ tarjeta.titulo }}
           </span>
-
           <input 
             v-else 
             v-model="tarjeta.titulo" 
             @blur="editando = null; actTituloTarjeta(tarjeta)" 
             class="w-full text-3xl font-semibold"
           />
-          <!-- lista de Tareas -->
+
+          <!-- lista de Tareas, point para ordenadores y click moviles -->
           <ul class="mt-5 text-lg overflow-y-auto max-h-65 h-fit">
             <li
+
               v-for="(tarea, index) in tarjeta.tareas"
-              :key="index"
+              :key="tarea.id"
               class="relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 transition-all duration-150 ease-in-out"
-            >
+            
+              @pointerenter="mostrarPapelera = tarea.id"
+              @pointerleave="mostrarPapelera = null"
+              @click="tareaActiva = tarea.id"
+
+              
+              ref="contenedorTareas"
+              >
               {{ tarea.text }}
 
-                <div class="bg-amber-200 h-full absolute right-0 top-0 flex items-center px-2 rounded-md">
+                <div
+                v-if="mostrarPapelera === tarea.id "
+                class="bg-gray-300/80 h-full absolute right-0 top-0 flex items-center px-1 rounded-xs" >
                   <Trash2
-                    class=" w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
+                    class="text-gray-500 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
                   />
                 </div>
             </li>
