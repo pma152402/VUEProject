@@ -57,22 +57,30 @@ async function crearProyecto() {
       },
       body: JSON.stringify({
         query: `
-          mutation($name: String!, $ownerId: Int!) {
-            createProject(name: $name, ownerId: $ownerId) {
+          mutation($name: String!, $description: String!, $ownerId: Int!) {
+            createProject(name: $name, description: $description, ownerId: $ownerId) {
               id
               name
+              description
               createdAt
             }
           }
         `,
         variables: {
           name: nombre,
+          description: "Esta es una descripcion de ejemplo",
           ownerId: Number(usuario.value.id),
         },
       }),
     });
 
     const data = await respuesta.json();
+
+    // ver errores bein
+    if (data.errors) {
+      console.error(data.errors);
+      return;
+    }
 
     // añadir proyecto nuevo a la tabla sin recargar
     proyectos.value.push(data.data.createProject);

@@ -13,8 +13,8 @@ const IDproyecto = route.params.id;
 const tarjetas = ref([
   {
     id: 1,
-    titulo: "Tarjetas 1",
-    tareas: ["Lo primero", "Lo segundo", "Lo tercero"],
+    titulo: "Por hacer:",
+    tareas: ["Tarea de ejemplo", "Crea todas las tareas que necesites"],
   },
 ]);
 
@@ -60,11 +60,15 @@ async function cargarTarjetas(IDproyecto) {
     body: JSON.stringify({
       query: `
           query($projectId: Int!) {
-          cards(projectId: $projectId) {
-            id
-            title
+            cards(projectId: $projectId) {
+              id
+              title
+              tasks {
+                id
+                text
+              }
+            }
           }
-        }
         `,
       variables: {
         projectId: Number(IDproyecto),
@@ -86,7 +90,7 @@ async function cargarTarjetas(IDproyecto) {
   return data.data.cards.map(card => ({
     id: card.id,
     titulo: card.title,
-    tareas: []
+    tareas: card.tasks.map(t => t.text)
   }));
 
 }

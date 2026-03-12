@@ -7,11 +7,13 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 const typeDefs = ` 
   type Query {
-    projects: [Project!]!
     project(id: Int!): Project
-    proyectosUsuario(userId: Int!): [Project!]!
+    projects: [Project!]!
     cards(projectId: Int!): [Card!]!
+    proyectosUsuario(userId: Int!): [Project!]!
+    tasks: [Task!]!
   }
+
   type User {
     id: ID!
     name: String!
@@ -29,19 +31,23 @@ const typeDefs = `
     id: ID!
     title: String!
     projectId: Int!
-    createdAt: String!}
-    type Query {
-    project(id: Int!): Project
-    projects: [Project!]!
-    cards(projectId: Int!): [Card!]!
+    createdAt: String!
+    tasks: [Task!]!
+  }
+
+  type Task {
+    id: ID!
+    text: String!
+    cardId: Int!
   }
 
   type Mutation {
-    createProject(name: String!, ownerId: Int!): Project!
     deleteProject(projectId: Int!): Project!
     login(email: String!, password: String!): User 
     createUser(name: String!, email: String!, password: String!): User! 
     createCard(title: String!, projectId: Int!): Card!
+    createProject(name: String!, description: String!, ownerId: Int!): Project!
+    updateProjectDescription(projectId: Int!, description: String!): Project!
   }`;
 
 console.log("SERVIDOR CON SCHEMA NUEVO");
@@ -72,20 +78,44 @@ const resolvers = {
     cards: async (_: any, args: any) => {
       return prisma.card.findMany({
         where: {
-          projectId: Number(args.projectId),
+          projectId: args.projectId,
+        },
+        include: {
+          tasks: true,
         },
       });
     },
   },
   Mutation: {
+    // Crear proyecto, con una tarjeta de ejemplo y tareas
     createProject: async (_: any, args: any) => {
-      return prisma.project.create({
+      const project = await prisma.project.create({
         data: {
           name: args.name,
           ownerId: args.ownerId,
+          description: args.description,
         },
       });
+
+      // crear tarjeta inicial
+      const example1 = await prisma.card.create({
+        data: {
+          title: "Por hacer:",
+          projectId: project.id,
+        },
+      });
+
+      // Crear tareas de ejemplo
+      await prisma.task.createMany({
+        data: [
+          { text: "Tarea de ejemplo", cardId: example1.id },
+          { text: "Crea todas las tareas que necesites", cardId: example1.id },
+        ],
+      });
+
+      return project;
     },
+
     // DELETE FROM Project WHERE id = projectId
     deleteProject: async (_: any, args: any) => {
       return prisma.project.delete({
@@ -94,6 +124,19 @@ const resolvers = {
         },
       });
     },
+
+    // Editar descripcion
+    updateProjectDescription: async (_: any, args: any) => {
+      return prisma.project.update({
+        where: {
+          id: args.projectId,
+        },
+        data: {
+          description: args.description,
+        },
+      });
+    },
+
     createCard: async (_: any, args: any) => {
       return prisma.card.create({
         data: {
