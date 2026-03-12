@@ -18,6 +18,7 @@ model User {
 model Project {
   id        Int      @id @default(autoincrement())
   name      String
+  description String   @default("")
   owner     User     @relation(fields: [ownerId], references: [id])
   ownerId   Int
   createdAt DateTime @default(now())

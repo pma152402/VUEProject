@@ -13,8 +13,8 @@ const IDproyecto = route.params.id;
 const tarjetas = ref([
   {
     id: 1,
-    titulo: "Tarjetas 1",
-    tareas: ["Lo primero", "Lo segundo", "Lo tercero"],
+    titulo: "Por hacer:",
+    tareas: ["Tarea de ejemplo", "Crea todas las tareas que necesites"],
   },
 ]);
 
@@ -60,11 +60,15 @@ async function cargarTarjetas(IDproyecto) {
     body: JSON.stringify({
       query: `
           query($projectId: Int!) {
-          cards(projectId: $projectId) {
-            id
-            title
+            cards(projectId: $projectId) {
+              id
+              title
+              tasks {
+                id
+                text
+              }
+            }
           }
-        }
         `,
       variables: {
         projectId: Number(IDproyecto),
@@ -86,7 +90,7 @@ async function cargarTarjetas(IDproyecto) {
   return data.data.cards.map(card => ({
     id: card.id,
     titulo: card.title,
-    tareas: []
+    tareas: card.tasks.map(t => t.text)
   }));
 
 }
@@ -128,13 +132,38 @@ const respuesta = await fetch("http://localhost:4000/graphql", {
 }
 
 // CREAR TAREA
-function crearTarea(tarjeta) {
-  const nuevaTarea = prompt("Nueva tarea...");
+async function crearTarea(cardId) {
 
-  if (nuevaTarea) {
-    tarjeta.tareas.push(nuevaTarea);
-  }
+  const text = prompt("Nueva tarea")
+
+  const respuesta = await fetch("http://localhost:4000/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      query: `
+        mutation($text: String!, $cardId: Int!) {
+          createTask(text: $text, cardId: $cardId) {
+            id
+            text
+          }
+        }
+      `,
+      variables: {
+        text: text,
+        cardId: Number(cardId)
+      }
+    })
+  })
+
+  const data = await respuesta.json()
+
+  // recargar tarjetas
+  tarjetas.value = await cargarTarjetas(IDproyecto)
+  console.log(data);
 }
+
 
 // AL CARGAR
 onMounted(async () => {
@@ -235,7 +264,7 @@ const tituloTarjeta = ref("Nueva tarjeta");
 
           <!-- crear Tarea -->
           <button
-            @click="crearTarea(tarjeta)"
+            @click="crearTarea(tarjeta.id)"
             class="w-full mx-auto text-gray-400 rounded-sm bg-gray-200/50 px-2 py-1 mt-2 hover:cursor-pointer hover:scale-103 transition-transform duration-200 ease-in-out hover:bg-gray-200/80 hover:text-gray-500"
           >
             + Añadir tarea
