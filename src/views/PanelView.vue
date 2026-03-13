@@ -203,7 +203,7 @@ console.log(proyectos.value);
                 {{ new Date(Number(proyecto.createdAt)).toLocaleDateString("es-ES") }}
               </td>
               <td class="flex justify-between ml-1">
-                <RouterLink :to="`/projects/${proyecto.id}`" target="_blank">
+                <RouterLink :to="`/projects/${proyecto.id}`">
                   <Pencil
                     class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
                   />
