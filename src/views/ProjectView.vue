@@ -190,7 +190,7 @@ async function crearTarea(cardId) {
 
 async function actualizarTarea(tarea) {
 
-  await fetch("http://localhost:4000/graphql", {
+  const respuesta = await fetch("http://localhost:4000/graphql", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -205,11 +205,17 @@ async function actualizarTarea(tarea) {
         }
       `,
       variables: {
-        taskId: tarea.id,
+        taskId: Number(tarea.id),
         text: tarea.text
       }
     })
   })
+
+  const data = await respuesta.json()
+
+  // recargar tarjetas
+  tarjetas.value = await cargarTarjetas(IDproyecto);
+  console.log(data);
 
 }
 
@@ -344,7 +350,8 @@ const descripcion = ref(
               @pointerleave="mostrarPapelera = null"
 
               
-              @click="mostrarPapelera = tarea.id"
+              @click="mostrarPapelera = tarea.id; editando = tarea.id"
+
               :ref="elemento => {
                 if (mostrarPapelera === tarea.id) {
                   tareaActiva = elemento
@@ -352,16 +359,28 @@ const descripcion = ref(
               }"
               >
 
-               {{ tarea.text }}
+              <div 
+                v-if="editando !== tarea.id"
+                
+              >
+                {{ tarea.text }}
+              </div>
+              <input 
+                v-else
+                @blur="editando = null; actualizarTarea(tarea)"
+                v-model="tarea.text" 
+                class="w-full"
+              />
+              
               
 
-                <div
+              <div
                 v-if="mostrarPapelera === tarea.id "
                 class="bg-gray-300/80 h-full absolute right-0 top-0 flex items-center px-1 rounded-xs" >
                   <Trash2
                     class="text-gray-500 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
                   />
-                </div>
+              </div>
             </li>
           </ul>
 
