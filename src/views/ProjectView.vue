@@ -303,7 +303,24 @@ function controlarBlur(tarea) {
 
 </script>
 
+<style>.tarea .papelera {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
 
+/* hover escritorio */
+.tarea:hover .papelera {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* click móvil */
+.tarea .papelera.mostrar {
+  opacity: 1;
+  pointer-events: auto;
+}
+</style>
 
 <template>
   <div
@@ -381,7 +398,7 @@ function controlarBlur(tarea) {
 
               v-for="tarea in tarjeta.tareas"
               :key="tarea.id"
-              class="shadow-md relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 transition-all duration-150 ease-in-out"
+              class="tarea group shadow-md relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 transition-all duration-150 ease-in-out"
           
               @click.stop="mostrarPapelera = mostrarPapelera === tarea.id ? null : tarea.id"
 
@@ -409,8 +426,8 @@ function controlarBlur(tarea) {
 
               <div
                 @click.stop="borrarTarea(tarea.id)"
-                v-if="mostrarPapelera === tarea.id "
-                class="bg-gray-300/80 h-full absolute right-0 top-0 flex items-center px-1 rounded-xs" >
+                :class="{ 'mostrar': mostrarPapelera === tarea.id }"
+                class="papelera bg-gray-300/80 h-full absolute right-0 top-0 flex items-center px-1 rounded-xs" >
                   <Trash2
                     class="text-gray-500 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
                   />
