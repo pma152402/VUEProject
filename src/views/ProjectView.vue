@@ -158,7 +158,7 @@ async function actTituloTarjeta(tarjeta) {
 // CREAR TAREA
 async function crearTarea(cardId) {
 
-  const text = prompt("Nueva tarea")
+  const text = "Nueva tarea..";
 
   const respuesta = await fetch("http://localhost:4000/graphql", {
     method: "POST",
@@ -220,7 +220,6 @@ async function actualizarTarea(tarea) {
 }
 
 // Contenedor general para referenciar las tarjetas y tareas
-const contenedorTareas = ref(null);
 const mostrarPapelera = ref(null);
 let tareaActiva = null;
 
@@ -239,16 +238,7 @@ onMounted(async () => {
   // tarjetas
   tarjetas.value = await cargarTarjetas(IDproyecto);
 
-  // Si se hace click fuera limpiar papeleras de las tareas
-  document.addEventListener("click", (evento) => {
-
-    if (!tareaActiva) return;
-
-    if (!tareaActiva.contains(evento.target)) {
-      mostrarPapelera.value = null;
-    }
-
-    });
+  
 });
 
 
@@ -261,8 +251,55 @@ const descripcion = ref(
 ); // AUN NO ESTA EN BBDD, prisma.scheme
 
 
-// const tituloTarjeta = ref("Nueva tarjeta");
+// Borrar tarea
 
+async function borrarTarea(idTarea) {
+
+  if (!idTarea) return;
+
+  const respuesta = await fetch("http://localhost:4000/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: `
+        mutation($taskId: Int!) {
+          deleteTask(taskId: $taskId) {
+            id
+          }
+        }
+      `,
+      variables: {
+        taskId: Number(idTarea),
+      },
+    }),
+  });
+
+  const data = await respuesta.json();
+  console.log(data);
+
+  // eliminar tarea del estado
+  tarjetas.value.forEach((tarjeta) => {
+    tarjeta.tareas = tarjeta.tareas.filter(
+      (tarea) => tarea.id !== idTarea
+    );
+  });
+
+
+  // limpiar estados de interfaz
+  mostrarPapelera.value = null;
+  editando.value = null;
+
+}
+
+// Controlar Blur para eliminar la tarea
+function controlarBlur(tarea) {
+  if (editando.value === tarea.id) {
+    editando.value = null;
+    actualizarTarea(tarea);
+  }
+}
 
 </script>
 
@@ -344,13 +381,9 @@ const descripcion = ref(
 
               v-for="tarea in tarjeta.tareas"
               :key="tarea.id"
-              class="relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 transition-all duration-150 ease-in-out"
-            
-              @pointerenter="mostrarPapelera = tarea.id"
-              @pointerleave="mostrarPapelera = null"
-
-              
-              @click="mostrarPapelera = tarea.id; editando = tarea.id"
+              class="shadow-md relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 transition-all duration-150 ease-in-out"
+          
+              @click.stop="mostrarPapelera = mostrarPapelera === tarea.id ? null : tarea.id"
 
               :ref="elemento => {
                 if (mostrarPapelera === tarea.id) {
@@ -361,13 +394,13 @@ const descripcion = ref(
 
               <div 
                 v-if="editando !== tarea.id"
-                
+                @click.stop="editando = editando === tarea.id ? null : tarea.id"
               >
                 {{ tarea.text }}
               </div>
               <input 
                 v-else
-                @blur="editando = null; actualizarTarea(tarea)"
+                @blur="controlarBlur(tarea)"
                 v-model="tarea.text" 
                 class="w-full"
               />
@@ -375,6 +408,7 @@ const descripcion = ref(
               
 
               <div
+                @click.stop="borrarTarea(tarea.id)"
                 v-if="mostrarPapelera === tarea.id "
                 class="bg-gray-300/80 h-full absolute right-0 top-0 flex items-center px-1 rounded-xs" >
                   <Trash2

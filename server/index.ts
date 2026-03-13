@@ -49,6 +49,7 @@ const typeDefs = `
     updateCardTitle(cardId: Int!, title: String!): Card!
     createTask(text: String!, cardId: Int!): Task!
     updateTask(taskId: Int!, text: String!): Task!
+    deleteTask(taskId: Int!): Task!
     createProject(name: String!, description: String!, ownerId: Int!): Project!
     updateProjectDescription(projectId: Int!, description: String!): Project!
   }`;
@@ -171,6 +172,7 @@ const resolvers = {
       });
     },
 
+    // TAREA
     createTask: async (_: any, args: any) => {
       return prisma.task.create({
         data: {
@@ -191,6 +193,13 @@ const resolvers = {
       });
     },
 
+    deleteTask: async (_: any, args: any) => {
+      return prisma.task.delete({
+        where: {
+          id: args.taskId,
+        },
+      });
+    },
     //
     createUser: async (_: any, args: any) => {
       return prisma.user.create({
