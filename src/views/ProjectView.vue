@@ -214,8 +214,10 @@ async function actualizarTarea(tarea) {
 }
 
 // Contenedor general para referenciar las tarjetas y tareas
-
 const contenedorTareas = ref(null);
+const mostrarPapelera = ref(null);
+let tareaActiva = null;
+
 // AL CARGAR
 onMounted(async () => {
   // proyecto
@@ -233,10 +235,14 @@ onMounted(async () => {
 
   // Si se hace click fuera limpiar papeleras de las tareas
   document.addEventListener("click", (evento) => {
-    if (!contenedor.value.contains(evento.target)) {
-      tareaActiva.value = null;
+
+    if (!tareaActiva) return;
+
+    if (!tareaActiva.contains(evento.target)) {
+      mostrarPapelera.value = null;
     }
-  })
+
+    });
 });
 
 
@@ -251,7 +257,7 @@ const descripcion = ref(
 
 // const tituloTarjeta = ref("Nueva tarjeta");
 
-const mostrarPapelera = ref(null);
+
 </script>
 
 
@@ -325,21 +331,29 @@ const mostrarPapelera = ref(null);
           />
 
           <!-- lista de Tareas, point para ordenadores y click moviles -->
-          <ul class="mt-5 text-lg overflow-y-auto max-h-65 h-fit">
+          <ul 
+          
+          class="mt-5 text-lg overflow-y-auto max-h-65 h-fit">
             <li
 
-              v-for="(tarea, index) in tarjeta.tareas"
+              v-for="tarea in tarjeta.tareas"
               :key="tarea.id"
               class="relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 transition-all duration-150 ease-in-out"
             
               @pointerenter="mostrarPapelera = tarea.id"
               @pointerleave="mostrarPapelera = null"
-              @click="tareaActiva = tarea.id"
 
               
-              ref="contenedorTareas"
+              @click="mostrarPapelera = tarea.id"
+              :ref="elemento => {
+                if (mostrarPapelera === tarea.id) {
+                  tareaActiva = elemento
+                }
+              }"
               >
-              {{ tarea.text }}
+
+               {{ tarea.text }}
+              
 
                 <div
                 v-if="mostrarPapelera === tarea.id "
