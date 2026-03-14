@@ -53,7 +53,7 @@ const typeDefs = `
     deleteTask(taskId: Int!): Task!
     createProject(name: String!, description: String!, ownerId: Int!): Project!
     updateProjectDescription(projectId: Int!, description: String!): Project!
-    
+    updateProjectName(projectId: Int!, name: String!): Project!
     cloneProject(projectId: Int!, ownerId: Int!): Project!
   }`;
 
@@ -151,6 +151,17 @@ const resolvers = {
         },
         data: {
           description: args.description,
+        },
+      });
+    },
+    // Editar nombre
+    updateProjectName: async (_: any, args: any) => {
+      return prisma.project.update({
+        where: {
+          id: args.projectId,
+        },
+        data: {
+          name: args.name,
         },
       });
     },
