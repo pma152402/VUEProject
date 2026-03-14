@@ -98,7 +98,7 @@ async function cargarTarjetas(IDproyecto) {
 // CREAR TARJETA
 async function crearTarjeta() {
 
-const respuesta = await fetch("http://localhost:4000/graphql", {
+  const respuesta = await fetch("http://localhost:4000/graphql", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -239,7 +239,7 @@ onMounted(async () => {
   // tarjetas
   tarjetas.value = await cargarTarjetas(IDproyecto);
 
-  
+
 });
 
 
@@ -249,7 +249,7 @@ onMounted(async () => {
 const editando = ref(null);
 const descripcion = ref(
   "Aún no puedes modificar las descripciones de tus proyectos, pero es una función que se implementará en futuras actualizaciones",
-); // AUN NO ESTA EN BBDD, prisma.scheme
+);
 
 
 // Borrar tarea
@@ -328,10 +328,15 @@ async function borrarTarjeta(idTarjeta) {
   const data = await respuesta.json();
   console.log(data);
 
-  
+
   tarjetas.value = tarjetas.value.filter((tarjeta) => tarjeta.id !== idTarjeta);
 
 }
+
+
+// Confirmar borrar tarjeta
+const mostrarBT = ref(false);
+const tituloBT = ref("");
 
 </script>
 
@@ -356,7 +361,7 @@ async function borrarTarjeta(idTarjeta) {
 }
 
 
-/* PAPELERA TARJETAS */ 
+/* PAPELERA TARJETAS */
 .tarjeta .papeleraTarjeta {
   opacity: 0;
   pointer-events: none;
@@ -378,14 +383,33 @@ async function borrarTarjeta(idTarjeta) {
 
 <template>
   <div
-    class="bg-gradient-to-t from-gray-400/50 to-gray-300/50 min-h-screen overflow-x-hidden flex justify-center"
-  >
+    class="bg-gradient-to-t from-gray-400/50 to-gray-300/50 min-h-screen overflow-x-hidden flex justify-center relative">
+
+    <!-- Borrar tarjeta -->
+    <div v-if="mostrarBT"
+      class="z-100 shadow-xl hover:scale-105 font-semibold transition-all duration-200 ease-in-out rounded-xl border-2 border-gray-400 bg-neutral-200 px-8 py-6 flex-col absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      ¿Eliminar la tarjeta: "<p class="italic inline">{{ tituloBT }}</p>" ?
+
+      <div class="flex justify-center gap-3 text-sm mt-4">
+        <button @click="
+          borrarTarjeta(tarjetaABorrar);
+          mostrarBT = false;
+        "
+          class="bg-red-400 px-2 py-1 font-semibold rounded-full hover:scale-110 transition-all duration-200 ease-in-out hover:cursor-pointer">
+          Eliminar
+        </button>
+        <button @click="mostrarBT = false"
+          class="bg-gray-400/80 px-2 py-1 font-semibold rounded-full hover:scale-110 transition-all duration-200 ease-in-out hover:cursor-pointer">
+          Cancelar
+        </button>
+      </div>
+    </div>
+
     <div class="lg:min-w-6xl max-w-6xl flex flex-col relative">
       <Navbar class="mt-2 mr-1"></Navbar>
       <!-- Cabecera -->
       <div
-        class="bg-neutral-100 shadow-xl flex flex-col justify-between p-6 rounded-xl mt-2 border-l-6 border-blue-300"
-      >
+        class="bg-neutral-100 shadow-xl flex flex-col justify-between p-6 rounded-xl mt-2 border-l-6 border-blue-300">
         <!-- Titulo -->
         <div v-if="proyecto" class="flex flex-col pb-0 text-gray-800">
           <span class="font-extralight text-2xl">Nombre del proyecto: </span>
@@ -424,107 +448,67 @@ async function borrarTarjeta(idTarjeta) {
       <!-- Contenedor Tarjetas -->
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-10 overflow-x-auto h-full pb-20">
         <!-- Tarjetas -->
-        <div
-          v-for="tarjeta in tarjetas"
-          :key="tarjeta.id"
-          class="tarjeta shadow-lg h-fit bg-neutral-100 px-4 py-6 rounded-xl border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-101 transition-all ease-in-out duration-350 m-1"
-        >
-        <!-- Titulo -->
+        <div v-for="tarjeta in tarjetas" :key="tarjeta.id"
+          class="tarjeta shadow-lg h-fit bg-neutral-100 px-4 py-6 rounded-xl border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-101 transition-all ease-in-out duration-350 m-1">
+          <!-- Titulo -->
           <div class="flex justify-between items-center">
 
-              <span 
-                v-if="editando !== tarjeta.id" 
-                @click="editando = tarjeta.id" 
-                class="text-3xl font-semibold"
-              >
-                  {{ tarjeta.titulo }}
-              </span>
+            <span v-if="editando !== tarjeta.id" @click="editando = tarjeta.id" class="text-3xl font-semibold">
+              {{ tarjeta.titulo }}
+            </span>
 
-              <input 
-                v-else 
-                v-model="tarjeta.titulo" 
-                @blur="editando = null; actTituloTarjeta(tarjeta)" 
-                class="w-full text-3xl font-semibold "
-              />
+            <input v-else v-model="tarjeta.titulo" @blur="editando = null; actTituloTarjeta(tarjeta)"
+              class="w-full text-3xl font-semibold " />
 
 
 
 
-              <div 
-                @click.stop="borrarTarjeta(tarjeta.id)"
-              >
-                <Trash2     
-                  class="papeleraTarjeta text-gray-400 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
-                  />
+            <div @click="mostrarBT = true; tarjetaABorrar = tarjeta.id; tituloBT = tarjeta.titulo">
+              <Trash2
+                class="papeleraTarjeta text-gray-400 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out" />
+            </div>
 
-                  
-              </div>
-              
           </div>
 
 
 
-          
+
 
           <!-- lista de Tareas, point para ordenadores y click moviles -->
-          <ul 
-          
-          class="mt-5 text-lg overflow-y-auto max-h-65 h-fit">
-            <li
-
-              v-for="tarea in tarjeta.tareas"
-              :key="tarea.id"
+          <ul class="mt-5 text-lg overflow-y-auto max-h-65 h-fit">
+            <li v-for="tarea in tarjeta.tareas" :key="tarea.id"
               class="tarea group shadow-md relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 transition-all duration-150 ease-in-out"
-          
-              @click.stop="mostrarPapelera = mostrarPapelera === tarea.id ? null : tarea.id"
-
-              :ref="elemento => {
+              @click.stop="mostrarPapelera = mostrarPapelera === tarea.id ? null : tarea.id" :ref="elemento => {
                 if (mostrarPapelera === tarea.id) {
                   tareaActiva = elemento;
                 }
-              }"
-              >
+              }">
 
-              <div 
-                v-if="editando !== tarea.id"
-                @click.stop="editando = editando === tarea.id ? null : tarea.id"
-              >
+              <div v-if="editando !== tarea.id" @click.stop="editando = editando === tarea.id ? null : tarea.id">
                 {{ tarea.text }}
               </div>
-              <input 
-                v-else
-                @blur="controlarBlur(tarea)"
-                v-model="tarea.text" 
-                class="w-full"
-              />
-              
-              
+              <input v-else @blur="controlarBlur(tarea)" v-model="tarea.text" class="w-full" />
 
-              <div
-                @click.stop="borrarTarea(tarea.id)"
-                :class="{ 'mostrar': mostrarPapelera === tarea.id }"
-                class="papelera bg-gray-300/80 h-full absolute right-0 top-0 flex items-center px-1 rounded-xs" >
-                  <Trash2
-                    class="text-gray-500 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
-                  />
+
+
+              <div @click.stop="borrarTarea(tarea.id)" :class="{ 'mostrar': mostrarPapelera === tarea.id }"
+                class="papelera bg-gray-300/80 h-full absolute right-0 top-0 flex items-center px-1 rounded-xs">
+                <Trash2
+                  class="text-gray-500 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out" />
               </div>
             </li>
           </ul>
 
           <!-- crear Tarea -->
-          <button
-            @click="crearTarea(tarjeta.id)"
-            class="w-full mx-auto text-gray-400 rounded-sm bg-gray-200/50 px-2 py-1 mt-2 hover:cursor-pointer hover:scale-103 transition-transform duration-200 ease-in-out hover:bg-gray-200/80 hover:text-gray-500"
-          >
+          <button @click="crearTarea(tarjeta.id)"
+            class="w-full mx-auto text-gray-400 rounded-sm bg-gray-200/50 px-2 py-1 mt-2 hover:cursor-pointer hover:scale-103 transition-transform duration-200 ease-in-out hover:bg-gray-200/80 hover:text-gray-500">
             + Añadir tarea
           </button>
         </div>
       </div>
 
-      <div
-        @click="crearTarjeta"
-        class="mb-6 bg-gray-100 px-4 py-2 rounded-xl max-h-12 hover:cursor-pointer hover:scale-105 transition-transform duration-200 ease-in-out hover:bg-white hover:text-gray-500 w-fit mx-auto"
-      >
+      <div @click="crearTarjeta"
+        class="mb-6 bg-gray-100 px-4 py-2 rounded-xl max-h-12 hover:cursor-pointer hover:scale-105 transition-transform duration-200 ease-in-out hover:bg-white hover:text-gray-500 w-fit mx-auto">
         <span class="text-xl text-gray-400">+ Añadir tarjeta</span>
       </div>
     </div>
