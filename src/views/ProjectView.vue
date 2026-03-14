@@ -32,6 +32,7 @@ async function cargarProyecto(IDproyecto) {
           project(id: $id) {
             id
             name
+            description
             createdAt
           }
         }
@@ -247,9 +248,7 @@ onMounted(async () => {
 
 // variables para poder cambiar nombres al momento
 const editando = ref(null);
-const descripcion = ref(
-  "Aún no puedes modificar las descripciones de tus proyectos, pero es una función que se implementará en futuras actualizaciones",
-);
+const descripcion = ref("");
 
 
 // Borrar tarea
@@ -302,6 +301,9 @@ function controlarBlur(tarea) {
 }
 
 // Borrar tarjeta
+const mostrarBT = ref(false);
+const tituloBT = ref("");
+
 async function borrarTarjeta(idTarjeta) {
 
   if (!idTarjeta) return;
@@ -333,10 +335,37 @@ async function borrarTarjeta(idTarjeta) {
 
 }
 
+// Actualizar titulo proyecto
+async function actDescProyecto() {
 
-// Confirmar borrar tarjeta
-const mostrarBT = ref(false);
-const tituloBT = ref("");
+  const respuesta = await fetch("http://localhost:4000/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      query: `
+        mutation($projectId: Int!, $description: String!) {
+          updateProjectDescription(projectId: $projectId, description: $description) {
+            id
+            description
+          }
+        }
+      `,
+      variables: {
+        projectId: Number(IDproyecto),
+        description: descripcion.value
+      }
+    })
+  })
+
+  const data = await respuesta.json()
+
+  console.log(data)
+
+  proyecto.value.description = descripcion.value
+}
+
 
 </script>
 
@@ -409,9 +438,10 @@ const tituloBT = ref("");
       <Navbar class="mt-2 mr-1"></Navbar>
       <!-- Cabecera -->
       <div
+        v-if="proyecto" 
         class="bg-neutral-100 shadow-xl flex flex-col justify-between p-6 rounded-xl mt-2 border-l-6 border-blue-300">
         <!-- Titulo -->
-        <div v-if="proyecto" class="flex flex-col pb-0 text-gray-800">
+        <div class="flex flex-col pb-0 text-gray-800">
           <span class="font-extralight text-2xl">Nombre del proyecto: </span>
           <h1 class="font-semibold text-4xl border-b pb-4">
             {{ proyecto.name }}
@@ -422,9 +452,9 @@ const tituloBT = ref("");
         <div class="flex gap-2 mt-4">
           <p class="font-semibold">Descripción:</p>
           <p v-if="!editando" @click="editando = true">
-            {{ descripcion }}
+            {{ proyecto.description }}
           </p>
-          <input v-else v-model="descripcion" @blur="editando = false" class="w-full"></input>
+          <input v-else v-model="descripcion" @blur="editando = false; actDescProyecto()" class="w-full"></input>
         </div>
 
         <!-- Fecha y Miembros -->

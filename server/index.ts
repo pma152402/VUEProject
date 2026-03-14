@@ -53,6 +53,7 @@ const typeDefs = `
     deleteTask(taskId: Int!): Task!
     createProject(name: String!, description: String!, ownerId: Int!): Project!
     updateProjectDescription(projectId: Int!, description: String!): Project!
+    
     cloneProject(projectId: Int!, ownerId: Int!): Project!
   }`;
 
