@@ -399,9 +399,17 @@ async function actualizarTarea(tarea) {
 }
 
 
-// Controlar check
-const check = ref("");
+// Controlar check en tareas
+const hoverTarea = ref("");
+const tareasCompletadas = ref([]);
 
+function controlarCheck(idTarea) {
+  if (tareasCompletadas.value.includes(idTarea)) {
+    tareasCompletadas.value = tareasCompletadas.value.filter(t => t !== idTarea)
+  } else {
+    tareasCompletadas.value.push(idTarea)
+  }
+}
 </script>
 
 <style>
@@ -457,7 +465,7 @@ const check = ref("");
       <div class="flex justify-center gap-3 text-sm mt-4">
         <button @click="
           borrarTarjeta(tarjetaABorrar);
-          mostrarBT = false;
+        mostrarBT = false;
         "
           class="bg-red-400 px-2 py-1 font-semibold rounded-full hover:scale-110 transition-all duration-200 ease-in-out hover:cursor-pointer">
           Eliminar
@@ -472,8 +480,7 @@ const check = ref("");
     <div class="lg:min-w-6xl max-w-6xl flex flex-col relative">
       <Navbar class="mt-2 mr-1"></Navbar>
       <!-- Cabecera -->
-      <div
-        v-if="proyecto" 
+      <div v-if="proyecto"
         class="bg-neutral-100 shadow-xl flex flex-col justify-between p-6 rounded-xl mt-2 border-l-6 border-blue-300">
         <!-- Titulo -->
         <div class="flex flex-col pb-0 text-gray-800">
@@ -481,8 +488,9 @@ const check = ref("");
           <h1 v-if="!editando" @click="editando = true" class="font-semibold text-4xl border-b pb-4">
             {{ proyecto.name }}
           </h1>
-          <input v-else v-model="proyecto.name" @blur="editando = false; actNombreProyecto(proyecto)" class="w-full font-semibold text-4xl border-b pb-4"></input>
-        
+          <input v-else v-model="proyecto.name" @blur="editando = false; actNombreProyecto(proyecto)"
+            class="w-full font-semibold text-4xl border-b pb-4"></input>
+
         </div>
 
         <!-- Descripcion -->
@@ -491,7 +499,8 @@ const check = ref("");
           <p v-if="!editando" @click="editando = true">
             {{ proyecto.description }}
           </p>
-          <input v-else v-model="proyecto.description" @blur="editando = false; actDescProyecto(proyecto)" class="w-full"></input>
+          <input v-else v-model="proyecto.description" @blur="editando = false; actDescProyecto(proyecto)"
+            class="w-full"></input>
         </div>
 
         <!-- Fecha y Miembros -->
@@ -549,25 +558,26 @@ const check = ref("");
                 if (mostrarPapelera === tarea.id) {
                   tareaActiva = elemento;
                 }
-              }"
-              
-              @mouseenter="check = tarea.id"
-              @mouseleave="check = null"
-              >
+              }" @mouseenter="hoverTarea = tarea.id" @mouseleave="hoverTarea = null">
 
 
               <!-- Check-->
               <div 
+                @click="controlarCheck(tarea.id)"
                 :class="[
-    'border-2 border-gray-400/50 rounded-full bg-gray-300 w-4 h-4 mr-2 transition-all duration-200',
-    check === tarea.id ? 'opacity-100 ml-0' : 'opacity-0 -ml-4'
-  ]" class="border-2 border-gray-400/50 rounded-full bg-gray-300 w-4 h-4 mr-2 hover:border-gray-400 hover:bg-gray-400 hover:cursor-pointer transition-all duration-250">
+                'border-2 rounded-full w-4 h-4 mr-2 hover:border-blue-400 hover:bg-blue-200 hover:cursor-pointer transition-all duration-250',
+                hoverTarea === tarea.id ? 'opacity-100 ml-0' : 'opacity-0 -ml-4', 
+                
+                (tareasCompletadas.includes(tarea.id))
+                  ? 'bg-blue-400 border-blue-300 opacity-100 ml-0'
+                  : 'bg-gray-300 border-gray-400/50'
+              ]">
               </div>
 
 
 
-              <div 
-              v-if="editando !== tarea.id" @click.stop="editando = editando === tarea.id ? null : tarea.id" class="inline">
+              <div v-if="editando !== tarea.id" @click.stop="editando = editando === tarea.id ? null : tarea.id"
+                class="inline">
                 {{ tarea.text }}
               </div>
               <input v-else @blur="controlarBlur(tarea)" v-model="tarea.text" class="w-full" />
