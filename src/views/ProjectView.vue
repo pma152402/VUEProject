@@ -336,6 +336,7 @@ async function borrarTarjeta(idTarjeta) {
 </script>
 
 <style>
+/* PAPELERA TAREAS */
 .tarea .papelera {
   opacity: 0;
   pointer-events: none;
@@ -350,6 +351,26 @@ async function borrarTarjeta(idTarjeta) {
 
 /* para movil */
 .tarea .papelera.mostrar {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
+/* PAPELERA TARJETAS */ 
+.tarjeta .papeleraTarjeta {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+/* escritorio */
+.tarjeta:hover .papeleraTarjeta {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* movil */
+.tarjeta .papeleraTarjeta.mostrar {
   opacity: 1;
   pointer-events: auto;
 }
@@ -406,7 +427,7 @@ async function borrarTarjeta(idTarjeta) {
         <div
           v-for="tarjeta in tarjetas"
           :key="tarjeta.id"
-          class="h-fit bg-neutral-100 px-4 py-6 rounded-xl border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-101 transition-all ease-in-out duration-350 m-1"
+          class="tarjeta shadow-lg h-fit bg-neutral-100 px-4 py-6 rounded-xl border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-101 transition-all ease-in-out duration-350 m-1"
         >
         <!-- Titulo -->
           <div class="flex justify-between items-center">
@@ -431,11 +452,10 @@ async function borrarTarjeta(idTarjeta) {
 
               <div 
                 @click.stop="borrarTarjeta(tarjeta.id)"
-                :class="{ 'mostrar': mostrarPapelera === tarjeta.id }"
                 
               >
                 <Trash2     
-                  class="papelera text-gray-400 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
+                  class="papeleraTarjeta text-gray-400 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
                   />
 
                   
