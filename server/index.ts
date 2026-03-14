@@ -47,6 +47,7 @@ const typeDefs = `
     createUser(name: String!, email: String!, password: String!): User! 
     createCard(title: String!, projectId: Int!): Card!
     updateCardTitle(cardId: Int!, title: String!): Card!
+    deleteCard(cardId: Int!): Card
     createTask(text: String!, cardId: Int!): Task!
     updateTask(taskId: Int!, text: String!): Task!
     deleteTask(taskId: Int!): Task!
@@ -157,6 +158,14 @@ const resolvers = {
         data: {
           title: args.title,
           projectId: args.projectId,
+        },
+      });
+    },
+
+    deleteCard: async (_: any, args: any) => {
+      return prisma.card.delete({
+        where: {
+          id: args.cardId,
         },
       });
     },

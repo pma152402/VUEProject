@@ -222,6 +222,7 @@ async function actualizarTarea(tarea) {
 // Contenedor general para referenciar las tarjetas y tareas
 const mostrarPapelera = ref(null);
 let tareaActiva = null;
+let tarjetaActiva = null;
 
 // AL CARGAR
 onMounted(async () => {
@@ -252,7 +253,6 @@ const descripcion = ref(
 
 
 // Borrar tarea
-
 async function borrarTarea(idTarea) {
 
   if (!idTarea) return;
@@ -301,21 +301,54 @@ function controlarBlur(tarea) {
   }
 }
 
+// Borrar tarjeta
+async function borrarTarjeta(idTarjeta) {
+
+  if (!idTarjeta) return;
+
+  const respuesta = await fetch("http://localhost:4000/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: `
+        mutation($cardId: Int!) {
+          deleteCard(cardId: $cardId) {
+            id
+          }
+        }
+      `,
+      variables: {
+        cardId: Number(idTarjeta),
+      },
+    }),
+  });
+
+  const data = await respuesta.json();
+  console.log(data);
+
+  
+  tarjetas.value = tarjetas.value.filter((tarjeta) => tarjeta.id !== idTarjeta);
+
+}
+
 </script>
 
-<style>.tarea .papelera {
+<style>
+.tarea .papelera {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s;
 }
 
-/* hover escritorio */
+/* escritorio */
 .tarea:hover .papelera {
   opacity: 1;
   pointer-events: auto;
 }
 
-/* click móvil */
+/* para movil */
 .tarea .papelera.mostrar {
   opacity: 1;
   pointer-events: auto;
@@ -376,19 +409,43 @@ function controlarBlur(tarea) {
           class="h-fit bg-neutral-100 px-4 py-6 rounded-xl border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-101 transition-all ease-in-out duration-350 m-1"
         >
         <!-- Titulo -->
-          <span 
-            v-if="editando !== tarjeta.id" 
-            @click="editando = tarjeta.id" 
-            class="text-3xl font-semibold"
-          >
-            {{ tarjeta.titulo }}
-          </span>
-          <input 
-            v-else 
-            v-model="tarjeta.titulo" 
-            @blur="editando = null; actTituloTarjeta(tarjeta)" 
-            class="w-full text-3xl font-semibold"
-          />
+          <div class="flex justify-between items-center">
+
+              <span 
+                v-if="editando !== tarjeta.id" 
+                @click="editando = tarjeta.id" 
+                class="text-3xl font-semibold"
+              >
+                  {{ tarjeta.titulo }}
+              </span>
+
+              <input 
+                v-else 
+                v-model="tarjeta.titulo" 
+                @blur="editando = null; actTituloTarjeta(tarjeta)" 
+                class="w-full text-3xl font-semibold"
+              />
+
+
+
+
+              <div 
+                @click.stop="borrarTarjeta(tarjeta.id)"
+                :class="{ 'mostrar': mostrarPapelera === tarjeta.id }"
+                
+              >
+                <Trash2     
+                  class="papelera text-gray-400 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
+                  />
+
+                  
+              </div>
+              
+          </div>
+
+
+
+          
 
           <!-- lista de Tareas, point para ordenadores y click moviles -->
           <ul 
@@ -404,7 +461,7 @@ function controlarBlur(tarea) {
 
               :ref="elemento => {
                 if (mostrarPapelera === tarea.id) {
-                  tareaActiva = elemento
+                  tareaActiva = elemento;
                 }
               }"
               >
