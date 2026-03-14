@@ -444,7 +444,7 @@ async function borrarTarjeta(idTarjeta) {
                 v-else 
                 v-model="tarjeta.titulo" 
                 @blur="editando = null; actTituloTarjeta(tarjeta)" 
-                class="w-full text-3xl font-semibold"
+                class="w-full text-3xl font-semibold "
               />
 
 
@@ -452,7 +452,6 @@ async function borrarTarjeta(idTarjeta) {
 
               <div 
                 @click.stop="borrarTarjeta(tarjeta.id)"
-                
               >
                 <Trash2     
                   class="papeleraTarjeta text-gray-400 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
