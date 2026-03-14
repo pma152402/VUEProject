@@ -139,8 +139,36 @@ watch(nombreProyecto, () => {
   errorNombreProyecto.value = "";
 });
 
-//
-console.log(proyectos.value);
+// Clonar proyecto
+async function clonarProyecto(projectId) {
+  const respuesta = await fetch("http://localhost:4000/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: `
+        mutation($projectId: Int!, $ownerId: Int!) {
+          cloneProject(projectId: $projectId, ownerId: $ownerId) {
+            id
+            name
+            createdAt
+          }
+        }
+      `,
+      variables: {
+        projectId: Number(projectId),
+        ownerId: Number(usuario.value.id),
+      },
+    }),
+  });
+
+  const data = await respuesta.json();
+
+  console.log(data);
+  
+  proyectos.value.push(data.data.cloneProject);
+}
 </script>
 
 <template>
@@ -209,6 +237,7 @@ console.log(proyectos.value);
                   />
                 </RouterLink>
                 <Copy
+                  @click="clonarProyecto(proyecto.id)"
                   class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
                 />
                 <Share2

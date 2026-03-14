@@ -53,6 +53,7 @@ const typeDefs = `
     deleteTask(taskId: Int!): Task!
     createProject(name: String!, description: String!, ownerId: Int!): Project!
     updateProjectDescription(projectId: Int!, description: String!): Project!
+    cloneProject(projectId: Int!, ownerId: Int!): Project!
   }`;
 
 console.log("SERVIDOR CON SCHEMA NUEVO");
@@ -151,6 +152,57 @@ const resolvers = {
           description: args.description,
         },
       });
+    },
+
+    // Clonar proyecto
+     cloneProject: async (_: any, args: any) => {
+      const original = await prisma.project.findUnique({
+        where: { id: args.projectId },
+        include: {
+          cards: {
+            include: {
+              tasks: true
+            }
+          }
+        }
+      })
+
+      // si no esta
+      if (!original) {
+        throw new Error("El proyecto no se encuentra")
+      }
+
+      // crear nuevo proyecto
+      const nuevoProyecto = await prisma.project.create({
+        data: {
+          name: original.name + " (Copia) ",
+          description: original.description,
+          ownerId: args.ownerId
+        }
+      })
+
+      // copiar tarjetas
+      for (const card of original.cards) {
+
+        const nuevaCard = await prisma.card.create({
+          data: {
+            title: card.title,
+            projectId: nuevoProyecto.id
+          }
+        })
+
+        // copiar tareas
+        if (card.tasks.length > 0) {
+          await prisma.task.createMany({
+            data: card.tasks.map(task => ({
+              text: task.text,
+              cardId: nuevaCard.id
+            }))
+          })
+        }
+      }
+
+    return nuevoProyecto
     },
 
     createCard: async (_: any, args: any) => {
