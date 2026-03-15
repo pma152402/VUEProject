@@ -210,6 +210,7 @@ const resolvers = {
           await prisma.task.createMany({
             data: card.tasks.map(task => ({
               text: task.text,
+              completed: task.completed,
               cardId: nuevaCard.id
             }))
           })
