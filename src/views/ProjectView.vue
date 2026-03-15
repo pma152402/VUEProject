@@ -577,12 +577,14 @@ async function actualizarCompletada(tarea) {
           <!-- lista de Tareas, point para ordenadores y click moviles -->
           <ul class="mt-5 text-lg overflow-y-auto max-h-65 h-fit">
             <li v-for="tarea in tarjeta.tareas" :key="tarea.id"
-              class="tarea group shadow-md relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 ease-in-out flex items-center "
+              :class="['tarea group shadow-md relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 ease-in-out flex items-center ',  tarea.completed
+                    ? 'text-gray-400'
+                    : '']"
               @click.stop="mostrarPapelera = mostrarPapelera === tarea.id ? null : tarea.id" :ref="elemento => {
                 if (mostrarPapelera === tarea.id) {
                   tareaActiva = elemento;
                 }
-              }" @mouseenter="hoverTarea = tarea.id" @mouseleave="hoverTarea = null">
+              }" @mouseenter="hoverTarea = tarea.id" @mouseleave="hoverTarea = null" >
 
 
               <!-- Check-->
