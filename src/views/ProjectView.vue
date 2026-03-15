@@ -69,8 +69,6 @@ async function cargarProyecto(IDproyecto) {
 
   const data = await respuesta.json();
 
-  console.log(data);
-
   return data.data.project;
 }
 
@@ -149,7 +147,6 @@ async function crearTarjeta() {
 
   const data = await respuesta.json();
 
-  console.log(data);
 
   tarjetas.value.push({
     id: data.data.createCard.id,
@@ -187,8 +184,8 @@ async function crearTarea(cardId) {
   const data = await respuesta.json()
 
   // recargar tarjetas
-  tarjetas.value = await cargarTarjetas(IDproyecto)
-  console.log(data);
+  const tarjeta = tarjetas.value.find(t => t.id === cardId)
+  tarjeta.tareas.push(data.data.createTask)
 }
 
 
@@ -222,7 +219,6 @@ async function borrarTarjeta(idTarjeta) {
   });
 
   const data = await respuesta.json();
-  console.log(data);
 
 
   tarjetas.value = tarjetas.value.filter((tarjeta) => tarjeta.id !== idTarjeta);
@@ -254,7 +250,6 @@ async function borrarTarea(idTarea) {
   });
 
   const data = await respuesta.json();
-  console.log(data);
 
   // eliminar tarea del estado
   tarjetas.value.forEach((tarjeta) => {
@@ -308,7 +303,6 @@ async function actNombreProyecto(proyecto) {
 
   const data = await respuesta.json();
 
-  console.log(data);
 }
 
 // Actualizar descripcion proyecto
@@ -337,7 +331,6 @@ async function actDescProyecto(proyecto) {
 
   const data = await respuesta.json();
 
-  console.log(data);
 }
 
 
@@ -367,7 +360,6 @@ async function actTituloTarjeta(tarjeta) {
 
 }
 
-// Actualizar tarea
 async function actualizarTarea(tarea) {
 
   const respuesta = await fetch("http://localhost:4000/graphql", {
@@ -391,11 +383,7 @@ async function actualizarTarea(tarea) {
     })
   })
 
-  const data = await respuesta.json()
-
-  // recargar tarjetas
-  tarjetas.value = await cargarTarjetas(IDproyecto);
-  console.log(data);
+  const data = await respuesta.json();
 
 }
 
@@ -405,7 +393,7 @@ const hoverTarea = ref("");
 
 // Actualizar la tarea con check
 async function actualizarCompletada(tarea) {
- const respuesta = await fetch("http://localhost:4000/graphql", {
+  const respuesta = await fetch("http://localhost:4000/graphql", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -426,9 +414,7 @@ async function actualizarCompletada(tarea) {
     })
   })
 
-  const data = await respuesta.json()
-
-  console.log(data)
+  const data = await respuesta.json();
 
   // actualizar frontend sin recargar
   tarea.completed = !tarea.completed
@@ -576,26 +562,23 @@ async function actualizarCompletada(tarea) {
 
           <!-- lista de Tareas, point para ordenadores y click moviles -->
           <ul class="mt-5 text-lg overflow-y-auto max-h-65 h-fit">
-            <li v-for="tarea in tarjeta.tareas" :key="tarea.id"
-              :class="['tarea group shadow-md relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 ease-in-out flex items-center ',  tarea.completed
-                    ? 'text-gray-400'
-                    : '']"
-              @click.stop="mostrarPapelera = mostrarPapelera === tarea.id ? null : tarea.id" :ref="elemento => {
-                if (mostrarPapelera === tarea.id) {
-                  tareaActiva = elemento;
-                }
-              }" @mouseenter="hoverTarea = tarea.id" @mouseleave="hoverTarea = null" >
+            <li v-for="tarea in tarjeta.tareas" :key="tarea.id" :class="['tarea group shadow-md relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 ease-in-out flex items-center ', tarea.completed
+              ? 'text-gray-400'
+              : '']" @click.stop="mostrarPapelera = mostrarPapelera === tarea.id ? null : tarea.id" :ref="elemento => {
+                      if (mostrarPapelera === tarea.id) {
+                        tareaActiva = elemento;
+                      }
+                    }" @mouseenter="hoverTarea = tarea.id" @mouseleave="hoverTarea = null">
 
 
               <!-- Check-->
-              <div @click.stop="actualizarCompletada(tarea)"
-                  :class="[
-                  'flex flex-shrink-0 items-center justify-center border-2 rounded-full w-4 h-4 mr-2 hover:bg-blue-300 hover:border-blue-400 hover:cursor-pointer transition-all duration-200',
-                  hoverTarea === tarea.id || tarea.completed ? 'opacity-100 ml-0' : 'opacity-0 -ml-4',
-                  tarea.completed
-                    ? 'bg-blue-400 border-blue-300'
-                    : 'bg-gray-300 border-gray-400/50'
-                  ]">
+              <div @click.stop="actualizarCompletada(tarea)" :class="[
+                'flex flex-shrink-0 items-center justify-center border-2 rounded-full w-4 h-4 mr-2 hover:bg-blue-300 hover:border-blue-400 hover:cursor-pointer transition-all duration-200',
+                hoverTarea === tarea.id || tarea.completed ? 'opacity-100 ml-0' : 'opacity-0 -ml-4',
+                tarea.completed
+                  ? 'bg-blue-400 border-blue-300'
+                  : 'bg-gray-300 border-gray-400/50'
+              ]">
 
                 <Check v-if="tarea.completed" class="w-4 h-4 text-white " />
 
@@ -603,10 +586,8 @@ async function actualizarCompletada(tarea) {
 
 
 
-              <div 
-              v-if="editando !== tarea.id" 
-              @click.stop="editando = editando === tarea.id ? null : tarea.id" 
-              class="inline">
+              <div v-if="editando !== tarea.id" @click.stop="editando = editando === tarea.id ? null : tarea.id"
+                class="inline">
                 {{ tarea.text }}
               </div>
               <input v-else @blur="controlarBlur(tarea)" v-model="tarea.text" class="w-full" />
