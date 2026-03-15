@@ -38,6 +38,7 @@ model Card {
 model Task {
   id     Int    @id @default(autoincrement())
   text   String
+  completed Boolean @default(false)
   cardId Int
 
   card Card @relation(fields: [cardId], references: [id], onDelete: Cascade)

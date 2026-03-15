@@ -91,6 +91,7 @@ async function cargarTarjetas(IDproyecto) {
               tasks {
                 id
                 text
+                completed
               }
             }
           }
@@ -401,15 +402,38 @@ async function actualizarTarea(tarea) {
 
 // Controlar check en tareas
 const hoverTarea = ref("");
-const tareasCompletadas = ref([]);
 
-function controlarCheck(idTarea) {
-  if (tareasCompletadas.value.includes(idTarea)) {
-    tareasCompletadas.value = tareasCompletadas.value.filter(t => t !== idTarea)
-  } else {
-    tareasCompletadas.value.push(idTarea)
-  }
+// Actualizar la tarea con check
+async function actualizarCompletada(tarea) {
+ const respuesta = await fetch("http://localhost:4000/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      query: `
+        mutation($taskId: Int!, $completed: Boolean!) {
+          updateCompletedTask(taskId: $taskId, completed: $completed) {
+            id
+            completed
+          }
+        }
+      `,
+      variables: {
+        taskId: Number(tarea.id),
+        completed: !tarea.completed
+      }
+    })
+  })
+
+  const data = await respuesta.json()
+
+  console.log(data)
+
+  // actualizar frontend sin recargar
+  tarea.completed = !tarea.completed
 }
+
 </script>
 
 <style>
@@ -562,26 +586,25 @@ function controlarCheck(idTarea) {
 
 
               <!-- Check-->
-              <div @click="controlarCheck(tarea.id)" :class="[
-                'flex flex-shrink-0 items-center justify-center border-2 rounded-full w-4 h-4 mr-2 hover:border-blue-400 hover:bg-blue-200 hover:cursor-pointer transition-all duration-250',
-                hoverTarea === tarea.id ? 'opacity-100 ml-0' : 'opacity-0 -ml-4',
+              <div @click.stop="actualizarCompletada(tarea)"
+                  :class="[
+                  'flex flex-shrink-0 items-center justify-center border-2 rounded-full w-4 h-4 mr-2 hover:bg-blue-300 hover:border-blue-400 hover:cursor-pointer transition-all duration-200',
+                  hoverTarea === tarea.id || tarea.completed ? 'opacity-100 ml-0' : 'opacity-0 -ml-4',
+                  tarea.completed
+                    ? 'bg-blue-400 border-blue-300'
+                    : 'bg-gray-300 border-gray-400/50'
+                  ]">
 
-                (tareasCompletadas.includes(tarea.id))
-                  ? 'bg-blue-400 border-blue-300 opacity-100 ml-0'
-                  : 'bg-gray-300 border-gray-400/50'
-              ]">
-
-                <Check v-if="tareasCompletadas.includes(tarea.id)" class="w-4 h-4 text-white" />
+                <Check v-if="tarea.completed" class="w-4 h-4 text-white " />
 
               </div>
 
 
 
-              <div v-if="editando !== tarea.id" @click.stop="editando = editando === tarea.id ? null : tarea.id" :class="['inline',
-                tareasCompletadas.includes(tarea.id)
-                  ? ' text-gray-400'
-                  : ''
-              ]" ]>
+              <div 
+              v-if="editando !== tarea.id" 
+              @click.stop="editando = editando === tarea.id ? null : tarea.id" 
+              class="inline">
                 {{ tarea.text }}
               </div>
               <input v-else @blur="controlarBlur(tarea)" v-model="tarea.text" class="w-full" />
