@@ -38,6 +38,7 @@ const typeDefs = `
   type Task {
     id: ID!
     text: String!
+    completed: Boolean!
     cardId: Int!
   }
 
@@ -50,6 +51,7 @@ const typeDefs = `
     deleteCard(cardId: Int!): Card
     createTask(text: String!, cardId: Int!): Task!
     updateTask(taskId: Int!, text: String!): Task!
+    updateCompletedTask(taskId: Int!, completed: Boolean!): Task!
     deleteTask(taskId: Int!): Task!
     createProject(name: String!, description: String!, ownerId: Int!): Project!
     updateProjectDescription(projectId: Int!, description: String!): Project!
@@ -262,6 +264,17 @@ const resolvers = {
         },
         data: {
           text: args.text,
+        },
+      });
+    },
+
+    updateCompletedTask: async (_: any, args: any) => {
+      return prisma.task.update({
+        where: {
+          id: args.taskId,
+        },
+        data: {
+          completed: args.completed,
         },
       });
     },

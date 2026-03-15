@@ -1,5 +1,5 @@
 <script setup>
-import { Trash2 } from "lucide-vue-next";
+import { Trash2, Check } from "lucide-vue-next";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import "../styles/scrollbar.css";
@@ -91,6 +91,7 @@ async function cargarTarjetas(IDproyecto) {
               tasks {
                 id
                 text
+                completed
               }
             }
           }
@@ -401,15 +402,38 @@ async function actualizarTarea(tarea) {
 
 // Controlar check en tareas
 const hoverTarea = ref("");
-const tareasCompletadas = ref([]);
 
-function controlarCheck(idTarea) {
-  if (tareasCompletadas.value.includes(idTarea)) {
-    tareasCompletadas.value = tareasCompletadas.value.filter(t => t !== idTarea)
-  } else {
-    tareasCompletadas.value.push(idTarea)
-  }
+// Actualizar la tarea con check
+async function actualizarCompletada(tarea) {
+ const respuesta = await fetch("http://localhost:4000/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      query: `
+        mutation($taskId: Int!, $completed: Boolean!) {
+          updateCompletedTask(taskId: $taskId, completed: $completed) {
+            id
+            completed
+          }
+        }
+      `,
+      variables: {
+        taskId: Number(tarea.id),
+        completed: !tarea.completed
+      }
+    })
+  })
+
+  const data = await respuesta.json()
+
+  console.log(data)
+
+  // actualizar frontend sin recargar
+  tarea.completed = !tarea.completed
 }
+
 </script>
 
 <style>
@@ -481,7 +505,7 @@ function controlarCheck(idTarea) {
       <Navbar class="mt-2 mr-1"></Navbar>
       <!-- Cabecera -->
       <div v-if="proyecto"
-        class="bg-neutral-100 shadow-xl flex flex-col justify-between p-6 rounded-xl mt-2 border-l-6 border-blue-300">
+        class="bg-neutral-100 shadow-xl flex flex-col justify-between p-6 rounded-xl mt-2 border-l-8 border-blue-300">
         <!-- Titulo -->
         <div class="flex flex-col pb-0 text-gray-800">
           <span class="font-extralight text-2xl">Nombre del proyecto: </span>
@@ -553,7 +577,7 @@ function controlarCheck(idTarea) {
           <!-- lista de Tareas, point para ordenadores y click moviles -->
           <ul class="mt-5 text-lg overflow-y-auto max-h-65 h-fit">
             <li v-for="tarea in tarjeta.tareas" :key="tarea.id"
-              class="tarea group shadow-md relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 ease-in-out flex items-center"
+              class="tarea group shadow-md relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 ease-in-out flex items-center "
               @click.stop="mostrarPapelera = mostrarPapelera === tarea.id ? null : tarea.id" :ref="elemento => {
                 if (mostrarPapelera === tarea.id) {
                   tareaActiva = elemento;
@@ -562,22 +586,25 @@ function controlarCheck(idTarea) {
 
 
               <!-- Check-->
-              <div 
-                @click="controlarCheck(tarea.id)"
-                :class="[
-                'border-2 rounded-full w-4 h-4 mr-2 hover:border-blue-400 hover:bg-blue-200 hover:cursor-pointer transition-all duration-250',
-                hoverTarea === tarea.id ? 'opacity-100 ml-0' : 'opacity-0 -ml-4', 
-                
-                (tareasCompletadas.includes(tarea.id))
-                  ? 'bg-blue-400 border-blue-300 opacity-100 ml-0'
-                  : 'bg-gray-300 border-gray-400/50'
-              ]">
+              <div @click.stop="actualizarCompletada(tarea)"
+                  :class="[
+                  'flex flex-shrink-0 items-center justify-center border-2 rounded-full w-4 h-4 mr-2 hover:bg-blue-300 hover:border-blue-400 hover:cursor-pointer transition-all duration-200',
+                  hoverTarea === tarea.id || tarea.completed ? 'opacity-100 ml-0' : 'opacity-0 -ml-4',
+                  tarea.completed
+                    ? 'bg-blue-400 border-blue-300'
+                    : 'bg-gray-300 border-gray-400/50'
+                  ]">
+
+                <Check v-if="tarea.completed" class="w-4 h-4 text-white " />
+
               </div>
 
 
 
-              <div v-if="editando !== tarea.id" @click.stop="editando = editando === tarea.id ? null : tarea.id"
-                class="inline">
+              <div 
+              v-if="editando !== tarea.id" 
+              @click.stop="editando = editando === tarea.id ? null : tarea.id" 
+              class="inline">
                 {{ tarea.text }}
               </div>
               <input v-else @blur="controlarBlur(tarea)" v-model="tarea.text" class="w-full" />
