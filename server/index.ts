@@ -52,6 +52,7 @@ const typeDefs = `
     createTask(text: String!, cardId: Int!): Task!
     updateTask(taskId: Int!, text: String!): Task!
     updateCompletedTask(taskId: Int!, completed: Boolean!): Task!
+    moveTask(taskId: Int!, cardId: Int!): Task!
     deleteTask(taskId: Int!): Task!
     createProject(name: String!, description: String!, ownerId: Int!): Project!
     updateProjectDescription(projectId: Int!, description: String!): Project!
@@ -278,6 +279,20 @@ const resolvers = {
           completed: args.completed,
         },
       });
+    },
+
+    moveTask: async (_: any, args: any) => {
+      const tareaActualizada = await prisma.task.update({
+        where: {
+          id: args.taskId
+        },
+        data: {
+          cardId: args.cardId
+        }
+      });
+
+      return tareaActualizada;
+
     },
 
     deleteTask: async (_: any, args: any) => {
