@@ -633,7 +633,7 @@ async function moverTarea(evt, cardId) {
               <div
                 v-if="editando !== tarea.id"
                 @click.stop="editando = editando === tarea.id ? null : tarea.id"
-                class="inline text-gray-800"
+                class="inline"
               >
                 {{ tarea.text }}
               </div>
@@ -642,7 +642,7 @@ async function moverTarea(evt, cardId) {
                 v-else
                 @blur="controlarBlur(tarea)"
                 v-model="tarea.text"
-                class="w-full text-gray-800"
+                class="w-full text-gray-800 mr-5"
               />
 
               <div
