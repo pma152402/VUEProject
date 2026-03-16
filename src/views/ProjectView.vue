@@ -4,6 +4,7 @@ import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import "../styles/scrollbar.css";
 import Navbar from "../components/Navbar.vue";
+import draggable from "vuedraggable";
 
 // Declarar
 const route = useRoute();
@@ -420,6 +421,8 @@ async function actualizarCompletada(tarea) {
   tarea.completed = !tarea.completed
 }
 
+// MOVER TAREAS
+
 </script>
 
 <style>
@@ -460,6 +463,10 @@ async function actualizarCompletada(tarea) {
 .tarjeta .papeleraTarjeta.mostrar {
   opacity: 1;
   pointer-events: auto;
+}
+
+.sortable-ghost {
+  opacity: 0.4;
 }
 </style>
 
@@ -560,43 +567,69 @@ async function actualizarCompletada(tarea) {
 
 
 
-          <!-- lista de Tareas, point para ordenadores y click moviles -->
-          <ul class="mt-5 text-lg overflow-y-auto max-h-65 h-fit">
-            <li v-for="tarea in tarjeta.tareas" :key="tarea.id" :class="['tarea group shadow-md relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 ease-in-out flex items-center ', tarea.completed
-              ? 'text-gray-400'
-              : '']" @click.stop="mostrarPapelera = mostrarPapelera === tarea.id ? null : tarea.id"  @mouseenter="hoverTarea = tarea.id" @mouseleave="hoverTarea = null">
+          <!-- TAREAS -->
+        <draggable
+          @change="moverTarea"
+          v-model="tarjeta.tareas"
+          group="tasks"
+          item-key="id"
+          class="mt-5 text-lg overflow-y-auto max-h-65 h-fit"
+        >
+          <template #item="{ element: tarea }">
 
+            <li
+              :class="[
+                'tarea group shadow-md relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 ease-in-out flex items-center',
+                tarea.completed ? 'text-gray-400' : ''
+              ]"
+              @click.stop="mostrarPapelera = mostrarPapelera === tarea.id ? null : tarea.id"
+              @mouseenter="hoverTarea = tarea.id"
+              @mouseleave="hoverTarea = null"
+            >
 
-              <!-- Check-->
-              <div @click.stop="actualizarCompletada(tarea)" :class="[
-                'flex flex-shrink-0 items-center justify-center border-2 rounded-full w-4 h-4 mr-2 hover:bg-blue-300 hover:border-blue-400 hover:cursor-pointer transition-all duration-200',
-                hoverTarea === tarea.id || tarea.completed ? 'opacity-100 ml-0' : 'opacity-0 -ml-4',
-                tarea.completed
-                  ? 'bg-blue-400 border-blue-300'
-                  : 'bg-gray-300 border-gray-400/50'
-              ]">
-
-                <Check v-if="tarea.completed" class="w-4 h-4 text-white " />
-
+              <!-- Check -->
+              <div
+                @click.stop="actualizarCompletada(tarea)"
+                :class="[
+                  'flex flex-shrink-0 items-center justify-center border-2 rounded-full w-4 h-4 mr-2 hover:bg-blue-300 hover:border-blue-400 hover:cursor-pointer transition-all duration-200',
+                  hoverTarea === tarea.id || tarea.completed ? 'opacity-100 ml-0' : 'opacity-0 -ml-4',
+                  tarea.completed
+                    ? 'bg-blue-400 border-blue-300'
+                    : 'bg-gray-300 border-gray-400/50'
+                ]"
+              >
+                <Check v-if="tarea.completed" class="w-4 h-4 text-white" />
               </div>
 
-
-
-              <div v-if="editando !== tarea.id" @click.stop="editando = editando === tarea.id ? null : tarea.id"
-                class="inline">
+              <div
+                v-if="editando !== tarea.id"
+                @click.stop="editando = editando === tarea.id ? null : tarea.id"
+                class="inline"
+              >
                 {{ tarea.text }}
               </div>
-              <input v-else @blur="controlarBlur(tarea)" v-model="tarea.text" class="w-full" />
 
+              <input
+                v-else
+                @blur="controlarBlur(tarea)"
+                v-model="tarea.text"
+                class="w-full"
+              />
 
-
-              <div @click.stop="borrarTarea(tarea.id)" :class="{ 'mostrar': mostrarPapelera === tarea.id }"
-                class="papelera bg-gray-300/80 h-full absolute right-0 top-0 flex items-center px-1 rounded-xs">
+              <div
+                @click.stop="borrarTarea(tarea.id)"
+                :class="{ mostrar: mostrarPapelera === tarea.id }"
+                class="papelera bg-gray-300/80 h-full absolute right-0 top-0 flex items-center px-1 rounded-xs"
+              >
                 <Trash2
-                  class="text-gray-500 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out" />
+                  class="text-gray-500 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
+                />
               </div>
+
             </li>
-          </ul>
+
+          </template>
+        </draggable>
 
           <!-- crear Tarea -->
           <button @click="crearTarea(tarjeta.id)"
