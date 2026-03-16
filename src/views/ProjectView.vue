@@ -422,7 +422,36 @@ async function actualizarCompletada(tarea) {
 }
 
 // MOVER TAREAS
+async function moverTarea(evt, cardId) {
+  if (!evt.added) return;
 
+  const tarea = evt.added.element;
+
+  console.log("tarea movida:", tarea.id);
+
+  const respuesta = await fetch("http://localhost:4000/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      query: `
+        mutation($taskId: Int!, $cardId: Int!) {
+          moveTask(taskId: $taskId, cardId: $cardId) {
+            id
+            cardId
+          }
+        }
+      `,
+      variables: {
+        taskId: Number(tarea.id),
+        cardId: Number(cardId)
+      }
+    })
+  });
+
+  const data = await respuesta.json();
+}
 </script>
 
 <style>
@@ -501,7 +530,7 @@ async function actualizarCompletada(tarea) {
         class="bg-neutral-100 shadow-xl flex flex-col justify-between p-6 rounded-xl mt-2 border-l-8 border-blue-300">
         <!-- Titulo -->
         <div class="flex flex-col pb-0 text-gray-800">
-          <span class="font-extralight text-2xl">Nombre del proyecto: </span>
+          <span class="font-extralight text-2xl ">Nombre del proyecto: </span>
           <h1 v-if="!editando" @click="editando = true" class="font-semibold text-4xl border-b pb-4">
             {{ proyecto.name }}
           </h1>
@@ -511,7 +540,7 @@ async function actualizarCompletada(tarea) {
         </div>
 
         <!-- Descripcion -->
-        <div class="flex gap-2 mt-4">
+        <div class="flex gap-2 mt-4 text-gray-800">
           <p class="font-semibold">Descripción:</p>
           <p v-if="!editando" @click="editando = true">
             {{ proyecto.description }}
@@ -522,7 +551,7 @@ async function actualizarCompletada(tarea) {
 
         <!-- Fecha y Miembros -->
 
-        <div class="text-base mt-2">
+        <div class="text-base mt-2 text-gray-800">
           <div class="flex justify-between">
             <div class="flex gap-2">
               <p class="font-semibold">Miembros:</p>
@@ -546,12 +575,12 @@ async function actualizarCompletada(tarea) {
           <!-- Titulo -->
           <div class="flex justify-between items-center">
 
-            <span v-if="editando !== tarjeta.id" @click="editando = tarjeta.id" class="text-3xl font-semibold">
+            <span v-if="editando !== tarjeta.id" @click="editando = tarjeta.id" class="text-3xl font-semibold text-gray-800">
               {{ tarjeta.titulo }}
             </span>
 
             <input v-else v-model="tarjeta.titulo" @blur="editando = null; actTituloTarjeta(tarjeta)"
-              class="w-full text-3xl font-semibold " />
+              class="w-full text-3xl font-semibold text-gray-800" />
 
 
 
@@ -569,7 +598,7 @@ async function actualizarCompletada(tarea) {
 
           <!-- TAREAS -->
         <draggable
-          @change="moverTarea"
+          @change="(evt) => moverTarea(evt, tarjeta.id)"
           v-model="tarjeta.tareas"
           group="tasks"
           item-key="id"
@@ -604,7 +633,7 @@ async function actualizarCompletada(tarea) {
               <div
                 v-if="editando !== tarea.id"
                 @click.stop="editando = editando === tarea.id ? null : tarea.id"
-                class="inline"
+                class="inline text-gray-800"
               >
                 {{ tarea.text }}
               </div>
@@ -613,7 +642,7 @@ async function actualizarCompletada(tarea) {
                 v-else
                 @blur="controlarBlur(tarea)"
                 v-model="tarea.text"
-                class="w-full"
+                class="w-full text-gray-800"
               />
 
               <div
