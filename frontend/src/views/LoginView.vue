@@ -4,7 +4,7 @@ import { House } from "lucide-vue-next";
 
 import Login from "../components/login/Login.vue";
 
-import { login } from "../../backend/api/auth";
+import { login } from "../../../backend/api/auth";
 import { useRouter } from "vue-router";
 
 import checkLogin from "../utils/checkLogin.js";
