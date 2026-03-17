@@ -6,6 +6,8 @@ import "../styles/scrollbar.css";
 import Navbar from "../components/Navbar.vue";
 import draggable from "vuedraggable";
 
+import { cargarProyecto, actNombreProyecto } from "../api/projects";
+
 // Declarar
 const route = useRoute();
 const usuario = ref(null);
@@ -44,34 +46,6 @@ onMounted(async () => {
   tarjetas.value = await cargarTarjetas(IDproyecto);
 });
 
-// CARGAR PROYECTO
-async function cargarProyecto(IDproyecto) {
-  const respuesta = await fetch("http://localhost:4000/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      query: `
-          query($id: Int!) {
-          project(id: $id) {
-            id
-            name
-            description
-            createdAt
-          }
-        }
-        `,
-      variables: {
-        id: Number(IDproyecto),
-      },
-    }),
-  });
-
-  const data = await respuesta.json();
-
-  return data.data.project;
-}
 
 // Cargar tarjetas
 async function cargarTarjetas(IDproyecto) {
@@ -278,33 +252,6 @@ function controlarBlur(tarea) {
 // ACTUALIZAR
 const editando = ref(null);
 
-// Nombre proyecto
-async function actNombreProyecto(proyecto) {
-
-  const respuesta = await fetch("http://localhost:4000/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      query: `
-        mutation($projectId: Int!, $name: String!) {
-          updateProjectName(projectId: $projectId, name: $name) {
-            id
-            name
-          }
-        }
-      `,
-      variables: {
-        projectId: Number(proyecto.id),
-        name: proyecto.name
-      }
-    })
-  })
-
-  const data = await respuesta.json();
-
-}
 
 // Actualizar descripcion proyecto
 async function actDescProyecto(proyecto) {
@@ -534,7 +481,7 @@ async function moverTarea(evt, cardId) {
           <h1 v-if="!editando" @click="editando = true" class="font-semibold text-4xl border-b pb-4">
             {{ proyecto.name }}
           </h1>
-          <input v-else v-model="proyecto.name" @blur="editando = false; actNombreProyecto(proyecto)"
+          <input v-else v-model="proyecto.name" @blur="editando = false; actNombreProyecto(proyecto.id, proyecto.name)"
             class="w-full font-semibold text-4xl border-b pb-4"></input>
 
         </div>
