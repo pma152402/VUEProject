@@ -1,0 +1,43 @@
+
+/* PAPELERA TAREAS */
+.tarea .papelera {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+/* escritorio */
+.tarea:hover .papelera {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* para movil */
+.tarea .papelera.mostrar {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+
+/* PAPELERA TARJETAS */
+.tarjeta .papeleraTarjeta {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+/* escritorio */
+.tarjeta:hover .papeleraTarjeta {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* movil */
+.tarjeta .papeleraTarjeta.mostrar {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sortable-ghost {
+  opacity: 0.4;
+}

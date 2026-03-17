@@ -3,11 +3,12 @@ import { Trash2, Check, Columns3, Plus, BrushCleaning } from "lucide-vue-next";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import "../styles/scrollbar.css";
+import "../styles/project.css";
 import Navbar from "../components/Navbar.vue";
 import draggable from "vuedraggable";
 
 import { cargarProyecto, actNombreProyecto, actDescProyecto } from "../api/projects";
-import { crearTarjetaAPI, cargarTarjetas, borrarTarjetaAPI, actTituloTarjeta, borrarTodasAPI  } from "../api/cards";
+import { crearTarjetaAPI, cargarTarjetas, borrarTarjetaAPI, actTituloTarjeta, borrarTodasAPI, crearPET  } from "../api/cards";
 import { crearTareaAPI, borrarTareaAPI, actualizarTarea, actualizarCompletadaAPI, moverTareaAPI  } from "../api/tasks";
 
 // Declarar
@@ -21,12 +22,14 @@ const hoverTarea = ref("");
 const editando = ref(null);
 
 const mostrarOpTodas = ref(false);
+
+const mostrarOpPET = ref(false);
 // definir TARJETAS
 const tarjetas = ref([
   {
     id: 1,
-    titulo: "Por hacer:",
-    tareas: ["Tarea de ejemplo", "Crea todas las tareas que necesites"],
+    titulo: "",
+    tareas: [],
   },
 ]);
 
@@ -91,6 +94,26 @@ async function borrarTodas() {
 
   tarjetas.value = [];
 }
+
+// Crear plantilla PET
+async function crearPlantillaPET() {
+
+  await borrarTodas();
+
+  const nuevasTarjetas = await crearPET(IDproyecto);
+
+  if (!nuevasTarjetas) return;
+
+  // reemplazar todas las tarjetas
+  tarjetas.value = nuevasTarjetas.map(card => ({
+    id: card.id,
+    titulo: card.title,
+    tareas: [] // luego puedes recargar tareas si quieres
+  }));
+
+  tarjetas.value = await cargarTarjetas(IDproyecto);
+}
+
 
 // TAREAS 
 // Crear Tarea
@@ -158,50 +181,6 @@ async function moverTarea(evt, cardId) {
 }
 </script>
 
-<style>
-/* PAPELERA TAREAS */
-.tarea .papelera {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s;
-}
-
-/* escritorio */
-.tarea:hover .papelera {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* para movil */
-.tarea .papelera.mostrar {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-
-/* PAPELERA TARJETAS */
-.tarjeta .papeleraTarjeta {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s;
-}
-
-/* escritorio */
-.tarjeta:hover .papeleraTarjeta {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* movil */
-.tarjeta .papeleraTarjeta.mostrar {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.sortable-ghost {
-  opacity: 0.4;
-}
-</style>
 
 <template>
   <div
@@ -242,6 +221,26 @@ async function moverTarea(evt, cardId) {
           Eliminar
         </button>
         <button @click="mostrarOpTodas = false"
+          class="bg-gray-400/80 px-2 py-1 font-semibold rounded-full hover:scale-110 transition-all duration-200 ease-in-out hover:cursor-pointer">
+          Cancelar
+        </button>
+      </div>
+    </div>
+
+    <!-- c) Crear plantilla PET -->
+    <div v-if="mostrarOpPET"
+      class="z-100 shadow-xl hover:scale-105 font-semibold transition-all duration-200 ease-in-out rounded-xl border-2 border-gray-400 bg-neutral-200 px-8 py-6 flex-col absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      Se creará una plantilla PET, sustituyendo todas tus tarjetas.
+
+      <div class="flex justify-center gap-3 text-sm mt-4">
+        <button @click="
+          crearPlantillaPET();
+          mostrarOpPET = false;
+        "
+          class="bg-red-400 px-2 py-1 font-semibold rounded-full hover:scale-110 transition-all duration-200 ease-in-out hover:cursor-pointer">
+          Confirmar
+        </button>
+        <button @click="mostrarOpPET = false"
           class="bg-gray-400/80 px-2 py-1 font-semibold rounded-full hover:scale-110 transition-all duration-200 ease-in-out hover:cursor-pointer">
           Cancelar
         </button>
@@ -299,7 +298,8 @@ async function moverTarea(evt, cardId) {
       <div class="bg-neutral-100 mx-auto px-2 pb-1 rounded-b-3xl">
         <div
           class=" bg-neutral-200 flex justify-between mx-auto w-5xl rounded-b-2xl px-10 text-sm text-gray-400 font-semibold py-1">
-          <span class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Plantilla
+          <span @click="mostrarOpPET = true" 
+            class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Plantilla
             PET 
             <Columns3 class="w-4 pb-0.5" />
           </span>
