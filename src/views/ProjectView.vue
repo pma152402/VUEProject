@@ -6,7 +6,7 @@ import "../styles/scrollbar.css";
 import Navbar from "../components/Navbar.vue";
 import draggable from "vuedraggable";
 
-import { cargarProyecto, actNombreProyecto } from "../api/projects";
+import { cargarProyecto, actNombreProyecto, actDescProyecto } from "../api/projects";
 
 // Declarar
 const route = useRoute();
@@ -253,35 +253,6 @@ function controlarBlur(tarea) {
 const editando = ref(null);
 
 
-// Actualizar descripcion proyecto
-async function actDescProyecto(proyecto) {
-
-  const respuesta = await fetch("http://localhost:4000/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      query: `
-        mutation($projectId: Int!, $description: String!) {
-          updateProjectDescription(projectId: $projectId, description: $description) {
-            id
-            description
-          }
-        }
-      `,
-      variables: {
-        projectId: Number(proyecto.id),
-        description: proyecto.description
-      }
-    })
-  })
-
-  const data = await respuesta.json();
-
-}
-
-
 // Actualizar titulo tarjeta
 async function actTituloTarjeta(tarjeta) {
 
@@ -492,7 +463,7 @@ async function moverTarea(evt, cardId) {
           <p v-if="!editando" @click="editando = true">
             {{ proyecto.description }}
           </p>
-          <input v-else v-model="proyecto.description" @blur="editando = false; actDescProyecto(proyecto)"
+          <input v-else v-model="proyecto.description" @blur="editando = false; actDescProyecto(proyecto.id, proyecto.description)"
             class="w-full"></input>
         </div>
 

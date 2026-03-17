@@ -29,7 +29,7 @@ export async function cargarProyecto(IDproyecto) {
   return data.data.project;
 }
 
-// Nombre proyecto
+// ACTUALIZAR NOMBRE PROYECTO
 export async function actNombreProyecto(projectId, name) {
 
   const respuesta = await fetch(URL, {
@@ -55,6 +55,47 @@ export async function actNombreProyecto(projectId, name) {
 
   const data = await respuesta.json();
 
+  if (data.errors) {
+    console.error(data.errors);
+    return null;
+  }
+
   return data.data.updateProjectName;
+
+}
+
+
+// Actualizar descripcion proyecto
+export async function actDescProyecto(projectId, description) {
+
+  const respuesta = await fetch("http://localhost:4000/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      query: `
+        mutation($projectId: Int!, $description: String!) {
+          updateProjectDescription(projectId: $projectId, description: $description) {
+            id
+            description
+          }
+        }
+      `,
+      variables: {
+        projectId: Number(projectId),
+        description: description
+      }
+    })
+  })
+
+  const data = await respuesta.json();
+
+  if (data.errors) {
+    console.error(data.errors);
+    return null;
+  }
+
+  return data.data.updateProjectDescription;
 
 }
