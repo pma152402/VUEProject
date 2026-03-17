@@ -56,6 +56,7 @@ const typeDefs = `
     updateCompletedTask(taskId: Int!, completed: Boolean!): Task!
     moveTask(taskId: Int!, cardId: Int!): Task!
     deleteTask(taskId: Int!): Task!
+    cleanCompletedTasks(projectId: Int!): Int!
     createProject(name: String!, description: String!, ownerId: Int!): Project!
     updateProjectDescription(projectId: Int!, description: String!): Project!
     updateProjectName(projectId: Int!, name: String!): Project!
@@ -343,6 +344,24 @@ const resolvers = {
         },
       });
     },
+
+
+    // LIMPIAR COMPLETADAS
+    cleanCompletedTasks: async (_: any, args: any) => {
+      const resultado = await prisma.task.deleteMany({
+        where: {
+          completed: true,
+          card: {
+            projectId: args.projectId
+          }
+        },
+      });
+
+      return resultado.count;
+    },
+
+
+
     //
     createUser: async (_: any, args: any) => {
       return prisma.user.create({

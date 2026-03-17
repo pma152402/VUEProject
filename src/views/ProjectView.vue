@@ -9,7 +9,7 @@ import draggable from "vuedraggable";
 
 import { cargarProyecto, actNombreProyecto, actDescProyecto } from "../api/projects";
 import { crearTarjetaAPI, cargarTarjetas, borrarTarjetaAPI, actTituloTarjeta, borrarTodasAPI, crearPET  } from "../api/cards";
-import { crearTareaAPI, borrarTareaAPI, actualizarTarea, actualizarCompletadaAPI, moverTareaAPI  } from "../api/tasks";
+import { crearTareaAPI, borrarTareaAPI, actualizarTarea, actualizarCompletadaAPI, moverTareaAPI, limpiarTareasCompletadas  } from "../api/tasks";
 
 // Declarar
 const route = useRoute();
@@ -179,6 +179,19 @@ async function moverTarea(evt, cardId) {
 
   await moverTareaAPI(tarea.id, cardId);
 }
+// LIMPIAR TAREAS COMPLETADAS
+// Borrar todas las tarjetas
+async function limpiarTCompletadas() {
+
+  const borradas = await limpiarTareasCompletadas(IDproyecto);
+
+  if (borradas === null) return;
+
+  // recargar
+  tarjetas.value = await cargarTarjetas(IDproyecto);
+
+  console.log(`eliminadas ${borradas} tareas`);
+}
 </script>
 
 
@@ -253,15 +266,15 @@ async function moverTarea(evt, cardId) {
       <!-- 1. HACER CABECERA.VUE-->
       <!-- Cabecera -->
       <div v-if="proyecto"
-        class="bg-neutral-100 shadow-xl flex flex-col justify-between p-6 rounded-xl mt-2 border-l-8 border-blue-300">
+        class="bg-neutral-100 shadow-xl flex flex-col justify-between p-8 rounded-xl mt-2 border-l-8 border-blue-300">
         <!-- Titulo -->
-        <div class="flex flex-col pb-0 text-gray-800">
+        <div class="flex flex-col text-gray-800">
           <span class="font-extralight text-2xl ">Nombre del proyecto: </span>
-          <h1 v-if="!editando" @click="editando = true" class="font-semibold text-4xl border-b pb-4">
+          <h1 v-if="!editando" @click="editando = true" class="font-semibold text-5xl border-b pb-7">
             {{ proyecto.name }}
           </h1>
           <input v-else v-model="proyecto.name" @blur="editando = false; actNombreProyecto(proyecto.id, proyecto.name)"
-            class="w-full font-semibold text-4xl border-b pb-4"></input>
+            class="w-full font-semibold text-5xl border-b pb-4"></input>
 
         </div>
 
@@ -277,7 +290,7 @@ async function moverTarea(evt, cardId) {
 
         <!-- Fecha y Miembros -->
 
-        <div class="text-base mt-2 text-gray-800">
+        <div class="text-base mt-4 text-gray-800">
           <div class="flex justify-between">
             <div class="flex gap-2">
               <p class="font-semibold">Miembros:</p>
@@ -295,7 +308,7 @@ async function moverTarea(evt, cardId) {
 
       <!-- 2. HACER OPCIONES.VUE -->
       <!-- Opciones -->
-      <div class="bg-neutral-100 mx-auto px-2 pb-1 rounded-b-3xl">
+      <div v-if="proyecto" class="bg-neutral-100 mx-auto px-2 pb-1 rounded-b-3xl">
         <div
           class=" bg-neutral-200 flex justify-between mx-auto w-5xl rounded-b-2xl px-10 text-sm text-gray-400 font-semibold py-1">
           <span @click="mostrarOpPET = true" 
@@ -316,7 +329,8 @@ async function moverTarea(evt, cardId) {
             
             <Plus class="w-4 pb-0.5"/>
           </span>
-          <span class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Limpiar tareas
+          <span @click="limpiarTCompletadas"
+            class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Limpiar tareas
             completadas
             <BrushCleaning class="w-4 pb-0.5"/>
           </span>
