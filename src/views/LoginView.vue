@@ -26,22 +26,32 @@ const paso = ref(1);
 async function iniciarSesion() {
   const usuario = await login(email.value, contrasena.value);
 
-  console.log(usuario);
+  // errores usuario
+  if (usuario?.error) {
+    if (usuario.error.includes("contraseña")) {
+      errorContrasena.value = usuario.error;
+    }
 
+    if (usuario.error.includes("usuario")) {
+      errorEmail.value = usuario.error;
+    }
+
+    return;
+  }
+
+  // si pasa se guarda en localStorage
   if (usuario) {
-    // si hay usuario (ha pasado el login), lo guardo en localStorage *******
     localStorage.setItem("usuario", JSON.stringify(usuario));
 
     paso.value = 2;
 
-    // lo mando al panel con un timeout para que se vea la vista de paso == 2
     setTimeout(() => {
       router.push("/panel");
     }, 1500);
   }
 }
 
-// Limpiar el error cuando se escriba en cada campo (tengo q pasarlo a otro componente)
+// Limpiar el error cuando se escriba en cada campo
 watch(email, () => {
   errorEmail.value = "";
 });
