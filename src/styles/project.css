@@ -41,3 +41,8 @@
 .sortable-ghost {
   opacity: 0.4;
 }
+
+.sortable-chosen,
+.sortable-drag {
+  user-select: none;
+}

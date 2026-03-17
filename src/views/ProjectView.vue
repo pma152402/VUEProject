@@ -274,7 +274,7 @@ async function limpiarTCompletadas() {
             {{ proyecto.name }}
           </h1>
           <input v-else v-model="proyecto.name" @blur="editando = false; actNombreProyecto(proyecto.id, proyecto.name)"
-            class="w-full font-semibold text-5xl border-b pb-4"></input>
+            class="w-full font-semibold text-5xl border-b pb-7"></input>
 
         </div>
 
@@ -364,7 +364,7 @@ async function limpiarTCompletadas() {
 
           <!-- TAREAS -->
           <draggable @change="(evt) => moverTarea(evt, tarjeta.id)" v-model="tarjeta.tareas" group="tasks" item-key="id"
-            class="mt-5 text-lg overflow-y-auto max-h-70 h-fit">
+            class="mt-5 text-lg overflow-y-auto max-h-60 h-fit">
             <template #item="{ element: tarea }">
 
               <li :class="[

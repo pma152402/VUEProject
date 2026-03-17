@@ -104,7 +104,7 @@ function comprobarLogin() {
             <!-- </RouterLink> -->
           </div>
 
-          <div v-if="paso === 2" class="pb-10">
+          <div v-if="paso === 2" class="pb-10 -mt-10">
             <h3>¡Enhorabuena!</h3>
             <p>Has iniciado sesión correctamente.</p>
           </div>

@@ -70,6 +70,7 @@ function mostrarOpciones() {
       </div>
 
       <div class="flex flex-col items-end justify-end">
+        <!-- 
         <Transition name="item">
           <RouterLink to="/" v-if="estado"
             ><span
@@ -78,7 +79,8 @@ function mostrarOpciones() {
             ></RouterLink
           >
         </Transition>
-
+        -->
+        
         <Transition name="item">
           <RouterLink to="/panel" v-if="estado" class="delay-1">
             <span
