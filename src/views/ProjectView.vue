@@ -260,7 +260,7 @@ async function limpiarTCompletadas() {
       </div>
     </div>
 
-    <div class="lg:min-w-7xl max-w-7xl flex flex-col relative">
+    <div class="w-full max-w-7xl flex flex-col relative">
       <!-- NAV -->
       <Navbar class="mt-2 mr-1"></Navbar>
       <!-- 1. HACER CABECERA.VUE-->
@@ -279,7 +279,7 @@ async function limpiarTCompletadas() {
         </div>
 
         <!-- Descripcion -->
-        <div class="flex gap-2 mt-4 text-gray-800">
+        <div class="flex flex-col sm:flex-row gap-2 mt-4 text-gray-800">
           <p class="font-semibold">Descripción:</p>
           <p v-if="!editando" @click="editando = true">
             {{ proyecto.description }}
@@ -291,8 +291,8 @@ async function limpiarTCompletadas() {
         <!-- Fecha y Miembros -->
 
         <div class="text-base mt-4 text-gray-800">
-          <div class="flex justify-between">
-            <div class="flex gap-2">
+          <div class="flex flex-col sm:flex-row gap-4 sm:gap-0 justify-between">
+            <div class="flex  gap-2">
               <p class="font-semibold">Miembros:</p>
               <p v-if="usuario">{{ usuario.name }}</p>
             </div>
@@ -310,7 +310,7 @@ async function limpiarTCompletadas() {
       <!-- Opciones -->
       <div v-if="proyecto" class="bg-neutral-100 mx-auto px-2 pb-1 rounded-b-3xl">
         <div
-          class=" bg-neutral-200 flex justify-between mx-auto w-5xl rounded-b-2xl px-10 text-sm text-gray-400 font-semibold py-1">
+          class=" bg-neutral-200 flex flex-col gap-2 md:gap-15 xl:gap-40  sm:flex-row rounded-b-2xl px-10 text-sm text-gray-400 font-semibold py-1">
           <span @click="mostrarOpPET = true" 
             class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Plantilla
             PET 
@@ -339,7 +339,7 @@ async function limpiarTCompletadas() {
 
       <!-- LOCURA.VUE -->
       <!-- Contenedor Tarjetas -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-10 overflow-x-auto h-full pb-20">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10 overflow-x-auto h-full pb-20">
         <!-- Tarjetas -->
         <div v-for="tarjeta in tarjetas" :key="tarjeta.id"
           class=" tarjeta shadow-lg h-fit bg-neutral-100 px-4 py-6 rounded-xl border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-101 transition-all ease-in-out duration-350 m-1">
