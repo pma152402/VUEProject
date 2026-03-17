@@ -22,6 +22,8 @@ const hoverTarea = ref("");
 const editando = ref(null);
 
 const mostrarOpTodas = ref(false);
+
+const mostrarOpPET = ref(false);
 // definir TARJETAS
 const tarjetas = ref([
   {
@@ -225,6 +227,26 @@ async function moverTarea(evt, cardId) {
       </div>
     </div>
 
+    <!-- c) Crear plantilla PET -->
+    <div v-if="mostrarOpPET"
+      class="z-100 shadow-xl hover:scale-105 font-semibold transition-all duration-200 ease-in-out rounded-xl border-2 border-gray-400 bg-neutral-200 px-8 py-6 flex-col absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      Se creará una plantilla PET, sustituyendo todas tus tarjetas.
+
+      <div class="flex justify-center gap-3 text-sm mt-4">
+        <button @click="
+          crearPlantillaPET();
+          mostrarOpPET = false;
+        "
+          class="bg-red-400 px-2 py-1 font-semibold rounded-full hover:scale-110 transition-all duration-200 ease-in-out hover:cursor-pointer">
+          Confirmar
+        </button>
+        <button @click="mostrarOpPET = false"
+          class="bg-gray-400/80 px-2 py-1 font-semibold rounded-full hover:scale-110 transition-all duration-200 ease-in-out hover:cursor-pointer">
+          Cancelar
+        </button>
+      </div>
+    </div>
+
     <div class="lg:min-w-7xl max-w-7xl flex flex-col relative">
       <!-- NAV -->
       <Navbar class="mt-2 mr-1"></Navbar>
@@ -276,7 +298,7 @@ async function moverTarea(evt, cardId) {
       <div class="bg-neutral-100 mx-auto px-2 pb-1 rounded-b-3xl">
         <div
           class=" bg-neutral-200 flex justify-between mx-auto w-5xl rounded-b-2xl px-10 text-sm text-gray-400 font-semibold py-1">
-          <span @click="crearPlantillaPET" 
+          <span @click="mostrarOpPET = true" 
             class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Plantilla
             PET 
             <Columns3 class="w-4 pb-0.5" />
