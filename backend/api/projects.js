@@ -1,4 +1,4 @@
-const URL = "https://organizer-5tll.onrender.com";
+const URL = "https://organizer-5tll.onrender.com/graphql";
 
 // CARGAR PROYECTO
 export async function cargarProyecto(IDproyecto) {

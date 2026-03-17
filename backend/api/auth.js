@@ -1,6 +1,6 @@
 export async function login(email, password) {
 
-  const res = await fetch("https://organizer-5tll.onrender.com", {
+  const res = await fetch("https://organizer-5tll.onrender.com/graphql", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
