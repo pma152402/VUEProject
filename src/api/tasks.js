@@ -169,3 +169,33 @@ export async function moverTareaAPI(taskId, cardId) {
 
   return data.data.moveTask;
 }
+
+// Borrar completadas
+export async function limpiarTareasCompletadas(projectId) {
+
+  const respuesta = await fetch(URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      query: `
+        mutation($projectId: Int!) {
+          cleanCompletedTasks(projectId: $projectId)
+        }
+      `,
+      variables: {
+        projectId: Number(projectId)
+      }
+    })
+  });
+
+  const data = await respuesta.json();
+
+  if (data.errors) {
+    console.error(data.errors);
+    return null;
+  }
+
+  return data.data.cleanCompletedTasks; // devuelve la cantidad de tareas q he borrado
+}

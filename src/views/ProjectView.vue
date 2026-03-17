@@ -9,7 +9,7 @@ import draggable from "vuedraggable";
 
 import { cargarProyecto, actNombreProyecto, actDescProyecto } from "../api/projects";
 import { crearTarjetaAPI, cargarTarjetas, borrarTarjetaAPI, actTituloTarjeta, borrarTodasAPI, crearPET  } from "../api/cards";
-import { crearTareaAPI, borrarTareaAPI, actualizarTarea, actualizarCompletadaAPI, moverTareaAPI  } from "../api/tasks";
+import { crearTareaAPI, borrarTareaAPI, actualizarTarea, actualizarCompletadaAPI, moverTareaAPI, limpiarTareasCompletadas  } from "../api/tasks";
 
 // Declarar
 const route = useRoute();
@@ -179,6 +179,19 @@ async function moverTarea(evt, cardId) {
 
   await moverTareaAPI(tarea.id, cardId);
 }
+// LIMPIAR TAREAS COMPLETADAS
+// Borrar todas las tarjetas
+async function limpiarTCompletadas() {
+
+  const borradas = await limpiarTareasCompletadas(IDproyecto);
+
+  if (borradas === null) return;
+
+  // recargar
+  tarjetas.value = await cargarTarjetas(IDproyecto);
+
+  console.log(`eliminadas ${borradas} tareas`);
+}
 </script>
 
 
@@ -316,7 +329,8 @@ async function moverTarea(evt, cardId) {
             
             <Plus class="w-4 pb-0.5"/>
           </span>
-          <span class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Limpiar tareas
+          <span @click="limpiarTCompletadas"
+            class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Limpiar tareas
             completadas
             <BrushCleaning class="w-4 pb-0.5"/>
           </span>
