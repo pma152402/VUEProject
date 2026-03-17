@@ -242,7 +242,7 @@ async function clonarProyecto(projectId) {
                   class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
                 />
                 <Share2
-                  class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
+                  class="w-4 text-gray-400"
                 />
                 <Trash2
                   @click="
