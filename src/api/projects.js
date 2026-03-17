@@ -65,7 +65,7 @@ export async function actNombreProyecto(projectId, name) {
 }
 
 
-// Actualizar descripcion proyecto
+// ACTUALIZAR DESCRIPCION PROYECTO
 export async function actDescProyecto(projectId, description) {
 
   const respuesta = await fetch("http://localhost:4000/graphql", {

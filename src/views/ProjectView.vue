@@ -7,7 +7,7 @@ import Navbar from "../components/Navbar.vue";
 import draggable from "vuedraggable";
 
 import { cargarProyecto, actNombreProyecto, actDescProyecto } from "../api/projects";
-
+import { crearTarjetaAPI } from "../api/cards";
 // Declarar
 const route = useRoute();
 const usuario = ref(null);
@@ -99,33 +99,12 @@ async function cargarTarjetas(IDproyecto) {
 // Crear Tarjeta
 async function crearTarjeta() {
 
-  const respuesta = await fetch("http://localhost:4000/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      query: `
-          mutation($title: String!, $projectId: Int!) {
-          createCard(title: $title, projectId: $projectId) {
-            id
-            title
-          }
-        }
-        `,
-      variables: {
-        title: "Nueva tarjeta",
-        projectId: Number(IDproyecto),
-      },
-    }),
-  });
-
-  const data = await respuesta.json();
+  const nuevaTarjeta = await crearTarjetaAPI(IDproyecto);
 
 
   tarjetas.value.push({
-    id: data.data.createCard.id,
-    titulo: data.data.createCard.title,
+    id: nuevaTarjeta.id,
+    titulo: nuevaTarjeta.title,
     tareas: []
   });
 }
