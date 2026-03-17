@@ -1,5 +1,5 @@
 <script setup>
-import { Trash2, Check } from "lucide-vue-next";
+import { Trash2, Check, Columns3, Plus, BrushCleaning } from "lucide-vue-next";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import "../styles/scrollbar.css";
@@ -571,15 +571,26 @@ async function moverTarea(evt, cardId) {
       <div class="bg-neutral-100 mx-auto px-2 pb-1 rounded-b-3xl">
         <div
           class=" bg-neutral-200 flex justify-between mx-auto w-5xl rounded-b-2xl px-10 text-sm text-gray-400 font-semibold py-1">
-          <span class="hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Crear plantilla
-            PET</span>
-          <span class="hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Borrar todas
-            las tarjetas</span>
+          <span class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Plantilla
+            PET 
+            <Columns3 class="w-4 pb-0.5" />
+          </span>
+
+          <span class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Borrar todas
+            las tarjetas
+            <Trash2 class="w-4 pb-0.5" />
+          </span>
           <span @click="crearTarjeta"
-            class="hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">+ Añadir
-            tarjeta</span>
-          <span class="hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Limpiar tareas
-            completadas</span>
+            class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">
+            Añadir
+            tarjeta
+            
+            <Plus class="w-4 pb-0.5"/>
+          </span>
+          <span class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Limpiar tareas
+            completadas
+            <BrushCleaning class="w-4 pb-0.5"/>
+          </span>
         </div>
       </div>
 
@@ -615,7 +626,7 @@ async function moverTarea(evt, cardId) {
 
           <!-- TAREAS -->
           <draggable @change="(evt) => moverTarea(evt, tarjeta.id)" v-model="tarjeta.tareas" group="tasks" item-key="id"
-            class="mt-5 text-lg overflow-y-auto max-h-65 h-fit">
+            class="mt-5 text-lg overflow-y-auto max-h-70 h-fit">
             <template #item="{ element: tarea }">
 
               <li :class="[

@@ -15,14 +15,14 @@ transition: scrollbar-color 0.5s ease-in;
 }
 
 *::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--scrollbar-thumb), #8c589c);
+  background: linear-gradient(180deg, var(--scrollbar-thumb), #1e1e1e);
   border-radius: 10px;
   border: 2px solid var(--scrollbar-track);
   transition: background 0.3s ease;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #c986da, #a268b3);
+  background: linear-gradient(180deg, #1d1d1d, #1e1e1e);
 }
 
 *::-webkit-scrollbar-corner {
