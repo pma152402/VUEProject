@@ -146,3 +146,34 @@ export async function actTituloTarjeta(cardId, title) {
 
   return data.data.updateCardTitle;
 }
+
+export async function borrarTodasAPI(projectId) {
+
+  const respuesta = await fetch("http://localhost:4000/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      query: `
+        mutation($projectId: Int!) {
+          deleteAllCards(projectId: $projectId) {
+            id
+          }
+        }
+      `,
+      variables: {
+        projectId: Number(projectId)
+      }
+    })
+  });
+
+  const data = await respuesta.json();
+
+  if (data.errors) {
+    console.error(data.errors);
+    return null;
+  }
+
+  return data.data.deleteAllCards;
+}

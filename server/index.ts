@@ -49,6 +49,7 @@ const typeDefs = `
     createCard(title: String!, projectId: Int!): Card!
     updateCardTitle(cardId: Int!, title: String!): Card!
     deleteCard(cardId: Int!): Card
+    deleteAllCards(projectId: Int!): [Card!]!
     createTask(text: String!, cardId: Int!): Task!
     updateTask(taskId: Int!, text: String!): Task!
     updateCompletedTask(taskId: Int!, completed: Boolean!): Task!
@@ -170,21 +171,21 @@ const resolvers = {
     },
 
     // Clonar proyecto
-     cloneProject: async (_: any, args: any) => {
+    cloneProject: async (_: any, args: any) => {
       const original = await prisma.project.findUnique({
         where: { id: args.projectId },
         include: {
           cards: {
             include: {
-              tasks: true
-            }
-          }
-        }
-      })
+              tasks: true,
+            },
+          },
+        },
+      });
 
       // si no esta
       if (!original) {
-        throw new Error("El proyecto no se encuentra")
+        throw new Error("El proyecto no se encuentra");
       }
 
       // crear nuevo proyecto
@@ -192,33 +193,32 @@ const resolvers = {
         data: {
           name: original.name + " (Copia) ",
           description: original.description,
-          ownerId: args.ownerId
-        }
-      })
+          ownerId: args.ownerId,
+        },
+      });
 
       // copiar tarjetas
       for (const card of original.cards) {
-
         const nuevaCard = await prisma.card.create({
           data: {
             title: card.title,
-            projectId: nuevoProyecto.id
-          }
-        })
+            projectId: nuevoProyecto.id,
+          },
+        });
 
         // copiar tareas
         if (card.tasks.length > 0) {
           await prisma.task.createMany({
-            data: card.tasks.map(task => ({
+            data: card.tasks.map((task) => ({
               text: task.text,
               completed: task.completed,
-              cardId: nuevaCard.id
-            }))
-          })
+              cardId: nuevaCard.id,
+            })),
+          });
         }
       }
 
-    return nuevoProyecto
+      return nuevoProyecto;
     },
 
     createCard: async (_: any, args: any) => {
@@ -236,6 +236,22 @@ const resolvers = {
           id: args.cardId,
         },
       });
+    },
+
+    deleteAllCards: async (_: any, args: any) => {
+      const tarjetas = await prisma.card.findMany({
+        where: {
+          projectId: args.projectId,
+        },
+      });
+
+      await prisma.card.deleteMany({
+        where: {
+          projectId: args.projectId,
+        },
+      });
+
+      return tarjetas;
     },
 
     updateCardTitle: async (_: any, args: any) => {
@@ -284,15 +300,14 @@ const resolvers = {
     moveTask: async (_: any, args: any) => {
       const tareaActualizada = await prisma.task.update({
         where: {
-          id: args.taskId
+          id: args.taskId,
         },
         data: {
-          cardId: args.cardId
-        }
+          cardId: args.cardId,
+        },
       });
 
       return tareaActualizada;
-
     },
 
     deleteTask: async (_: any, args: any) => {
