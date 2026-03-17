@@ -6,13 +6,17 @@ import "../styles/scrollbar.css";
 import Navbar from "../components/Navbar.vue";
 import draggable from "vuedraggable";
 
-import { cargarProyecto, actNombreProyecto } from "../api/projects";
+import { cargarProyecto, actNombreProyecto, actDescProyecto } from "../api/projects";
+import { crearTarjetaAPI, cargarTarjetas, borrarTarjetaAPI, actTituloTarjeta  } from "../api/cards";
+import { crearTareaAPI, borrarTareaAPI, actualizarTarea, actualizarCompletadaAPI, moverTareaAPI  } from "../api/tasks";
 
 // Declarar
 const route = useRoute();
 const usuario = ref(null);
 const proyecto = ref(null);
 const IDproyecto = route.params.id;
+const editando = ref(null);
+const hoverTarea = ref("");
 
 // definir TARJETAS
 const tarjetas = ref([
@@ -26,8 +30,6 @@ const tarjetas = ref([
 
 // Contenedor general para referenciar las tarjetas y tareas
 const mostrarPapelera = ref(null);
-let tareaActiva = null;
-let tarjetaActiva = null;
 
 // CARGAR
 // al cargar..
@@ -47,125 +49,18 @@ onMounted(async () => {
 });
 
 
-// Cargar tarjetas
-async function cargarTarjetas(IDproyecto) {
-
-  const respuesta = await fetch("http://localhost:4000/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      query: `
-          query($projectId: Int!) {
-            cards(projectId: $projectId) {
-              id
-              title
-              tasks {
-                id
-                text
-                completed
-              }
-            }
-          }
-        `,
-      variables: {
-        projectId: Number(IDproyecto),
-      },
-    }),
-  });
-
-  const data = await respuesta.json();
-
-  console.log(data);
-
-  // Si hay error en GraphQL
-  if (!data.data) {
-    console.error(data.errors);
-    return [];
-  }
-
-  // Transformar datos para el frontend
-  return data.data.cards.map(card => ({
-    id: card.id,
-    titulo: card.title,
-    tareas: card.tasks
-  }));
-
-}
-
-// CREAR
-
+// TARJETAS
 // Crear Tarjeta
 async function crearTarjeta() {
 
-  const respuesta = await fetch("http://localhost:4000/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      query: `
-          mutation($title: String!, $projectId: Int!) {
-          createCard(title: $title, projectId: $projectId) {
-            id
-            title
-          }
-        }
-        `,
-      variables: {
-        title: "Nueva tarjeta",
-        projectId: Number(IDproyecto),
-      },
-    }),
-  });
-
-  const data = await respuesta.json();
-
+  const nuevaTarjeta = await crearTarjetaAPI(IDproyecto);
 
   tarjetas.value.push({
-    id: data.data.createCard.id,
-    titulo: data.data.createCard.title,
+    id: nuevaTarjeta.id,
+    titulo: nuevaTarjeta.title,
     tareas: []
   });
 }
-
-// Crear Tarea
-async function crearTarea(cardId) {
-
-  const text = "Nueva tarea..";
-
-  const respuesta = await fetch("http://localhost:4000/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      query: `
-        mutation($text: String!, $cardId: Int!) {
-          createTask(text: $text, cardId: $cardId) {
-            id
-            text
-          }
-        }
-      `,
-      variables: {
-        text: text,
-        cardId: Number(cardId)
-      }
-    })
-  })
-
-  const data = await respuesta.json()
-
-  // recargar tarjetas
-  const tarjeta = tarjetas.value.find(t => t.id === cardId)
-  tarjeta.tareas.push(data.data.createTask)
-}
-
-
-// BORRAR
-
 // Borrar tarjeta
 const mostrarBT = ref(false);
 const tituloBT = ref("");
@@ -174,57 +69,36 @@ async function borrarTarjeta(idTarjeta) {
 
   if (!idTarjeta) return;
 
-  const respuesta = await fetch("http://localhost:4000/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      query: `
-        mutation($cardId: Int!) {
-          deleteCard(cardId: $cardId) {
-            id
-          }
-        }
-      `,
-      variables: {
-        cardId: Number(idTarjeta),
-      },
-    }),
-  });
+  const tarjetaBorrada = await borrarTarjetaAPI(idTarjeta);
 
-  const data = await respuesta.json();
+  if (!tarjetaBorrada) return;
 
-
-  tarjetas.value = tarjetas.value.filter((tarjeta) => tarjeta.id !== idTarjeta);
+  tarjetas.value = tarjetas.value.filter(
+    tarjeta => tarjeta.id !== idTarjeta
+  );
 
 }
 
+// TAREAS 
+// Crear Tarea
+async function crearTarea(cardId) {
+
+  const nuevaTarea = await crearTareaAPI(cardId, "Nueva tarea..");
+
+  if (!nuevaTarea) return;
+
+  const tarjeta = tarjetas.value.find(t => t.id === cardId);
+
+  tarjeta.tareas.push(nuevaTarea);
+}
 // Borrar tarea
 async function borrarTarea(idTarea) {
 
   if (!idTarea) return;
 
-  const respuesta = await fetch("http://localhost:4000/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      query: `
-        mutation($taskId: Int!) {
-          deleteTask(taskId: $taskId) {
-            id
-          }
-        }
-      `,
-      variables: {
-        taskId: Number(idTarea),
-      },
-    }),
-  });
+  const tareaBorrada = await borrarTareaAPI(idTarea);
 
-  const data = await respuesta.json();
+  if (!tareaBorrada) return;
 
   // eliminar tarea del estado
   tarjetas.value.forEach((tarjeta) => {
@@ -233,171 +107,41 @@ async function borrarTarea(idTarea) {
     );
   });
 
-
-  // limpiar estados de interfaz
+  // limpiar estados
   mostrarPapelera.value = null;
   editando.value = null;
-
 }
-
 // Controlar Blur para eliminar la tarea
 function controlarBlur(tarea) {
   if (editando.value === tarea.id) {
     editando.value = null;
-    actualizarTarea(tarea);
+    actualizarTarea(tarea.id, tarea.text);
   }
 }
-
-
-// ACTUALIZAR
-const editando = ref(null);
-
-
-// Actualizar descripcion proyecto
-async function actDescProyecto(proyecto) {
-
-  const respuesta = await fetch("http://localhost:4000/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      query: `
-        mutation($projectId: Int!, $description: String!) {
-          updateProjectDescription(projectId: $projectId, description: $description) {
-            id
-            description
-          }
-        }
-      `,
-      variables: {
-        projectId: Number(proyecto.id),
-        description: proyecto.description
-      }
-    })
-  })
-
-  const data = await respuesta.json();
-
-}
-
-
-// Actualizar titulo tarjeta
-async function actTituloTarjeta(tarjeta) {
-
-  await fetch("http://localhost:4000/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      query: `
-        mutation($cardId: Int!, $title: String!) {
-          updateCardTitle(cardId: $cardId, title: $title) {
-            id
-            title
-          }
-        }
-      `,
-      variables: {
-        cardId: Number(tarjeta.id),
-        title: tarjeta.titulo
-      }
-    })
-  })
-
-}
-
-async function actualizarTarea(tarea) {
-
-  const respuesta = await fetch("http://localhost:4000/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      query: `
-        mutation($taskId: Int!, $text: String!) {
-          updateTask(taskId: $taskId, text: $text) {
-            id
-            text
-          }
-        }
-      `,
-      variables: {
-        taskId: Number(tarea.id),
-        text: tarea.text
-      }
-    })
-  })
-
-  const data = await respuesta.json();
-
-}
-
-
-// Controlar check en tareas
-const hoverTarea = ref("");
-
 // Actualizar la tarea con check
 async function actualizarCompletada(tarea) {
-  const respuesta = await fetch("http://localhost:4000/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      query: `
-        mutation($taskId: Int!, $completed: Boolean!) {
-          updateCompletedTask(taskId: $taskId, completed: $completed) {
-            id
-            completed
-          }
-        }
-      `,
-      variables: {
-        taskId: Number(tarea.id),
-        completed: !tarea.completed
-      }
-    })
-  })
 
-  const data = await respuesta.json();
+  const nuevoEstado = !tarea.completed;
 
-  // actualizar frontend sin recargar
-  tarea.completed = !tarea.completed
+  const resultado = await actualizarCompletadaAPI(
+    tarea.id,
+    nuevoEstado
+  );
+
+  if (!resultado) return;
+
+  tarea.completed = nuevoEstado;
 }
-
 // MOVER TAREAS
 async function moverTarea(evt, cardId) {
+
   if (!evt.added) return;
 
   const tarea = evt.added.element;
 
   console.log("tarea movida:", tarea.id);
 
-  const respuesta = await fetch("http://localhost:4000/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      query: `
-        mutation($taskId: Int!, $cardId: Int!) {
-          moveTask(taskId: $taskId, cardId: $cardId) {
-            id
-            cardId
-          }
-        }
-      `,
-      variables: {
-        taskId: Number(tarea.id),
-        cardId: Number(cardId)
-      }
-    })
-  });
-
-  const data = await respuesta.json();
+  await moverTareaAPI(tarea.id, cardId);
 }
 </script>
 
@@ -492,7 +236,7 @@ async function moverTarea(evt, cardId) {
           <p v-if="!editando" @click="editando = true">
             {{ proyecto.description }}
           </p>
-          <input v-else v-model="proyecto.description" @blur="editando = false; actDescProyecto(proyecto)"
+          <input v-else v-model="proyecto.description" @blur="editando = false; actDescProyecto(proyecto.id, proyecto.description)"
             class="w-full"></input>
         </div>
 
@@ -554,7 +298,7 @@ async function moverTarea(evt, cardId) {
               {{ tarjeta.titulo }}
             </span>
 
-            <input v-else v-model="tarjeta.titulo" @blur="editando = null; actTituloTarjeta(tarjeta)"
+            <input v-else v-model="tarjeta.titulo" @blur="editando = null; actTituloTarjeta(tarjeta.id, tarjeta.titulo)"
               class="w-full text-2xl font-semibold text-gray-800" />
 
 
