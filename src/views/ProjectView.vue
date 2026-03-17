@@ -568,7 +568,7 @@ async function moverTarea(evt, cardId) {
       </div>
 
       <!-- Opciones -->
-      <div class="bg-neutral-100 mx-auto px-2 pb-1 rounded-b-3xl border-t">
+      <div class="bg-neutral-100 mx-auto px-2 pb-1 rounded-b-3xl">
         <div
           class=" bg-neutral-200 flex justify-between mx-auto w-5xl rounded-b-2xl px-10 text-sm text-gray-400 font-semibold py-1">
           <span class="hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Crear plantilla
@@ -597,7 +597,7 @@ async function moverTarea(evt, cardId) {
             </span>
 
             <input v-else v-model="tarjeta.titulo" @blur="editando = null; actTituloTarjeta(tarjeta)"
-              class="w-full text-3xl font-semibold text-gray-800" />
+              class="w-full text-2xl font-semibold text-gray-800" />
 
 
 
@@ -659,13 +659,20 @@ async function moverTarea(evt, cardId) {
             + Añadir tarea
           </button>
         </div>
+
       </div>
+
+      
+
+
       <!-- 
       <div @click="crearTarjeta"
         class="mb-6 bg-gray-100 px-4 py-2 rounded-xl max-h-12 hover:cursor-pointer hover:scale-105 transition-transform duration-200 ease-in-out hover:bg-white hover:text-gray-500 w-fit mx-auto">
         <span class="text-xl text-gray-400">+ Añadir tarjeta</span>
       </div>
       -->
+
+      
     </div>
   </div>
 </template>
