@@ -7,7 +7,7 @@ import Navbar from "../components/Navbar.vue";
 import draggable from "vuedraggable";
 
 import { cargarProyecto, actNombreProyecto, actDescProyecto } from "../api/projects";
-import { crearTarjetaAPI, cargarTarjetas, borrarTarjetaAPI, actTituloTarjeta  } from "../api/cards";
+import { crearTarjetaAPI, cargarTarjetas, borrarTarjetaAPI, actTituloTarjeta, borrarTodasAPI  } from "../api/cards";
 import { crearTareaAPI, borrarTareaAPI, actualizarTarea, actualizarCompletadaAPI, moverTareaAPI  } from "../api/tasks";
 
 // Declarar
@@ -15,9 +15,12 @@ const route = useRoute();
 const usuario = ref(null);
 const proyecto = ref(null);
 const IDproyecto = route.params.id;
-const editando = ref(null);
 const hoverTarea = ref("");
 
+// edicion
+const editando = ref(null);
+
+const mostrarOpTodas = ref(false);
 // definir TARJETAS
 const tarjetas = ref([
   {
@@ -77,6 +80,16 @@ async function borrarTarjeta(idTarjeta) {
     tarjeta => tarjeta.id !== idTarjeta
   );
 
+}
+
+// Borrar todas las tarjetas
+async function borrarTodas() {
+
+  const resultado = await borrarTodasAPI(IDproyecto);
+
+  if (!resultado) return;
+
+  tarjetas.value = [];
 }
 
 // TAREAS 
@@ -194,7 +207,8 @@ async function moverTarea(evt, cardId) {
   <div
     class="bg-gradient-to-t from-gray-400/50 to-gray-300/50 min-h-screen flex justify-center relative">
 
-    <!-- Borrar tarjeta -->
+    <!-- HACER MODALES.VUE-->
+    <!-- a) Borrar tarjeta -->
     <div v-if="mostrarBT"
       class="z-100 shadow-xl hover:scale-105 font-semibold transition-all duration-200 ease-in-out rounded-xl border-2 border-gray-400 bg-neutral-200 px-8 py-6 flex-col absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
       ¿Eliminar la tarjeta: "<p class="italic inline">{{ tituloBT }}</p>" ?
@@ -214,8 +228,30 @@ async function moverTarea(evt, cardId) {
       </div>
     </div>
 
+    <!-- b) Borrar todas las tarjetas -->
+    <div v-if="mostrarOpTodas"
+      class="z-100 shadow-xl hover:scale-105 font-semibold transition-all duration-200 ease-in-out rounded-xl border-2 border-gray-400 bg-neutral-200 px-8 py-6 flex-col absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+      ¿Estás seguro de eliminar todas las tarjetas?
+
+      <div class="flex justify-center gap-3 text-sm mt-4">
+        <button @click="
+          borrarTodas();
+          mostrarOpTodas = false;
+        "
+          class="bg-red-400 px-2 py-1 font-semibold rounded-full hover:scale-110 transition-all duration-200 ease-in-out hover:cursor-pointer">
+          Eliminar
+        </button>
+        <button @click="mostrarOpTodas = false"
+          class="bg-gray-400/80 px-2 py-1 font-semibold rounded-full hover:scale-110 transition-all duration-200 ease-in-out hover:cursor-pointer">
+          Cancelar
+        </button>
+      </div>
+    </div>
+
     <div class="lg:min-w-7xl max-w-7xl flex flex-col relative">
+      <!-- NAV -->
       <Navbar class="mt-2 mr-1"></Navbar>
+      <!-- 1. HACER CABECERA.VUE-->
       <!-- Cabecera -->
       <div v-if="proyecto"
         class="bg-neutral-100 shadow-xl flex flex-col justify-between p-6 rounded-xl mt-2 border-l-8 border-blue-300">
@@ -258,6 +294,7 @@ async function moverTarea(evt, cardId) {
         </div>
       </div>
 
+      <!-- 2. HACER OPCIONES.VUE -->
       <!-- Opciones -->
       <div class="bg-neutral-100 mx-auto px-2 pb-1 rounded-b-3xl">
         <div
@@ -267,7 +304,8 @@ async function moverTarea(evt, cardId) {
             <Columns3 class="w-4 pb-0.5" />
           </span>
 
-          <span class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Borrar todas
+          <span @click="mostrarOpTodas = true" 
+            class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Borrar todas
             las tarjetas
             <Trash2 class="w-4 pb-0.5" />
           </span>
@@ -285,6 +323,7 @@ async function moverTarea(evt, cardId) {
         </div>
       </div>
 
+      <!-- LOCURA.VUE -->
       <!-- Contenedor Tarjetas -->
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-10 overflow-x-auto h-full pb-20">
         <!-- Tarjetas -->
@@ -301,18 +340,12 @@ async function moverTarea(evt, cardId) {
             <input v-else v-model="tarjeta.titulo" @blur="editando = null; actTituloTarjeta(tarjeta.id, tarjeta.titulo)"
               class="w-full text-2xl font-semibold text-gray-800" />
 
-
-
-
             <div @click="mostrarBT = true; tarjetaABorrar = tarjeta.id; tituloBT = tarjeta.titulo">
               <Trash2
                 class="papeleraTarjeta text-gray-400 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out" />
             </div>
 
           </div>
-
-
-
 
 
           <!-- TAREAS -->
