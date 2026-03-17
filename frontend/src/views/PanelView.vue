@@ -3,7 +3,7 @@ import { Trash2, Pencil, Copy, Share2, House } from "lucide-vue-next";
 import { ref, watch, onMounted } from "vue";
 import Navbar from "../components/Navbar.vue";
 
-const URL = "https://organizer-5tll.onrender.com";
+const URL = "https://organizer-5tll.onrender.com/graphql";
 
 // ** onMounted para detectar usuario y proyectos para pasarlo de json a objeto **
 const usuario = ref(null);
