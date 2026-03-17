@@ -7,9 +7,9 @@ import "../styles/project.css";
 import Navbar from "../components/Navbar.vue";
 import draggable from "vuedraggable";
 
-import { cargarProyecto, actNombreProyecto, actDescProyecto } from "../api/projects";
-import { crearTarjetaAPI, cargarTarjetas, borrarTarjetaAPI, actTituloTarjeta, borrarTodasAPI, crearPET  } from "../api/cards";
-import { crearTareaAPI, borrarTareaAPI, actualizarTarea, actualizarCompletadaAPI, moverTareaAPI, limpiarTareasCompletadas  } from "../api/tasks";
+import { cargarProyecto, actNombreProyecto, actDescProyecto } from "../../backend/api/projects";
+import { crearTarjetaAPI, cargarTarjetas, borrarTarjetaAPI, actTituloTarjeta, borrarTodasAPI, crearPET  } from "../../backend/api/cards";
+import { crearTareaAPI, borrarTareaAPI, actualizarTarea, actualizarCompletadaAPI, moverTareaAPI, limpiarTareasCompletadas  } from "../../backend/api/tasks";
 
 // Declarar
 const route = useRoute();

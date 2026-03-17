@@ -4,7 +4,7 @@ import { House } from "lucide-vue-next";
 
 import Login from "../components/login/Login.vue";
 
-import { login } from "../api/auth";
+import { login } from "../../backend/api/auth";
 import { useRouter } from "vue-router";
 
 import checkLogin from "../utils/checkLogin.js";
@@ -75,7 +75,9 @@ function comprobarLogin() {
   <div
     class="bg-gradient-to-t from-gray-400/50 to-gray-300/50 h-screen flex items-center justify-center"
   >
-    <div class="bg-gradient-to-t from-blue-300 to-blue-200/80 rounded-2xl flex items-center">
+    <div
+      class="bg-gradient-to-t from-blue-300 to-blue-200/80 rounded-2xl flex items-center"
+    >
       <form @submit.prevent="iniciarSesion">
         <div
           class="relative ml-3 rounded-lg bg-neutral-100 flex flex-col items-center px-8 pt-8 pb-4 gap-5 shadow-xl"
