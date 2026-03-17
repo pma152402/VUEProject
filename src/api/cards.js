@@ -177,3 +177,36 @@ export async function borrarTodasAPI(projectId) {
 
   return data.data.deleteAllCards;
 }
+
+// CREAR PLANTILLA PET
+export async function crearPET(projectId) {
+
+  const respuesta = await fetch("http://localhost:4000/graphql", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      query: `
+        mutation($projectId: Int!) {
+          createPET(projectId: $projectId) {
+            id
+            title
+          }
+        }
+      `,
+      variables: {
+        projectId: Number(projectId)
+      }
+    })
+  });
+
+  const data = await respuesta.json();
+
+  if (data.errors) {
+    console.error(data.errors);
+    return null;
+  }
+
+  return data.data.createPET;
+}

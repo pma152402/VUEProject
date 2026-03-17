@@ -50,6 +50,7 @@ const typeDefs = `
     updateCardTitle(cardId: Int!, title: String!): Card!
     deleteCard(cardId: Int!): Card
     deleteAllCards(projectId: Int!): [Card!]!
+    createPET(projectId: Int!): [Card!]!
     createTask(text: String!, cardId: Int!): Task!
     updateTask(taskId: Int!, text: String!): Task!
     updateCompletedTask(taskId: Int!, completed: Boolean!): Task!
@@ -228,6 +229,31 @@ const resolvers = {
           projectId: args.projectId,
         },
       });
+    },
+
+    createPET: async (_: any, args: any) => {
+      // crear nuevas columnas
+      const P = await prisma.card.create({
+        data: { title: "Por hacer:", projectId: args.projectId },
+      });
+
+      const E = await prisma.card.create({
+        data: { title: "En progreso:", projectId: args.projectId },
+      });
+
+      const T = await prisma.card.create({
+        data: { title: "Terminado:", projectId: args.projectId },
+      });
+
+      await prisma.task.createMany({
+        data: [
+          { text: "Empieza aquí", cardId: P.id },
+          { text: "Trabajando...", cardId: E.id },
+          { text: "Completado", cardId: T.id, completed: true },
+        ],
+      });
+
+      return [P, E, T];
     },
 
     deleteCard: async (_: any, args: any) => {

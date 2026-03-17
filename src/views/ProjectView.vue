@@ -3,11 +3,12 @@ import { Trash2, Check, Columns3, Plus, BrushCleaning } from "lucide-vue-next";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import "../styles/scrollbar.css";
+import "../styles/project.css";
 import Navbar from "../components/Navbar.vue";
 import draggable from "vuedraggable";
 
 import { cargarProyecto, actNombreProyecto, actDescProyecto } from "../api/projects";
-import { crearTarjetaAPI, cargarTarjetas, borrarTarjetaAPI, actTituloTarjeta, borrarTodasAPI  } from "../api/cards";
+import { crearTarjetaAPI, cargarTarjetas, borrarTarjetaAPI, actTituloTarjeta, borrarTodasAPI, crearPET  } from "../api/cards";
 import { crearTareaAPI, borrarTareaAPI, actualizarTarea, actualizarCompletadaAPI, moverTareaAPI  } from "../api/tasks";
 
 // Declarar
@@ -25,8 +26,8 @@ const mostrarOpTodas = ref(false);
 const tarjetas = ref([
   {
     id: 1,
-    titulo: "Por hacer:",
-    tareas: ["Tarea de ejemplo", "Crea todas las tareas que necesites"],
+    titulo: "",
+    tareas: [],
   },
 ]);
 
@@ -91,6 +92,26 @@ async function borrarTodas() {
 
   tarjetas.value = [];
 }
+
+// Crear plantilla PET
+async function crearPlantillaPET() {
+
+  await borrarTodas();
+
+  const nuevasTarjetas = await crearPET(IDproyecto);
+
+  if (!nuevasTarjetas) return;
+
+  // reemplazar todas las tarjetas
+  tarjetas.value = nuevasTarjetas.map(card => ({
+    id: card.id,
+    titulo: card.title,
+    tareas: [] // luego puedes recargar tareas si quieres
+  }));
+
+  tarjetas.value = await cargarTarjetas(IDproyecto);
+}
+
 
 // TAREAS 
 // Crear Tarea
@@ -158,50 +179,6 @@ async function moverTarea(evt, cardId) {
 }
 </script>
 
-<style>
-/* PAPELERA TAREAS */
-.tarea .papelera {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s;
-}
-
-/* escritorio */
-.tarea:hover .papelera {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* para movil */
-.tarea .papelera.mostrar {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-
-/* PAPELERA TARJETAS */
-.tarjeta .papeleraTarjeta {
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s;
-}
-
-/* escritorio */
-.tarjeta:hover .papeleraTarjeta {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* movil */
-.tarjeta .papeleraTarjeta.mostrar {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.sortable-ghost {
-  opacity: 0.4;
-}
-</style>
 
 <template>
   <div
@@ -299,7 +276,8 @@ async function moverTarea(evt, cardId) {
       <div class="bg-neutral-100 mx-auto px-2 pb-1 rounded-b-3xl">
         <div
           class=" bg-neutral-200 flex justify-between mx-auto w-5xl rounded-b-2xl px-10 text-sm text-gray-400 font-semibold py-1">
-          <span class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Plantilla
+          <span @click="crearPlantillaPET" 
+            class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Plantilla
             PET 
             <Columns3 class="w-4 pb-0.5" />
           </span>
