@@ -568,7 +568,7 @@ async function moverTarea(evt, cardId) {
       </div>
 
       <!-- Opciones -->
-      <div class="bg-neutral-100 mx-auto px-4 pb-1 rounded-b-3xl">
+      <div class="bg-neutral-100 mx-auto px-2 pb-1 rounded-b-3xl border-t">
         <div
           class=" bg-neutral-200 flex justify-between mx-auto w-5xl rounded-b-2xl px-10 text-sm text-gray-400 font-semibold py-1">
           <span class="hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Crear plantilla
@@ -587,7 +587,7 @@ async function moverTarea(evt, cardId) {
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-10 overflow-x-auto h-full pb-20">
         <!-- Tarjetas -->
         <div v-for="tarjeta in tarjetas" :key="tarjeta.id"
-          class="tarjeta shadow-lg h-fit bg-neutral-100 px-4 py-6 rounded-xl border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-101 transition-all ease-in-out duration-350 m-1">
+          class=" tarjeta shadow-lg h-fit bg-neutral-100 px-4 py-6 rounded-xl border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-101 transition-all ease-in-out duration-350 m-1">
           <!-- Titulo -->
           <div class="flex justify-between items-center">
 
@@ -640,7 +640,7 @@ async function moverTarea(evt, cardId) {
                   {{ tarea.text }}
                 </div>
 
-                <input v-else @blur="controlarBlur(tarea)" v-model="tarea.text" class="w-full text-gray-800 mr-5" />
+                <input v-else @blur="controlarBlur(tarea)" v-model="tarea.text" class="w-full text-gray-800 mr-5 text-base" />
 
                 <div @click.stop="borrarTarea(tarea.id)" :class="{ mostrar: mostrarPapelera === tarea.id }"
                   class="papelera bg-gray-300/80 h-full absolute right-0 top-0 flex items-center px-1 rounded-xs">
