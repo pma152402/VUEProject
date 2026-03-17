@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"vite\" \"tsx server/index.ts\"",
-    "build": "vite build",
     "preview": "vite preview",
     "lint": "run-s lint:*",
     "lint:oxlint": "oxlint . --fix",
-    "lint:eslint": "eslint . --fix --cache"
+    "lint:eslint": "eslint . --fix --cache",
+    "start": "node server/index.js",
+    "build": "npx prisma generate"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
     "@prisma/adapter-pg": "^7.4.2",
     "@prisma/client": "^7.4.2",
     "concurrently": "^9.2.1",

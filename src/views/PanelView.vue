@@ -3,6 +3,8 @@ import { Trash2, Pencil, Copy, Share2, House } from "lucide-vue-next";
 import { ref, watch, onMounted } from "vue";
 import Navbar from "../components/Navbar.vue";
 
+const URL = "https://organizer-5tll.onrender.com";
+
 // ** onMounted para detectar usuario y proyectos para pasarlo de json a objeto **
 const usuario = ref(null);
 const proyectos = ref([]);
@@ -15,7 +17,7 @@ onMounted(async () => {
   }
 
   // CARGAR PROYECTOS
-  const respuesta = await fetch("http://localhost:4000/graphql", {
+  const respuesta = await fetch(URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -51,7 +53,7 @@ async function crearProyecto() {
   const nombre = nombreProyecto.value.trim();
 
   if (nombre !== "") {
-    const respuesta = await fetch("http://localhost:4000/graphql", {
+    const respuesta = await fetch(URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -100,7 +102,7 @@ const seguro = ref(false);
 
 async function borrarProyecto(idProyecto) {
   if (idProyecto != null) {
-    const respuesta = await fetch("http://localhost:4000/graphql", {
+    const respuesta = await fetch(URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -142,7 +144,7 @@ watch(nombreProyecto, () => {
 
 // Clonar proyecto
 async function clonarProyecto(projectId) {
-  const respuesta = await fetch("http://localhost:4000/graphql", {
+  const respuesta = await fetch(URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

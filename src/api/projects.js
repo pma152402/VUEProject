@@ -1,4 +1,4 @@
-const URL = "http://localhost:4000/graphql";
+const URL = "https://organizer-5tll.onrender.com";
 
 // CARGAR PROYECTO
 export async function cargarProyecto(IDproyecto) {
@@ -68,7 +68,7 @@ export async function actNombreProyecto(projectId, name) {
 // ACTUALIZAR DESCRIPCION PROYECTO
 export async function actDescProyecto(projectId, description) {
 
-  const respuesta = await fetch("http://localhost:4000/graphql", {
+  const respuesta = await fetch(URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

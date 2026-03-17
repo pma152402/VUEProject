@@ -1,4 +1,4 @@
-const URL = "http://localhost:4000/graphql";
+const URL = "https://organizer-5tll.onrender.com";
 
 
 // CREAR TAREA

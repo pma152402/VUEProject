@@ -1,4 +1,4 @@
-const URL = "http://localhost:4000/graphql";
+const URL = "https://organizer-5tll.onrender.com";
 
 // CARGAR TARJETAS 
 export async function cargarTarjetas(IDproyecto) {
@@ -149,7 +149,7 @@ export async function actTituloTarjeta(cardId, title) {
 
 export async function borrarTodasAPI(projectId) {
 
-  const respuesta = await fetch("http://localhost:4000/graphql", {
+  const respuesta = await fetch(URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -181,7 +181,7 @@ export async function borrarTodasAPI(projectId) {
 // CREAR PLANTILLA PET
 export async function crearPET(projectId) {
 
-  const respuesta = await fetch("http://localhost:4000/graphql", {
+  const respuesta = await fetch(URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

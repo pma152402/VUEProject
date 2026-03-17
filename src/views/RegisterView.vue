@@ -32,9 +32,10 @@ watch(repetir, () => {
   errorRepetir.value = "";
 });
 
+const URL = "https://organizer-5tll.onrender.com";
 // Funcion para crear usuario
 async function crearUsuario(nombre, email, contrasena) {
-  const respuesta = await fetch("http://localhost:4000/graphql", {
+  const respuesta = await fetch(URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
