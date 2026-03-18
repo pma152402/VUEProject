@@ -308,9 +308,9 @@ async function limpiarTCompletadas() {
 
       <!-- 2. HACER OPCIONES.VUE -->
       <!-- Opciones -->
-      <div v-if="proyecto" class="bg-neutral-100 mx-auto px-2 pb-1 rounded-b-3xl">
+      <div v-if="proyecto" class="bg-neutral-100 mx-auto px-2 pb-1 rounded-b-3xl ml-6 mr-6 md:ml-10 md:mr-10">
         <div
-          class=" bg-neutral-200 flex flex-col gap-2 md:gap-15 xl:gap-40  sm:flex-row rounded-b-2xl px-10 text-sm text-gray-400 font-semibold py-1">
+          class=" bg-neutral-200 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 place-items-center md:flex-row rounded-b-2xl px-10 text-sm text-gray-400 font-semibold py-1">
           <span @click="mostrarOpPET = true" 
             class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Plantilla
             PET 
