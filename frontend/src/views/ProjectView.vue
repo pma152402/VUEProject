@@ -330,7 +330,7 @@ const downBar = ref(true);
 
       <!-- 2. HACER OPCIONES.VUE -->
       <!-- Opciones -->
-      <div v-if="proyecto" class="bg-neutral-400/50 mx-auto px-2  rounded-b-3xl ml-6 mr-6 md:ml-10 md:mr-10 z-10">
+      <div v-if="proyecto" class="bg-neutral-400/50 mx-auto px-2  rounded-b-3xl ml-6 mr-6 md:ml-10 md:mr-10 z-10 border-b-2 border-neutral-500/70">
 
         <transition name="slide">
           <div :class="downBar
