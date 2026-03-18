@@ -284,7 +284,7 @@ const downBar = ref(true);
 
     <div class="w-full max-w-7xl flex flex-col relative">
       <!-- NAV -->
-      <Navbar class="mt-2 mr-1"></Navbar>
+      <Navbar class="mt-2 mr-1 z-999"></Navbar>
       <!-- 1. HACER CABECERA.VUE-->
       <!-- Cabecera -->
       <div v-if="proyecto"
@@ -336,7 +336,7 @@ const downBar = ref(true);
           <div :class="downBar
             ? 'max-h-40 opacity-100 py-1 pointer-events-auto'
             : 'max-h-0 opacity-0 py-1 -mt-2 pointer-events-none'"
-            class="bg-neutral-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 place-items-center md:flex-row rounded-b-2xl px-10 text-sm text-gray-400 font-semibold py-1 transition-all ease-in-out duration-300">
+            class="bg-neutral-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 place-items-center md:flex-row rounded-b-2xl px-10 text-sm text-gray-500/80 font-semibold py-1 transition-all ease-in-out duration-300">
             <span @click="mostrarOpPET = true"
               class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Plantilla
               PET
