@@ -218,7 +218,9 @@ async function clonarProyecto(projectId) {
           <p class="font-light">Empieza seleccionando uno de tus proyectos o crea uno nuevo.</p>
         </div>
 
-        <table class="w-full border-collapse">
+        
+        <div class="max-h-60 overflow-y-auto w-full">
+          <table class="w-full border-collapse">
           <thead>
             <tr class="">
               <th class="text-left w-1/3 font-semibold">Nombre</th>
@@ -257,6 +259,7 @@ async function clonarProyecto(projectId) {
             </tr>
           </tbody>
         </table>
+        </div>
         <div class="flex-col mt-6 mb-2 w-1/2">
           <!-- asigno nombreProyecto al input como v-model -->
           <div class="flex gap-3">
