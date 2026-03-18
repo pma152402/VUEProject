@@ -218,22 +218,22 @@ async function clonarProyecto(projectId) {
           <p class="font-light">Empieza seleccionando uno de tus proyectos o crea uno nuevo.</p>
         </div>
 
-        <table class="w-full border-separate border-spacing-y-1">
+        <table class="w-full border-collapse">
           <thead>
             <tr class="">
-              <th class="text-left w-1/2 font-semibold">Nombre</th>
+              <th class="text-left w-1/3 font-semibold">Nombre</th>
               <th class="text-left w-1/4 font-semibold">Fecha</th>
-              <th class="text-left w-1/4 font-semibold">Acción</th>
+              <th class="text-left w-1/3 font-semibold pl-4">Acción</th>
             </tr>
           </thead>
 
           <tbody>
             <tr v-for="proyecto in proyectos" :key="proyecto.id" class="hover:bg-blue-100/60">
-              <td class="text-sm lg:text-base">{{ proyecto.name }}</td>
-              <td class="text-sm lg:text-base">
+              <td class="text-sm lg:text-base py-2"><p class="max-w-32">{{ proyecto.name }}</p></td>
+              <td class="text-sm lg:text-base py-2">
                 {{ new Date(Number(proyecto.createdAt)).toLocaleDateString("es-ES") }}
               </td>
-              <td class="flex justify-between ml-1">
+              <td class="flex justify-between grid grid-cols-2 md:grid-cols-4 place-items-center py-2">
                 <RouterLink :to="`/projects/${proyecto.id}`">
                   <Pencil
                     class="w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out"
