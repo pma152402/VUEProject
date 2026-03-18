@@ -338,26 +338,26 @@ const downBar = ref(true);
             : 'max-h-0 opacity-0 py-1 -mt-2 pointer-events-none'"
             class="bg-neutral-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 place-items-center md:flex-row rounded-b-2xl px-10 text-sm text-gray-500/80 font-semibold py-1 transition-all ease-in-out duration-300">
             <span @click="mostrarOpPET = true"
-              class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Plantilla
+              class="select-none flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Plantilla
               PET
               <Columns3 class="w-4 pb-0.5" />
             </span>
 
             <span @click="mostrarOpTodas = true"
-              class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Borrar
+              class="select-none flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Borrar
               todas
               las tarjetas
               <Trash2 class="w-4 pb-0.5" />
             </span>
             <span @click="crearTarjeta"
-              class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">
+              class="select-none flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">
               Añadir
               tarjeta
 
               <Plus class="w-4 pb-0.5" />
             </span>
             <span @click="limpiarTCompletadas"
-              class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Limpiar
+              class="select-none flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Limpiar
               tareas
               completadas
               <BrushCleaning class="w-4 pb-0.5" />
