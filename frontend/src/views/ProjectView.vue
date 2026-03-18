@@ -336,7 +336,7 @@ const downBar = ref(true);
           <div :class="downBar
             ? 'max-h-40 opacity-100 py-1 pointer-events-auto'
             : 'max-h-0 opacity-0 py-1 -mt-2 pointer-events-none'"
-            class="bg-neutral-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 place-items-center md:flex-row rounded-b-2xl px-10 text-sm text-gray-500/80 font-semibold py-1 transition-all ease-in-out duration-300">
+            class="bg-neutral-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 place-items-center md:flex-row rounded-b-2xl px-10 text-sm text-gray-500/80 font-semibold py-1 transition-all ease-in-out duration-300 select-none">
             <span @click="mostrarOpPET = true"
               class="select-none flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Plantilla
               PET
