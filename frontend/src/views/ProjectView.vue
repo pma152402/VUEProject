@@ -1,5 +1,5 @@
 <script setup>
-import { Trash2, Check, Columns3, Plus, BrushCleaning } from "lucide-vue-next";
+import { Trash2, Check, Columns3, Plus, BrushCleaning, ChevronUp } from "lucide-vue-next";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import "../styles/scrollbar.css";
@@ -8,8 +8,8 @@ import Navbar from "../components/Navbar.vue";
 import draggable from "vuedraggable";
 
 import { cargarProyecto, actNombreProyecto, actDescProyecto } from "../../../backend/api/projects";
-import { crearTarjetaAPI, cargarTarjetas, borrarTarjetaAPI, actTituloTarjeta, borrarTodasAPI, crearPET  } from "../../../backend/api/cards";
-import { crearTareaAPI, borrarTareaAPI, actualizarTarea, actualizarCompletadaAPI, moverTareaAPI, limpiarTareasCompletadas  } from "../../../backend/api/tasks";
+import { crearTarjetaAPI, cargarTarjetas, borrarTarjetaAPI, actTituloTarjeta, borrarTodasAPI, crearPET } from "../../../backend/api/cards";
+import { crearTareaAPI, borrarTareaAPI, actualizarTarea, actualizarCompletadaAPI, moverTareaAPI, limpiarTareasCompletadas } from "../../../backend/api/tasks";
 
 // Declarar
 const route = useRoute();
@@ -192,12 +192,34 @@ async function limpiarTCompletadas() {
 
   console.log(`eliminadas ${borradas} tareas`);
 }
+
+
+// DOWNBAR
+const downBar = ref(true);
 </script>
+
+<style>
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.slide-enter-to,
+.slide-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
 
 
 <template>
-  <div
-    class="bg-gradient-to-t from-gray-400/50 to-gray-300/50 min-h-screen flex justify-center relative">
+  <div class="bg-gradient-to-t from-gray-400/50 to-gray-300/50 min-h-screen flex justify-center relative">
 
     <!-- HACER MODALES.VUE-->
     <!-- a) Borrar tarjeta -->
@@ -228,7 +250,7 @@ async function limpiarTCompletadas() {
       <div class="flex justify-center gap-3 text-sm mt-4">
         <button @click="
           borrarTodas();
-          mostrarOpTodas = false;
+        mostrarOpTodas = false;
         "
           class="bg-red-400 px-2 py-1 font-semibold rounded-full hover:scale-110 transition-all duration-200 ease-in-out hover:cursor-pointer">
           Eliminar
@@ -248,7 +270,7 @@ async function limpiarTCompletadas() {
       <div class="flex justify-center gap-3 text-sm mt-4">
         <button @click="
           crearPlantillaPET();
-          mostrarOpPET = false;
+        mostrarOpPET = false;
         "
           class="bg-red-400 px-2 py-1 font-semibold rounded-full hover:scale-110 transition-all duration-200 ease-in-out hover:cursor-pointer">
           Confirmar
@@ -266,7 +288,7 @@ async function limpiarTCompletadas() {
       <!-- 1. HACER CABECERA.VUE-->
       <!-- Cabecera -->
       <div v-if="proyecto"
-        class="bg-neutral-100 shadow-xl flex flex-col justify-between p-8 rounded-xl mt-2 border-l-8 border-blue-300">
+        class="bg-neutral-100 shadow-xl flex flex-col justify-between p-8 rounded-xl mt-2 border-l-8 border-blue-300 z-30">
         <!-- Titulo -->
         <div class="flex flex-col text-gray-800">
           <span class="font-extralight text-2xl ">Nombre del proyecto: </span>
@@ -284,8 +306,8 @@ async function limpiarTCompletadas() {
           <p v-if="!editando" @click="editando = true">
             {{ proyecto.description }}
           </p>
-          <input v-else v-model="proyecto.description" @blur="editando = false; actDescProyecto(proyecto.id, proyecto.description)"
-            class="w-full"></input>
+          <input v-else v-model="proyecto.description"
+            @blur="editando = false; actDescProyecto(proyecto.id, proyecto.description)" class="w-full"></input>
         </div>
 
         <!-- Fecha y Miembros -->
@@ -308,38 +330,50 @@ async function limpiarTCompletadas() {
 
       <!-- 2. HACER OPCIONES.VUE -->
       <!-- Opciones -->
-      <div v-if="proyecto" class="bg-neutral-100 mx-auto px-2 pb-1 rounded-b-3xl ml-6 mr-6 md:ml-10 md:mr-10">
-        <div
-          class=" bg-neutral-200 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 place-items-center md:flex-row rounded-b-2xl px-10 text-sm text-gray-400 font-semibold py-1">
-          <span @click="mostrarOpPET = true" 
-            class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Plantilla
-            PET 
-            <Columns3 class="w-4 pb-0.5" />
-          </span>
+      <div v-if="proyecto" class="bg-neutral-400/50 mx-auto px-2  rounded-b-3xl ml-6 mr-6 md:ml-10 md:mr-10 z-10">
 
-          <span @click="mostrarOpTodas = true" 
-            class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Borrar todas
-            las tarjetas
-            <Trash2 class="w-4 pb-0.5" />
-          </span>
-          <span @click="crearTarjeta"
-            class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">
-            Añadir
-            tarjeta
-            
-            <Plus class="w-4 pb-0.5"/>
-          </span>
-          <span @click="limpiarTCompletadas"
-            class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Limpiar tareas
-            completadas
-            <BrushCleaning class="w-4 pb-0.5"/>
-          </span>
+        <transition name="slide">
+          <div :class="downBar
+            ? 'max-h-40 opacity-100 py-1 pointer-events-auto'
+            : 'max-h-0 opacity-0 py-1 -mt-2 pointer-events-none'"
+            class="bg-neutral-200 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 place-items-center md:flex-row rounded-b-2xl px-10 text-sm text-gray-400 font-semibold py-1 transition-all ease-in-out duration-300">
+            <span @click="mostrarOpPET = true"
+              class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Plantilla
+              PET
+              <Columns3 class="w-4 pb-0.5" />
+            </span>
+
+            <span @click="mostrarOpTodas = true"
+              class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Borrar
+              todas
+              las tarjetas
+              <Trash2 class="w-4 pb-0.5" />
+            </span>
+            <span @click="crearTarjeta"
+              class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">
+              Añadir
+              tarjeta
+
+              <Plus class="w-4 pb-0.5" />
+            </span>
+            <span @click="limpiarTCompletadas"
+              class="flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Limpiar
+              tareas
+              completadas
+              <BrushCleaning class="w-4 pb-0.5" />
+            </span>
+          </div>
+        </transition>
+        <div @click="downBar = !downBar" class="w-full flex justify-center m-0 p-0 hover:cursor-pointer">
+          <ChevronUp class="text-neutral-500/70 transition-transform duration-300"
+            :class="{ 'rotate-180': !downBar }" />
         </div>
       </div>
 
       <!-- LOCURA.VUE -->
       <!-- Contenedor Tarjetas -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10 overflow-x-auto h-full pb-20">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10 overflow-x-auto h-full pb-20">
         <!-- Tarjetas -->
         <div v-for="tarjeta in tarjetas" :key="tarjeta.id"
           class=" tarjeta shadow-lg h-fit bg-neutral-100 px-4 py-6 rounded-xl border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-101 transition-all ease-in-out duration-350 m-1">
@@ -389,7 +423,8 @@ async function limpiarTCompletadas() {
                   {{ tarea.text }}
                 </div>
 
-                <input v-else @blur="controlarBlur(tarea)" v-model="tarea.text" class="w-full text-gray-800 mr-5 text-base" />
+                <input v-else @blur="controlarBlur(tarea)" v-model="tarea.text"
+                  class="w-full text-gray-800 mr-5 text-base" />
 
                 <div @click.stop="borrarTarea(tarea.id)" :class="{ mostrar: mostrarPapelera === tarea.id }"
                   class="papelera bg-gray-300/80 h-full absolute right-0 top-0 flex items-center px-1 rounded-xs">
@@ -411,7 +446,7 @@ async function limpiarTCompletadas() {
 
       </div>
 
-      
+
 
 
       <!-- 
@@ -421,7 +456,7 @@ async function limpiarTCompletadas() {
       </div>
       -->
 
-      
+
     </div>
   </div>
 </template>
