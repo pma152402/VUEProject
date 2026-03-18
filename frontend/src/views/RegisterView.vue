@@ -42,14 +42,14 @@ async function crearUsuario(nombre, email, contrasena) {
     },
     body: JSON.stringify({
       query: `
-          mutation($name: String!, $email: String!, $password: String!) {
+        mutation($name: String!, $email: String!, $password: String!) {
           createUser(name: $name, email: $email, password: $password) {
             id
             name
             email
           }
         }
-        `,
+      `,
       variables: {
         name: nombre.value,
         email: email.value,
@@ -60,7 +60,12 @@ async function crearUsuario(nombre, email, contrasena) {
 
   const data = await respuesta.json();
 
-  console.log(data);
+  // si hay error en el back 
+  if (data.errors) {
+    return { error: data.errors[0].message };
+  }
+
+  return data.data.createUser;
 }
 
 // Controlar el paso en el que estamos

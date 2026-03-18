@@ -1,4 +1,4 @@
-export default function siguiente({
+export default async function siguiente({
   nombre,
   email,
   errorNombre,
@@ -47,6 +47,14 @@ export default function siguiente({
 
   // salir
   if (hayError) return;
+
+  // comprobar si hay error en el back, y sacar el mensaje
+  const respuesta = await crearUsuario(nombre, email, contrasena);
+
+  if (respuesta.error) {
+    errorEmail.value = res.error;
+    return;
+  }
 
   paso.value++;
 }

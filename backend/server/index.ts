@@ -345,25 +345,32 @@ const resolvers = {
       });
     },
 
-
     // LIMPIAR COMPLETADAS
     cleanCompletedTasks: async (_: any, args: any) => {
       const resultado = await prisma.task.deleteMany({
         where: {
           completed: true,
           card: {
-            projectId: args.projectId
-          }
+            projectId: args.projectId,
+          },
         },
       });
 
       return resultado.count;
     },
 
-
-
-    //
+    // USUARIO
     createUser: async (_: any, args: any) => {
+      // comprobar si ya hay
+      const usuarioExiste = await prisma.user.findUnique({
+        where: { email: args.email },
+      });
+
+      if (usuarioExiste) {
+        throw new Error("Ya existe una cuenta registrada con este correo");
+      }
+
+      // 2. crear usuario
       return prisma.user.create({
         data: {
           name: args.name,
@@ -372,7 +379,9 @@ const resolvers = {
         },
       });
     },
-    //
+
+
+    // iniciar sesión
     login: async (_: any, args: any) => {
       const user = await prisma.user.findUnique({
         where: {
