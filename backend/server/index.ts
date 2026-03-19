@@ -387,32 +387,33 @@ const resolvers = {
 
     // iniciar sesión
     login: async (_: any, args: any) => {
-  const usuario = await prisma.user.findUnique({
-    where: {
-      email: args.email,
+      const user = await prisma.user.findUnique({
+        where: {
+          email: args.email,
+        },
+      });
+
+      if (!user) {
+        throw new Error("Este usuario no esta registrado");
+      }
+
+      // comparar con bcrypt
+      const passwordCorrecta = await bcrypt.compare(
+        args.password,
+        user.password
+      );
+
+      if (!passwordCorrecta) {
+        throw new Error("La contraseña es incorrecta");
+      }
+
+      return {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      };
     },
-  });
-
-  if (!user) {
-    throw new Error("Este usuario no esta registrado");
-  }
-
-  // comparar con bcrypt
-  const passwordCorrecta = await bcrypt.compare(
-    args.password,
-    usuario.password
-  );
-
-  if (!passwordCorrecta) {
-    throw new Error("La contraseña es incorrecta");
-  }
-
-  return {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-  };
-},
+  },
 };
 const yoga = createYoga({
   schema: createSchema({
