@@ -373,7 +373,7 @@ const resolvers = {
 
       // hash de bcrypt
       const contrasenaHashed = await bcrypt.hash(args.password, 10);
-
+      console.log("creado usuario con BCRYPT");
       // 2. crear usuario
       return prisma.user.create({
         data: {
