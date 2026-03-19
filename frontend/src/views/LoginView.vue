@@ -70,13 +70,17 @@ watch(contrasena, () => {
 });
 
 //  controlar el formulario
-function comprobarLogin() {
-  checkLogin({
+async function comprobarLogin() {
+  const valido = checkLogin({
     email,
     errorEmail,
     contrasena,
     errorContrasena,
   });
+
+  if (!valido) return;
+
+  await iniciarSesion();
 }
 </script>
 
@@ -101,7 +105,7 @@ function comprobarLogin() {
     class="bg-gradient-to-t from-gray-400/50 to-gray-300/50 h-screen flex items-center justify-center"
   >
     <div class="bg-gradient-to-t from-blue-300 to-blue-200/80 rounded-2xl flex items-center">
-      <form @submit.prevent="iniciarSesion">
+      <form @submit.prevent="comprobarLogin">
         <div
           class="relative ml-3 rounded-lg bg-neutral-100 flex flex-col items-center px-8 pt-8 pb-4 gap-5 shadow-xl"
         >
@@ -136,7 +140,6 @@ function comprobarLogin() {
             <!-- <RouterLink sustituido por push -->
             <button
               type="submit"
-              @click="comprobarLogin"
               class="rounded-full bg-blue-200/80 px-2 py-1 font-md text-sm transition-transform duration-200 ease-in-out hover:scale-105 hover:bg-blue-500/40 hover:cursor-pointer hover:font-semibold"
               v-if="paso === 1"
             >
@@ -147,7 +150,7 @@ function comprobarLogin() {
           </div>
 
           <div v-if="paso === 2" class="pb-10 -mt-10">
-            <h3>¡Enhorabuena!</h3>
+            <h3>Sesión iniciada</h3>
             <p>Has iniciado sesión correctamente.</p>
           </div>
         </div>

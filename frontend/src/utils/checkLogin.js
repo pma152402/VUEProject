@@ -32,6 +32,8 @@ export default function checkLogin({ email, errorEmail, contrasena, errorContras
   } 
 
   // salir
-  if (hayError) return;
+  if (hayError) return false;
+
+  return true;
 
 }

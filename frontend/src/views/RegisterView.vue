@@ -88,6 +88,7 @@ function comprobarPaso1() {
     repetir,
     errorContrasena,
     errorRepetir,
+    crearUsuario
   });
 }
 

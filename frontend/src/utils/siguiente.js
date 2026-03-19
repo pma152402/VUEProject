@@ -3,7 +3,9 @@ export default async function siguiente({
   email,
   errorNombre,
   errorEmail,
-  paso
+  paso,
+  contrasena,
+  crearUsuario
 }) {
   let hayError = false;
 
@@ -47,14 +49,6 @@ export default async function siguiente({
 
   // salir
   if (hayError) return;
-
-  // comprobar si hay error en el back, y sacar el mensaje
-  const respuesta = await crearUsuario(nombre, email, contrasena);
-
-  if (respuesta.error) {
-    errorEmail.value = res.error;
-    return;
-  }
 
   paso.value++;
 }
