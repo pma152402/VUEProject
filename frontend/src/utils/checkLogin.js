@@ -29,7 +29,7 @@ export default function checkLogin({ email, errorEmail, contrasena, errorContras
     errorContrasena.value =
       "La contraseña debe de incluir: un número, una mayúscula y un carácter especial";
     hayError = true;
-  }
+  } 
 
   // salir
   if (hayError) return;

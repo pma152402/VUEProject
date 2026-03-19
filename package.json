@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "brcypt": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0"
+  }
+}

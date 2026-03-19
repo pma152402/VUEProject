@@ -3,6 +3,7 @@ import { createServer } from "node:http";
 import { createYoga, createSchema } from "graphql-yoga";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import bcrypt from "bcrypt";
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 const typeDefs = ` 
@@ -370,12 +371,15 @@ const resolvers = {
         throw new Error("Ya existe una cuenta registrada con este correo");
       }
 
+      // hash de bcrypt
+      const contrasenaHashed = await bcrypt.hash(args.password, 10);
+
       // 2. crear usuario
       return prisma.user.create({
         data: {
           name: args.name,
           email: args.email,
-          password: args.password,
+          password: contrasenaHashed,
         },
       });
     },
@@ -383,21 +387,32 @@ const resolvers = {
 
     // iniciar sesión
     login: async (_: any, args: any) => {
-      const user = await prisma.user.findUnique({
-        where: {
-          email: args.email,
-        },
-      });
-
-      if (!user) {
-        throw new Error("El usuario no se encuentra");
-      }
-      if (user.password !== args.password) {
-        throw new Error("La contraseña no es correcta");
-      }
-      return user;
+  const usuario = await prisma.user.findUnique({
+    where: {
+      email: args.email,
     },
-  },
+  });
+
+  if (!user) {
+    throw new Error("Este usuario no esta registrado");
+  }
+
+  // comparar con bcrypt
+  const passwordCorrecta = await bcrypt.compare(
+    args.password,
+    usuario.password
+  );
+
+  if (!passwordCorrecta) {
+    throw new Error("La contraseña es incorrecta");
+  }
+
+  return {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+  };
+},
 };
 const yoga = createYoga({
   schema: createSchema({
