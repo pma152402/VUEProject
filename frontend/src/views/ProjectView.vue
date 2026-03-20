@@ -463,6 +463,22 @@ const downBar = ref(true);
       </div>
       -->
 
+       <!-- 
+      <div @click="crearTarjeta"
+        class="mb-6 bg-gray-100 px-4 py-2 rounded-xl max-h-12 hover:cursor-pointer hover:scale-105 transition-transform duration-200 ease-in-out hover:bg-white hover:text-gray-500 w-fit mx-auto">
+        <span class="text-xl text-gray-400">+ Añadir tarjeta</span>
+      </div>
+      -->
+
+       <!-- 
+      <div @click="crearTarjeta"
+        class="mb-6 bg-gray-100 px-4 py-2 rounded-xl max-h-12 hover:cursor-pointer hover:scale-105 transition-transform duration-200 ease-in-out hover:bg-white hover:text-gray-500 w-fit mx-auto">
+        <span class="text-xl text-gray-400">+ Añadir tarjeta</span>
+      </div>
+      -->
+
+
+
 
     </div>
   </div>
