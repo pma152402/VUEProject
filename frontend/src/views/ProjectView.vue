@@ -1,6 +1,6 @@
 <script setup>
 import { Trash2, Check, Columns3, Plus, BrushCleaning, ChevronUp } from "lucide-vue-next";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import "../styles/scrollbar.css";
 import "../styles/project.css";
@@ -214,7 +214,6 @@ function guardarNombre() {
 watch(proyecto.value.name, () => {
   errorNombre.value = "";
 });
-
 </script>
 
 <style>
