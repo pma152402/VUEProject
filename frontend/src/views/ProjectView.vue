@@ -196,6 +196,25 @@ async function limpiarTCompletadas() {
 
 // DOWNBAR
 const downBar = ref(true);
+
+// mejor que controlar en el blur..
+const errorNombre = ref("");
+function guardarNombre() {
+  if (proyecto.value.name.trim().length < 1) {
+    errorNombre.value = "El nombre no puede estar vacío";
+    return;
+  }
+
+  errorNombre.value = "";
+  editando.value = false;
+
+  actNombreProyecto(proyecto.value.id, proyecto.value.name);
+}
+
+watch(proyecto.value.name, () => {
+  errorNombre.value = "";
+});
+
 </script>
 
 <style>
@@ -295,9 +314,12 @@ const downBar = ref(true);
           <h1 v-if="!editando" @click="editando = true" class="font-semibold text-5xl border-b pb-7">
             {{ proyecto.name }}
           </h1>
-          <input v-else v-model="proyecto.name" @blur="editando = false; actNombreProyecto(proyecto.id, proyecto.name)"
-            class="w-full font-semibold text-5xl border-b pb-7"></input>
-
+          <input v-else v-model="proyecto.name" @blur="guardarNombre"
+            class="w-full font-semibold text-5xl border-b pb-7">
+          </input>
+          <span v-if="errorNombre" class="text-red-400 text-[10px]">
+            {{ errorNombre }}
+          </span>
         </div>
 
         <!-- Descripcion -->
