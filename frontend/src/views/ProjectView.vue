@@ -211,7 +211,7 @@ function guardarNombre() {
   actNombreProyecto(proyecto.value.id, proyecto.value.name);
 }
 
-watch(proyecto.value.name, () => {
+watch(proyecto.value?.name, () => {
   errorNombre.value = "";
 });
 </script>
