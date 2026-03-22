@@ -31,11 +31,16 @@ export async function cargarProyecto(IDproyecto) {
 
 // ACTUALIZAR NOMBRE PROYECTO
 export async function actNombreProyecto(projectId, name) {
+  // controlar que no quede vacio el nombre
+  if (name.trim().length < 1) {
+    console.log("El nombre del proyecto no puede quedar vacio");
+    return;
+  }
 
   const respuesta = await fetch(URL, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       query: `
@@ -48,10 +53,10 @@ export async function actNombreProyecto(projectId, name) {
       `,
       variables: {
         projectId: Number(projectId),
-        name: name
-      }
-    })
-  })
+        name: name.trim(),
+      },
+    }),
+  });
 
   const data = await respuesta.json();
 
@@ -61,17 +66,14 @@ export async function actNombreProyecto(projectId, name) {
   }
 
   return data.data.updateProjectName;
-
 }
-
 
 // ACTUALIZAR DESCRIPCION PROYECTO
 export async function actDescProyecto(projectId, description) {
-
   const respuesta = await fetch(URL, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       query: `
@@ -84,10 +86,10 @@ export async function actDescProyecto(projectId, description) {
       `,
       variables: {
         projectId: Number(projectId),
-        description: description
-      }
-    })
-  })
+        description: description,
+      },
+    }),
+  });
 
   const data = await respuesta.json();
 
@@ -97,5 +99,4 @@ export async function actDescProyecto(projectId, description) {
   }
 
   return data.data.updateProjectDescription;
-
 }
