@@ -147,13 +147,7 @@ async function borrarTarea(idTarea) {
   mostrarPapelera.value = null;
   editando.value = null;
 }
-// Controlar Blur para eliminar la tarea
-function controlarBlur(tarea) {
-  if (editando.value === tarea.id) {
-    editando.value = null;
-    actualizarTarea(tarea.id, tarea.text);
-  }
-}
+
 // Actualizar la tarea con check
 async function actualizarCompletada(tarea) {
 
@@ -233,6 +227,34 @@ function guardarNombreTarjeta(id) {
 
   actTituloTarjeta(tarjeta.id, tarjeta.titulo);
 }
+
+// GUARDAR TEXTO TAREA
+const errorTextoTarea = ref({});
+
+function guardarTextoTarea(id) {
+  let tareaEncontrada = null;
+
+  for (const tarjeta of tarjetas.value) {
+    const t = tarjeta.tareas.find(t => t.id === id);
+    if (t) {
+      tareaEncontrada = t;
+      break;
+    }
+  }
+
+  if (!tareaEncontrada) return;
+
+  if (tareaEncontrada.text.trim().length < 1) {
+    errorTextoTarea.value[id] = "El texto de la tarea no puede quedar vacío";
+    return;
+  }
+
+  errorTextoTarea.value[id] = "";
+  editando.value = null;
+
+  actualizarTarea(tareaEncontrada.id, tareaEncontrada.text);
+}
+
 </script>
 
 <style>
@@ -449,7 +471,7 @@ function guardarNombreTarjeta(id) {
             <template #item="{ element: tarea }">
 
               <li :class="[
-                'tarea group shadow-md relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 ease-in-out flex items-center',
+                'tarea group shadow-md relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 ease-in-out flex items-center overflow-visible',
                 tarea.completed ? 'text-gray-400' : ''
               ]" @click.stop="mostrarPapelera = mostrarPapelera === tarea.id ? null : tarea.id"
                 @mouseenter="hoverTarea = tarea.id" @mouseleave="hoverTarea = null">
@@ -470,8 +492,13 @@ function guardarNombreTarjeta(id) {
                   {{ tarea.text }}
                 </div>
 
-                <input v-else @blur="controlarBlur(tarea)" v-model="tarea.text"
-                  class="w-full text-gray-800 mr-5 text-base" />
+                <input v-else @blur="guardarTextoTarea(tarea.id)" @focus="errorNombreTarjeta[tarjeta.id] = ''" v-model="tarea.text"
+                  class="w-full text-gray-800 mr-5 text-base z-20" />
+
+
+                  <span v-if="errorTextoTarea[tarea.id]" class="text-red-400 text-[10px] absolute left-8">
+                    {{ errorTextoTarea[tarea.id] }}
+                  </span>
 
                 <div @click.stop="borrarTarea(tarea.id)" :class="{ mostrar: mostrarPapelera === tarea.id }"
                   class="papelera bg-gray-300/80 h-full absolute right-0 top-0 flex items-center px-1 rounded-xs">
