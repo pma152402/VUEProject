@@ -332,7 +332,7 @@ function guardarNombreTarjeta(id) {
           <h1 v-if="!editando" @click="editando = true" class="font-semibold text-5xl border-b pb-7">
             {{ proyecto.name }}
           </h1>
-          <input v-else v-model="proyecto.name" @blur="guardarNombre"
+          <input v-else v-model="proyecto.name" @blur="guardarNombreProyecto"
             class="w-full font-semibold text-5xl border-b pb-7">
           </input>
           <span v-if="errorNombreProyecto" class="text-red-400 text-[10px]">
