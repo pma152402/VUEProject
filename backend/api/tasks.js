@@ -87,7 +87,7 @@ export async function actualizarTarea(taskId, text) {
       `,
       variables: {
         taskId: Number(taskId),
-        text: text
+        text: text.trim(),
       }
     })
   })

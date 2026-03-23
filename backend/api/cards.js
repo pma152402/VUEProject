@@ -132,7 +132,7 @@ export async function actTituloTarjeta(cardId, title) {
       `,
       variables: {
         cardId: Number(cardId),
-        title: title
+        title: title.trim(),
       }
     })
   });

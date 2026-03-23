@@ -86,7 +86,7 @@ export async function actDescProyecto(projectId, description) {
       `,
       variables: {
         projectId: Number(projectId),
-        description: description,
+        description: description.trim(),
       },
     }),
   });
