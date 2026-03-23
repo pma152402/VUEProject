@@ -197,23 +197,42 @@ async function limpiarTCompletadas() {
 // DOWNBAR
 const downBar = ref(true);
 
-// mejor que controlar en el blur..
-const errorNombre = ref("");
-function guardarNombre() {
+// GUARDAR NOMBRE PROYECTO, mejor que controlar en el blur..
+const errorNombreProyecto = ref("");
+function guardarNombreProyecto() {
   if (proyecto.value.name.trim().length < 1) {
-    errorNombre.value = "El nombre no puede estar vacío";
+    errorNombreProyecto.value = "El título del proyecto no puede quedar vacío";
     return;
   }
 
-  errorNombre.value = "";
+  errorNombreProyecto.value = "";
   editando.value = false;
 
   actNombreProyecto(proyecto.value.id, proyecto.value.name);
 }
 
 watch(proyecto.value?.name, () => {
-  errorNombre.value = "";
+  errorNombreProyecto.value = "";
 });
+
+// GUARDAR NOMBRE TARJETA
+const errorNombreTarjeta = ref({});
+
+function guardarNombreTarjeta(id) {
+  const tarjeta = tarjetas.value.find(t => t.id === id);
+
+  if (!tarjeta) return;
+
+  if (tarjeta.titulo.trim().length < 1) {
+    errorNombreTarjeta.value[id] = "El título de la tarjeta no puede quedar vacío";
+    return;
+  }
+
+  errorNombreTarjeta.value[id] = "";
+  editando.value = null;
+
+  actTituloTarjeta(tarjeta.id, tarjeta.titulo);
+}
 </script>
 
 <style>
@@ -316,8 +335,8 @@ watch(proyecto.value?.name, () => {
           <input v-else v-model="proyecto.name" @blur="guardarNombre"
             class="w-full font-semibold text-5xl border-b pb-7">
           </input>
-          <span v-if="errorNombre" class="text-red-400 text-[10px]">
-            {{ errorNombre }}
+          <span v-if="errorNombreProyecto" class="text-red-400 text-[10px]">
+            {{ errorNombreProyecto }}
           </span>
         </div>
 
@@ -351,7 +370,8 @@ watch(proyecto.value?.name, () => {
 
       <!-- 2. HACER OPCIONES.VUE -->
       <!-- Opciones -->
-      <div v-if="proyecto" class="bg-neutral-400/50 mx-auto px-2  rounded-b-3xl ml-6 mr-6 md:ml-10 md:mr-10 z-10 border-b-2 border-neutral-500/70">
+      <div v-if="proyecto"
+        class="bg-neutral-400/50 mx-auto px-2  rounded-b-3xl ml-6 mr-6 md:ml-10 md:mr-10 z-10 border-b-2 border-neutral-500/70">
 
         <transition name="slide">
           <div :class="downBar
@@ -401,13 +421,16 @@ watch(proyecto.value?.name, () => {
           <!-- Titulo -->
           <div class="flex justify-between items-center">
 
-            <span v-if="editando !== tarjeta.id" @click="editando = tarjeta.id"
-              class="text-2xl font-semibold text-gray-800">
-              {{ tarjeta.titulo }}
-            </span>
+              <span v-if="editando !== tarjeta.id" @click="editando = tarjeta.id"
+                class="text-2xl font-semibold text-gray-800">
+                {{ tarjeta.titulo }}
+              </span>
 
-            <input v-else v-model="tarjeta.titulo" @blur="editando = null; actTituloTarjeta(tarjeta.id, tarjeta.titulo)"
-              class="w-full text-2xl font-semibold text-gray-800" />
+              <input v-else v-model="tarjeta.titulo" @blur="guardarNombreTarjeta(tarjeta.id)"
+                class="w-full text-2xl font-semibold text-gray-800" />
+           
+
+
 
             <div @click="mostrarBT = true; tarjetaABorrar = tarjeta.id; tituloBT = tarjeta.titulo">
               <Trash2
@@ -415,6 +438,9 @@ watch(proyecto.value?.name, () => {
             </div>
 
           </div>
+          <span v-if="errorNombreTarjeta[tarjeta.id]" class="text-red-400 text-[10px]">
+            {{ errorNombreTarjeta[tarjeta.id] }}
+          </span>
 
 
           <!-- TAREAS -->
