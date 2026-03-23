@@ -421,7 +421,7 @@ function guardarNombreTarjeta(id) {
           <!-- Titulo -->
           <div class="flex justify-between items-center">
 
-              <span v-if="editando !== tarjeta.id" @click="editando = tarjeta.id"
+              <span v-if="!editando" @click="editando = true"
                 class="text-2xl font-semibold text-gray-800">
                 {{ tarjeta.titulo }}
               </span>
