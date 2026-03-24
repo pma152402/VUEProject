@@ -8,7 +8,7 @@ import Navbar from "../components/Navbar.vue";
 import draggable from "vuedraggable";
 
 import { cargarProyecto, actNombreProyecto, actDescProyecto } from "../../../backend/api/projects";
-import { crearTarjetaAPI, cargarTarjetas, borrarTarjetaAPI, actTituloTarjeta, borrarTodasAPI, crearPET } from "../../../backend/api/cards";
+import { crearTarjetaAPI, cargarTarjetas, borrarTarjetaAPI, actTituloTarjeta, borrarTodasAPI, crearPET, reordenarTAPI  } from "../../../backend/api/cards";
 import { crearTareaAPI, borrarTareaAPI, actualizarTarea, actualizarCompletadaAPI, moverTareaAPI, limpiarTareasCompletadas } from "../../../backend/api/tasks";
 
 // Declarar
@@ -255,8 +255,17 @@ function guardarTextoTarea(id) {
   actualizarTarea(tareaEncontrada.id, tareaEncontrada.text);
 }
 
-function moverTarjeta(evt) {
-  console.log("Tarjetas reordenadas", tarjetas.value);
+
+// FUNCION PARA MOVER LAS TARJETAS DE ORDEN
+async function moverTarjeta(evt) {
+  const orden = tarjetas.value.map((t, index) => ({
+    id: t.id,
+    position: index
+  }));
+
+  console.log("enviando orden:", orden);
+
+  await reordenarTAPI(orden);
 }
 
 </script>
@@ -439,7 +448,7 @@ function moverTarjeta(evt) {
 
       <!-- LOCURA.VUE -->
       <!-- Contenedor Tarjetas -->
-      <draggable v-model="tarjetas" item-key="id" @change="moverTarjeta"
+      <draggable v-model="tarjetas" item-key="id" @end="moverTarjeta"
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10 overflow-x-auto h-full pb-20">
         <!-- Tarjetas -->
         <template #item="{ element: tarjeta }">
@@ -471,7 +480,7 @@ function moverTarjeta(evt) {
 
 
           <!-- TAREAS -->
-          <draggable @change="(evt) => moverTarea(evt, tarjeta.id)" v-model="tarjeta.tareas" group="tasks" item-key="id"
+          <draggable @end="(evt) => moverTarea(evt, tarjeta.id)" v-model="tarjeta.tareas" group="tasks" item-key="id"
             class="mt-5 text-lg overflow-y-auto max-h-60 h-fit">
             <template #item="{ element: tarea }">
 
