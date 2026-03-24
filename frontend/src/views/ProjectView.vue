@@ -8,7 +8,7 @@ import Navbar from "../components/Navbar.vue";
 import draggable from "vuedraggable";
 
 import { cargarProyecto, actNombreProyecto, actDescProyecto } from "../../../backend/api/projects";
-import { crearTarjetaAPI, cargarTarjetas, borrarTarjetaAPI, actTituloTarjeta, borrarTodasAPI, crearPET, reordenarTAPI  } from "../../../backend/api/cards";
+import { crearTarjetaAPI, cargarTarjetas, borrarTarjetaAPI, actTituloTarjeta, borrarTodasAPI, crearPET, reordenarTAPI } from "../../../backend/api/cards";
 import { crearTareaAPI, borrarTareaAPI, actualizarTarea, actualizarCompletadaAPI, moverTareaAPI, limpiarTareasCompletadas } from "../../../backend/api/tasks";
 
 // Declarar
@@ -448,90 +448,103 @@ async function moverTarjeta(evt) {
 
       <!-- LOCURA.VUE -->
       <!-- Contenedor Tarjetas -->
-      <draggable v-model="tarjetas" item-key="id" @end="moverTarjeta"
-        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10 overflow-x-auto h-full pb-20">
+      <draggable v-model="tarjetas" item-key="id" @end="moverTarjeta" handle=".handle"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10 overflow-x-auto h-full pb-20 relative">
         <!-- Tarjetas -->
         <template #item="{ element: tarjeta }">
-        <div 
-          class=" tarjeta shadow-lg h-fit bg-neutral-100 px-4 py-6 rounded-xl border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-101 transition-all ease-in-out duration-350 m-1">
-          <!-- Titulo -->
-          <div class="flex justify-between items-center">
 
-              <span v-if="!editando" @click="editando = true"
-                class="text-2xl font-semibold text-gray-800">
+          <div
+            class=" tarjeta shadow-lg h-fit bg-neutral-100 px-4 py-6 rounded-xl border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-101 transition-all ease-in-out duration-350 m-1">
+            <!-- Titulo -->
+
+
+            <div class="flex justify-between items-center">
+
+              <span v-if="!editando" @click="editando = true" class="text-2xl font-semibold text-gray-800">
                 {{ tarjeta.titulo }}
               </span>
 
               <input v-else v-model="tarjeta.titulo" @blur="guardarNombreTarjeta(tarjeta.id)"
                 class="w-full text-2xl font-semibold text-gray-800" />
-           
 
 
 
-            <div @click="mostrarBT = true; tarjetaABorrar = tarjeta.id; tituloBT = tarjeta.titulo">
-              <Trash2
-                class="papeleraTarjeta text-gray-400 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out" />
+
+              <div @click="mostrarBT = true; tarjetaABorrar = tarjeta.id; tituloBT = tarjeta.titulo">
+                <Trash2
+                  class="papeleraTarjeta text-gray-400 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out" />
+              </div>
+
             </div>
-
-          </div>
-          <span v-if="errorNombreTarjeta[tarjeta.id]" class="text-red-400 text-[10px]">
-            {{ errorNombreTarjeta[tarjeta.id] }}
-          </span>
+            <span v-if="errorNombreTarjeta[tarjeta.id]" class="text-red-400 text-[10px]">
+              {{ errorNombreTarjeta[tarjeta.id] }}
+            </span>
 
 
-          <!-- TAREAS -->
-          <draggable @end="(evt) => moverTarea(evt, tarjeta.id)" v-model="tarjeta.tareas" group="tasks" item-key="id"
-            class="mt-5 text-lg overflow-y-auto max-h-60 h-fit">
-            <template #item="{ element: tarea }">
+            <!-- TAREAS -->
+            <draggable @end="(evt) => moverTarea(evt, tarjeta.id)" v-model="tarjeta.tareas" group="tasks" item-key="id"
+              class="mt-5 text-lg overflow-y-auto max-h-60 h-fit ">
+              <template #item="{ element: tarea }">
 
-              <li :class="[
-                'tarea group shadow-md relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 ease-in-out flex items-center overflow-visible',
-                tarea.completed ? 'text-gray-400' : ''
-              ]" @click.stop="mostrarPapelera = mostrarPapelera === tarea.id ? null : tarea.id"
-                @mouseenter="hoverTarea = tarea.id" @mouseleave="hoverTarea = null">
+                <li :class="[
+                  'tarea group shadow-md relative mb-2 bg-gray-200 rounded-sm px-2 py-1 hover:border-2 border-neutral-800 ease-in-out flex items-center overflow-visible',
+                  tarea.completed ? 'text-gray-400' : ''
+                ]" @click.stop="mostrarPapelera = mostrarPapelera === tarea.id ? null : tarea.id"
+                  @mouseenter="hoverTarea = tarea.id" @mouseleave="hoverTarea = null">
 
-                <!-- Check -->
-                <div @click.stop="actualizarCompletada(tarea)" :class="[
-                  'flex flex-shrink-0 items-center justify-center border-2 rounded-full w-4 h-4 mr-2 hover:bg-blue-300 hover:border-blue-400 hover:cursor-pointer transition-all duration-200',
-                  hoverTarea === tarea.id || tarea.completed ? 'opacity-100 ml-0' : 'opacity-0 -ml-4',
-                  tarea.completed
-                    ? 'bg-blue-400 border-blue-300'
-                    : 'bg-gray-300 border-gray-400/50'
-                ]">
-                  <Check v-if="tarea.completed" class="w-4 h-4 text-white" />
-                </div>
+                  <!-- Check -->
+                  <div @click.stop="actualizarCompletada(tarea)" :class="[
+                    'flex flex-shrink-0 items-center justify-center border-2 rounded-full w-4 h-4 mr-2 hover:bg-blue-300 hover:border-blue-400 hover:cursor-pointer transition-all duration-200',
+                    hoverTarea === tarea.id || tarea.completed ? 'opacity-100 ml-0' : 'opacity-0 -ml-4',
+                    tarea.completed
+                      ? 'bg-blue-400 border-blue-300'
+                      : 'bg-gray-300 border-gray-400/50'
+                  ]">
+                    <Check v-if="tarea.completed" class="w-4 h-4 text-white" />
+                  </div>
 
-                <div v-if="editando !== tarea.id" @click.stop="editando = editando === tarea.id ? null : tarea.id"
-                  class="text-base ">
-                  {{ tarea.text }}
-                </div>
+                  <div v-if="editando !== tarea.id" @click.stop="editando = editando === tarea.id ? null : tarea.id"
+                    class="text-base ">
+                    {{ tarea.text }}
+                  </div>
 
-                <input v-else @blur="guardarTextoTarea(tarea.id)" @focus="errorNombreTarjeta[tarjeta.id] = ''" v-model="tarea.text"
-                  class="w-full text-gray-800 mr-5 text-base z-20" />
+                  <input v-else @blur="guardarTextoTarea(tarea.id)" @focus="errorNombreTarjeta[tarjeta.id] = ''"
+                    v-model="tarea.text" class="w-full text-gray-800 mr-5 text-base z-20" />
 
 
                   <span v-if="errorTextoTarea[tarea.id]" class="text-red-400 text-[10px] absolute left-8">
                     {{ errorTextoTarea[tarea.id] }}
                   </span>
 
-                <div @click.stop="borrarTarea(tarea.id)" :class="{ mostrar: mostrarPapelera === tarea.id }"
-                  class="papelera bg-gray-300/80 h-full absolute right-0 top-0 flex items-center px-1 rounded-xs">
-                  <Trash2
-                    class="text-gray-500 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out" />
-                </div>
+                  <div @click.stop="borrarTarea(tarea.id)" :class="{ mostrar: mostrarPapelera === tarea.id }"
+                    class="papelera bg-gray-300/80 h-full absolute right-0 top-0 flex items-center px-1 rounded-xs">
+                    <Trash2
+                      class="text-gray-500 w-4 cursor-pointer hover:scale-115 transition-all duration-200 ease-in-out" />
+                  </div>
 
-              </li>
+                </li>
 
-            </template>
-          </draggable>
+              </template>
+            </draggable>
 
-          <!-- crear Tarea -->
-          <button @click="crearTarea(tarjeta.id)"
-            class="w-full mx-auto text-gray-400 rounded-sm bg-gray-200/50 px-2 py-1 mt-2 hover:cursor-pointer hover:scale-103 transition-transform duration-200 ease-in-out hover:bg-gray-200/80 hover:text-gray-500">
-            + Añadir tarea
-          </button>
-        </div>
+            <!-- crear Tarea -->
+            <button @click="crearTarea(tarjeta.id)"
+              class="w-full mx-auto text-gray-400 rounded-sm bg-gray-200/50 px-2 py-1 mt-2 hover:cursor-pointer hover:scale-103 transition-transform duration-200 ease-in-out hover:bg-gray-200/80 hover:text-gray-500">
+              + Añadir tarea
+            </button>
+
+
+            <div class="handle cursor-grab active:cursor-grabbing   bg-neutral-400/50 p-1 w-32 rounded-b-full absolute mt-6 ml-16 border-b-2 border-neutral-500/70 ">
+              <div
+                class="mx-auto h-1 rounded-4xl w-1/2 bg-neutral-500/70">
+              </div>
+            </div>
+            
+          </div>
+
+          
         </template>
+        
 
       </draggable>
 

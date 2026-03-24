@@ -213,7 +213,7 @@ export async function crearPET(projectId) {
 
 // reordenar las tarjetas
 export async function reordenarTAPI(cards) {
-  return fetch("http://localhost:4000/graphql", {
+  return fetch(URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
