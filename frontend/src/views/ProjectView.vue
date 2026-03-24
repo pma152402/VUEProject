@@ -259,11 +259,9 @@ function guardarTextoTarea(id) {
 // FUNCION PARA MOVER LAS TARJETAS DE ORDEN
 async function moverTarjeta(evt) {
   const orden = tarjetas.value.map((t, index) => ({
-    id: t.id,
+    id: Number(t.id),
     position: index
   }));
-
-  console.log("enviando orden:", orden);
 
   await reordenarTAPI(orden);
 }
