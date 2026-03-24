@@ -29,7 +29,7 @@ model Card {
   id        Int      @id @default(autoincrement())
   title     String
   projectId Int
-  position  Int
+  position  Int @default(0)
   createdAt DateTime @default(now())
 
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
