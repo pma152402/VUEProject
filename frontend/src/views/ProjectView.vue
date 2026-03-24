@@ -255,6 +255,10 @@ function guardarTextoTarea(id) {
   actualizarTarea(tareaEncontrada.id, tareaEncontrada.text);
 }
 
+function moverTarjeta(evt) {
+  console.log("Tarjetas reordenadas", tarjetas.value);
+}
+
 </script>
 
 <style>
@@ -435,10 +439,11 @@ function guardarTextoTarea(id) {
 
       <!-- LOCURA.VUE -->
       <!-- Contenedor Tarjetas -->
-      <div
+      <draggable v-model="tarjetas" item-key="id" @change="moverTarjeta"
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10 overflow-x-auto h-full pb-20">
         <!-- Tarjetas -->
-        <div v-for="tarjeta in tarjetas" :key="tarjeta.id"
+        <template #item="{ element: tarjeta }">
+        <div 
           class=" tarjeta shadow-lg h-fit bg-neutral-100 px-4 py-6 rounded-xl border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-101 transition-all ease-in-out duration-350 m-1">
           <!-- Titulo -->
           <div class="flex justify-between items-center">
@@ -517,8 +522,9 @@ function guardarTextoTarea(id) {
             + Añadir tarea
           </button>
         </div>
+        </template>
 
-      </div>
+      </draggable>
 
 
     </div>
