@@ -43,6 +43,11 @@ const typeDefs = `
     cardId: Int!
   }
 
+  input ReorderInput {
+    id: Int!
+    position: Int!
+  }
+
   type Mutation {
     deleteProject(projectId: Int!): Project!
     login(email: String!, password: String!): User 
@@ -62,6 +67,8 @@ const typeDefs = `
     updateProjectDescription(projectId: Int!, description: String!): Project!
     updateProjectName(projectId: Int!, name: String!): Project!
     cloneProject(projectId: Int!, ownerId: Int!): Project!
+
+    reorderCards(cards: [ReorderInput!]!): Boolean!
   }`;
 
 console.log("SERVIDOR CON SCHEMA NUEVO");
@@ -99,7 +106,7 @@ const resolvers = {
           projectId: args.projectId,
         },
         orderBy: {
-          id: "asc",
+          position: "asc",
         },
         include: {
           tasks: {
@@ -127,6 +134,7 @@ const resolvers = {
         data: {
           title: "Por hacer:",
           projectId: project.id,
+          position: 0,
         },
       });
 
@@ -179,9 +187,8 @@ const resolvers = {
         where: { id: args.projectId },
         include: {
           cards: {
-            include: {
-              tasks: true,
-            },
+            orderBy: { position: "asc" }, 
+            include: { tasks: true },
           },
         },
       });
@@ -201,14 +208,17 @@ const resolvers = {
       });
 
       // copiar tarjetas
+      let index = 0;
+
       for (const card of original.cards) {
         const nuevaCard = await prisma.card.create({
           data: {
             title: card.title,
             projectId: nuevoProyecto.id,
+            position: index,
           },
         });
-
+        index++;
         // copiar tareas
         if (card.tasks.length > 0) {
           await prisma.task.createMany({
@@ -219,16 +229,26 @@ const resolvers = {
             })),
           });
         }
+
+        
       }
 
       return nuevoProyecto;
     },
 
     createCard: async (_: any, args: any) => {
+      const ultima = await prisma.card.findFirst({
+        where: { projectId: args.projectId },
+        orderBy: { position: "desc" },
+      });
+
+      const nuevaPosicion = ultima ? ultima.position + 1 : 0;
+
       return prisma.card.create({
         data: {
           title: args.title,
           projectId: args.projectId,
+          position: nuevaPosicion,
         },
       });
     },
@@ -236,15 +256,15 @@ const resolvers = {
     createPET: async (_: any, args: any) => {
       // crear nuevas columnas
       const P = await prisma.card.create({
-        data: { title: "Por hacer:", projectId: args.projectId },
+        data: { title: "Por hacer:", projectId: args.projectId, position: 0 },
       });
 
       const E = await prisma.card.create({
-        data: { title: "En progreso:", projectId: args.projectId },
+        data: { title: "En progreso:", projectId: args.projectId, position: 1 },
       });
 
       const T = await prisma.card.create({
-        data: { title: "Terminado:", projectId: args.projectId },
+        data: { title: "Terminado:", projectId: args.projectId, position: 2 },
       });
 
       await prisma.task.createMany({
@@ -384,7 +404,6 @@ const resolvers = {
       });
     },
 
-
     // iniciar sesión
     login: async (_: any, args: any) => {
       const user = await prisma.user.findUnique({
@@ -398,10 +417,7 @@ const resolvers = {
       }
 
       // comparar con bcrypt
-      const passwordCorrecta = await bcrypt.compare(
-        args.password,
-        user.password
-      );
+      const passwordCorrecta = await bcrypt.compare(args.password, user.password);
 
       if (!passwordCorrecta) {
         throw new Error("La contraseña es incorrecta");
@@ -413,8 +429,23 @@ const resolvers = {
         name: user.name,
       };
     },
+
+    // REORDENAR TARJETAS
+    reorderCards: async (_: any, args: any) => {
+      const updates = args.cards.map((card) =>
+        prisma.card.update({
+          where: { id: card.id },
+          data: { position: card.position },
+        }),
+      );
+
+      await prisma.$transaction(updates);
+
+      return true;
+    },
   },
 };
+
 const yoga = createYoga({
   schema: createSchema({
     typeDefs,
