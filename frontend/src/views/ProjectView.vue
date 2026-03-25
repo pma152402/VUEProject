@@ -1,5 +1,5 @@
 <script setup>
-import { Trash2, Check, Columns3, Plus, BrushCleaning, ChevronUp } from "lucide-vue-next";
+import { Trash2, Check, Columns3, Plus, BrushCleaning, ChevronUp, BadgeInfo } from "lucide-vue-next";
 import { onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import "../styles/scrollbar.css";
@@ -551,6 +551,11 @@ async function moverTarjeta(evt) {
       </draggable>
 
 
-    </div>
+    <BadgeInfo class="w-18 h-18 absolute bottom-6 right-0 text-neutral-700 bg-neutral-200 rounded-4xl border-4 border-blue-300/70 p-0.5 
+    hover:border-blue-400/60 hover:cursor-pointer hover:scale-105 transition-all duration-200 ease-in-out hover:bg-gray-100 hover:text-neutral-800"/>
+    
+  
+  </div>
+
   </div>
 </template>
