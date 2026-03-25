@@ -291,7 +291,7 @@ async function moverTarjeta(evt) {
 
 
 <template>
-  <div class="bg-neutral-300  min-h-screen flex justify-center relative">
+  <div class="bg-neutral-300  min-h-screen flex justify-center relative ">
 
     <!-- HACER MODALES.VUE-->
     <!-- a) Borrar tarjeta -->
