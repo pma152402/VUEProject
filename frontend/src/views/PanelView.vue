@@ -175,8 +175,10 @@ async function clonarProyecto(projectId) {
 </script>
 
 <template>
+  <!-- from-gray-400/50 to-gray-300/50
+  -->
   <div
-    class="bg-gradient-to-t from-gray-400/50 to-gray-300/50 h-screen flex items-center justify-center"
+    class="bg-neutral-300 h-screen flex items-center justify-center "
   >
     <div class="bg-gradient-to-t from-blue-300 to-blue-200/80 rounded-2xl flex items-center">
       <div
