@@ -169,9 +169,11 @@ async function moverTarea(evt, cardId) {
 
   const tarea = evt.added.element;
 
-  console.log("tarea movida:", tarea.id);
-
-  await moverTareaAPI(tarea.id, cardId);
+  // lo parseo para evitar errores
+  await moverTareaAPI(
+    Number(tarea.id),   
+    Number(cardId)      
+  );
 }
 // LIMPIAR TAREAS COMPLETADAS
 // Borrar todas las tarjetas
@@ -480,7 +482,7 @@ async function moverTarjeta(evt) {
 
 
             <!-- TAREAS -->
-            <draggable @end="(evt) => moverTarea(evt, tarjeta.id)" v-model="tarjeta.tareas" group="tasks" item-key="id"
+            <draggable @change="(evt) => moverTarea(evt, tarjeta.id)" v-model="tarjeta.tareas" group="tasks" item-key="id"
               class="mt-5 text-lg overflow-y-auto max-h-60 h-fit ">
               <template #item="{ element: tarea }">
 
