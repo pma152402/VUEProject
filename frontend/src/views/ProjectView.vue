@@ -1,5 +1,5 @@
 <script setup>
-import { Trash2, Check, Columns3, Plus, BrushCleaning, ChevronUp, BadgeInfo } from "lucide-vue-next";
+import { Trash2, Check, Columns3, Plus, BrushCleaning, ChevronUp, BadgeQuestionMark } from "lucide-vue-next";
 import { onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import "../styles/scrollbar.css";
@@ -577,9 +577,9 @@ async function moverTarjeta(evt) {
         </div>
 
         <!-- informacion -->
-        <BadgeInfo
-          class="absolute inset-0 -rotate-1 w-18 h-18 text-neutral-700 bg-neutral-200 rounded-4xl border-4 border-blue-300/70 p-0.5 fill-gray-100 
-    hover:border-blue-400/60 hover:cursor-pointer hover:scale-105 transition-all duration-200 ease-in-out hover:bg-gray-100 hover:text-neutral-800" />
+        <BadgeQuestionMark
+          class="absolute inset-0 -rotate-1 w-18 h-18 text-neutral-600 bg-neutral-200 rounded-4xl border-4 border-blue-300/70 p-0.5 fill-gray-100 
+    hover:border-blue-400/60 hover:cursor-pointer hover:scale-105 transition-all duration-200 ease-in-out hover:bg-blue-100 hover:text-neutral-800" />
 
       </div>
     </div>
