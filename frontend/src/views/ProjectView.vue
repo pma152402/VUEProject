@@ -452,7 +452,7 @@ async function moverTarjeta(evt) {
         <template #item="{ element: tarjeta }">
 
           <div
-            class=" tarjeta shadow-lg h-fit bg-neutral-100 px-4 py-6 rounded-xl border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-101 transition-all ease-in-out duration-350 m-1">
+            class="relative tarjeta shadow-lg h-fit bg-neutral-100 px-4 py-6 rounded-xl border-l-8 border-blue-300/80 hover:border-blue-400/80 hover:scale-101 transition-all ease-in-out duration-350 m-1">
             <!-- Titulo -->
 
 
@@ -532,7 +532,9 @@ async function moverTarjeta(evt) {
             </button>
 
 
-            <div class="handle cursor-grab active:cursor-grabbing   bg-neutral-400/50 p-1 w-32 rounded-b-full absolute mt-6 ml-16 border-b-2 border-neutral-500/70 ">
+            <div class="handle cursor-grab active:cursor-grabbin bg-neutral-400/50 p-1 w-42 rounded-b-full border-b-2 border-neutral-500/70 
+            absolute left-1/2 -translate-x-1/2 -bottom-3.5
+            "> 
               <div
                 class="mx-auto h-1 rounded-4xl w-1/2 bg-neutral-500/70">
               </div>
