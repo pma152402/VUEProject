@@ -1,6 +1,5 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import Usuario from "../assets/logo_organizer.png";
 import { Menu } from "lucide-vue-next";
 
 import { useRouter } from "vue-router"
