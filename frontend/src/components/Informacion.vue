@@ -6,6 +6,7 @@ const paso = ref(0);
 </script>
 
 <template>
+  <!-- LO QUE SE VE SIEMPRE:-->
   <div class="group fixed bottom-6 right-4 md:right-10 lg:right-20 w-18 h-18">
     <!-- ANIMACION SPIN, padre que gira -->
     <div class="absolute inset-0 group-hover:animate-[spin_2s_linear_infinite]">
@@ -29,11 +30,11 @@ const paso = ref(0);
     />
   </div>
 
-  <!-- LA VENTANA QUE SE VAN A MOSTRAR AL CLICKAR EN INFORMACION -->
-  <div v-if="paso >= 1" class="fixed inset-0 z-3000 bg-neutral-900/60 w-full h-full">
+  <!-- LA VENTANA QUE SE VAN A MOSTRAR AL CLICKAR EN INFORMACION: -->
+  <div v-if="paso >= 1" class="fixed inset-0 z-3000 bg-neutral-900/70 w-full h-full">
     <!-- Guia -->
     <div
-      class="bg-neutral-200 rounded-lg absolute top-50 px-6 pt-6 pb-4 flex flex-col items-center"
+      class="bg-neutral-200 rounded-lg px-6 pt-6 pb-4 flex flex-col items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
     >
       <!-- X -->
       <div @click="paso = 0" class="absolute top-1 right-4 text-xl hover:cursor-pointer">x</div>
@@ -41,15 +42,29 @@ const paso = ref(0);
       <div>
         <h1 class="text-5xl font-bold">Guía rápida:</h1>
 
-        <p class="max-w-md mt-6 border-l-4 border-blue-400 pl-2 pb-1.5 text-lg leading-relaxed">
+        <!-- Primer paso-->
+        <p 
+        v-if="paso == 1"
+        class="max-w-md mt-6 border-l-4 border-blue-400 pl-2 pb-1.5 text-lg leading-relaxed">
           Bienvenido a tu proyecto, aquí puedes crear todas las tarjetas y tareas que necesites
         </p>
+        <!-- Segundo paso-->
+        <p 
+        v-if="paso == 2"
+        class="max-w-md mt-6 border-l-4 border-blue-400 pl-2 pb-1.5 text-lg leading-relaxed">
+          Este es el paso dos
+        </p>
+
       </div>
 
       <div class="w-full items-center flex justify-between px-20 mt-6">
-        <span class="text-gray-400"><</span>
-        <span>1/3</span>
-        <span>></span>
+        <span 
+        @click="paso = paso - 1"
+        class="text-gray-400 hover:cursor-pointer"><</span>
+        <span class="hover:cursor-default">{{paso}}/3</span>
+        <span 
+        @click="paso = paso + 1"
+        class="hover:cursor-pointer">></span>
       </div>
     </div>
   </div>
