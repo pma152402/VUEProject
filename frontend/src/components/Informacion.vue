@@ -5,6 +5,10 @@ import aniadir_tarjeta from "../assets/aniadir_tarjeta.png";
 import aniadir_tarea from "../assets/aniadir_tarea.png";
 import pet from "../assets/pet.png";
 
+import petinio from "../assets/petinio.png";
+
+import grab from "../assets/grab.png";
+
 const paso = ref(0);
 </script>
 
@@ -43,18 +47,18 @@ const paso = ref(0);
             </div>
             <!-- -->
             <div>
-                <h1 class="text-5xl font-bold">Guía rápida:</h1>
 
+                <h3 class="text-5xl font-bold">Guía rápida</h3>
                 <!-- Primer paso-->
-
                 <div v-if="paso == 1">
+                    <h4 class="font-light text-lg mt-1 ml-1">Cómo crear tarjetas y tareas</h4>
                     <div class="max-w-md mt-8 border-l-4 border-blue-400 pl-2 pb-0.5 text-lg leading-relaxed">
-                        <p class="inline">Bienvenido a tu proyecto, aquí puedes crear todas las</p>
-                        <p class="inline font-semibold">tarjetas y tareas</p>
+                        <p class="inline">Bienvenido a tu proyecto, aquí puedes crear todas las&nbsp;</p>
+                        <p class="inline font-semibold">tarjetas y tareas&nbsp;</p>
                         <p class="inline">que necesites:</p>
                     </div>
 
-                    <div class="mt-6 w-full pr-10 pl-15 flex justify-between font-light text-sm italic">
+                    <div class="mb-2 mt-6 w-full pr-10 pl-15 flex justify-between font-light text-sm italic">
                         <div>
                             En la barra de acciones:
 
@@ -70,29 +74,48 @@ const paso = ref(0);
 
                 <!-- Segundo paso-->
                 <div v-if="paso == 2">
+                    <h4 class="font-light text-lg mt-1 ml-1">Crear una plantilla inicial</h4>
                     <div class="mb-6 max-w-md mt-8 border-l-4 border-blue-400 pl-2 text-lg leading-relaxed">
-                        <p class="inline font-semibold">Plantilla PET:</p>
-                        <p class="inline">Crea un layout básico de tres tarjetas</p>
+                        <p class="inline font-semibold">Plantilla PET:&nbsp;</p>
+                        <p class="inline">Crea un layout básico de tres tarjetas.</p>
                     </div>
-                    <img class="rounded-xl shadow-md mb-2" :src="pet" />
+
+                    <div class="w-full flex flex-col items-center bg-blue-300/20">
+                        <p class="italic font-light text-sm">En la barra de acciones</p>
+                        <img class="inline rounded-xl shadow-md mb-2 w-36" :src="petinio" />
+                    </div>
+                    <div class="mt-4">
+                        <p class="italic font-light text-sm">Resultado</p>
+                        <img class="rounded-xl shadow-md mb-2" :src="pet" />
+                    </div>
                 </div>
 
                 <!-- Tercer paso-->
                 <div v-if="paso == 3">
+                    <h4 class="font-light text-lg mt-1 ml-1">Cambiar tarjetas de posición</h4>
+
                     <div class="mb-6 max-w-md mt-8 border-l-4 border-blue-400 pl-2 text-lg leading-relaxed">
-                        <p class="inline">Puedes cambiar tus tarjetas y tareas de posición</p>
-                        <p class="inline">Prueba</p>
+                        <p class="inline">Puedes reordenar tus tarjetas siempre que quieras, arrastrando la tarjeta a la
+                            nueva posición deseada.</p>
                     </div>
-                    <img class="rounded-xl shadow-md mb-2" :src="pet" />
+                    <div class="flex flex-col items-center">
+                        <p class="italic font-light text-sm -ml-22">Al final de cada tarjeta</p>
+                        <img class="rounded-xl shadow-md mb-2 w-56" :src="grab" />
+                    </div>
                 </div>
             </div>
 
-            <div class="w-full items-center flex justify-between px-20 mt-6">
-                <span @click="paso = paso - 1" class="text-gray-400 hover:cursor-pointer">
+            <!-- Controlar el paso -->
+            <div class="w-full items-center flex justify-between px-20 mt-6 mb-1">
+                <span @click="paso > 1 && (paso = paso - 1)" :class="paso == 1
+                    ? 'text-gray-400 cursor-pointer'
+                    : 'text-gray-800'">
                     <ChevronRight class="rotate-180" />
                 </span>
                 <span class="hover:cursor-default">{{ paso }}/3</span>
-                <span @click="paso = paso + 1" class="hover:cursor-pointer">
+                <span @click="paso < 3 && (paso = paso + 1)" :class="paso == 3
+                    ? 'text-gray-400 cursor-pointer'
+                    : 'text-gray-800'">
                     <ChevronRight />
                 </span>
             </div>
