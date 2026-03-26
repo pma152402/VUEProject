@@ -11,6 +11,8 @@ import grab from "../assets/grab.png";
 
 import tarea_checked from "../assets/tarea_checked.png";
 
+import limpiar_completadas from "../assets/limpiar_completadas.png";
+
 const paso = ref(0);
 </script>
 
@@ -97,7 +99,9 @@ const paso = ref(0);
                     <h4 class="font-light text-lg mt-1 ml-1">Cambiar tarjetas de posición</h4>
 
                     <div class="mb-6 max-w-md mt-8 border-l-4 border-blue-400 pl-2 text-lg leading-relaxed">
-                        <p class="inline">Puedes reordenar tus tarjetas siempre que quieras, arrastrando la tarjeta a la
+                        <p class="inline">Puedes&nbsp;</p>
+                        <p class="inline font-semibold">reordenar tus tarjetas&nbsp;</p>
+                        <p class="inline">siempre que quieras, arrastrando la tarjeta a la
                             nueva posición deseada.</p>
                     </div>
                     <div class="flex flex-col items-center">
@@ -111,14 +115,25 @@ const paso = ref(0);
                     <h4 class="font-light text-lg mt-1 ml-1">Marcar y limpiar tareas</h4>
 
                     <div class="mb-6 max-w-md mt-8 border-l-4 border-blue-400 pl-2 text-lg leading-relaxed">
-                        <p class="inline">Puedes marcar como completada cualquier tarea</p>
+                        <p class="inline">Puedes marcar como completada cualquier tarea, y&nbsp;</p>
+                        <p class="inline font-semibold">limpiar las tareas completadas&nbsp;</p>
+                        <p class="inline"> de tu proyecto.</p>
                     </div>
-                    <div class="flex flex-col items-center">
-                        <p class="italic font-light text-sm -ml-22">Al final de cada tarjeta</p>
-                        <img class="rounded-xl shadow-md mb-2 w-56" :src="tarea_checked" />
+                    <div class="flex flex-row gap-6">
+                        <div class="flex flex-col items-start">
+                            <p class="italic font-light text-sm">En cada tarea</p>
+                            <img class="rounded-xl shadow-md mb-2 w-56" :src="tarea_checked" />
+                        </div>
+                        <div class="flex flex-col items-start">
+                            <p class="italic font-light text-sm">En la barra de acciones</p>
+                            <img class="rounded-xl shadow-md mb-2 w-40" :src="limpiar_completadas" />
+                        </div>
                     </div>
                 </div>
             </div>
+
+
+
 
             <!-- Controlar el paso -->
             <div class="w-full items-center flex justify-between px-20 mt-6 mb-1">
@@ -128,7 +143,7 @@ const paso = ref(0);
                     <ChevronRight class="rotate-180" />
                 </span>
                 <span class="hover:cursor-default">{{ paso }}/4</span>
-                <span @click="paso < 4 && (paso = paso + 1)" :class="paso == 3
+                <span @click="paso < 4 && (paso = paso + 1)" :class="paso == 4
                     ? 'text-gray-400 '
                     : 'text-gray-800 cursor-pointer'">
                     <ChevronRight />

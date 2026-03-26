@@ -434,9 +434,7 @@ async function moverTarjeta(evt) {
               <Plus class="w-4 pb-0.5" />
             </span>
             <span @click="limpiarTCompletadas"
-              class="select-none flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Limpiar
-              tareas
-              completadas
+              class="select-none flex gap-1 hover:text-gray-800 hover:cursor-pointer transition-all duration-300 ease-in-out">Limpiar completadas
               <BrushCleaning class="w-4 pb-0.5" />
             </span>
           </div>
@@ -552,7 +550,7 @@ async function moverTarjeta(evt) {
 
 
 
-      <Informacion/>
+      <Informacion />
     </div>
 
   </div>
