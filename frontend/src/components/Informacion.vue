@@ -9,6 +9,8 @@ import petinio from "../assets/petinio.png";
 
 import grab from "../assets/grab.png";
 
+import tarea_checked from "../assets/tarea_checked.png";
+
 const paso = ref(0);
 </script>
 
@@ -103,19 +105,32 @@ const paso = ref(0);
                         <img class="rounded-xl shadow-md mb-2 w-56" :src="grab" />
                     </div>
                 </div>
+
+                <!-- Tercer paso-->
+                <div v-if="paso == 4">
+                    <h4 class="font-light text-lg mt-1 ml-1">Marcar y limpiar tareas</h4>
+
+                    <div class="mb-6 max-w-md mt-8 border-l-4 border-blue-400 pl-2 text-lg leading-relaxed">
+                        <p class="inline">Puedes marcar como completada cualquier tarea</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <p class="italic font-light text-sm -ml-22">Al final de cada tarjeta</p>
+                        <img class="rounded-xl shadow-md mb-2 w-56" :src="tarea_checked" />
+                    </div>
+                </div>
             </div>
 
             <!-- Controlar el paso -->
             <div class="w-full items-center flex justify-between px-20 mt-6 mb-1">
                 <span @click="paso > 1 && (paso = paso - 1)" :class="paso == 1
-                    ? 'text-gray-400 cursor-pointer'
-                    : 'text-gray-800'">
+                    ? 'text-gray-400 '
+                    : 'text-gray-800 cursor-pointer'">
                     <ChevronRight class="rotate-180" />
                 </span>
-                <span class="hover:cursor-default">{{ paso }}/3</span>
-                <span @click="paso < 3 && (paso = paso + 1)" :class="paso == 3
-                    ? 'text-gray-400 cursor-pointer'
-                    : 'text-gray-800'">
+                <span class="hover:cursor-default">{{ paso }}/4</span>
+                <span @click="paso < 4 && (paso = paso + 1)" :class="paso == 3
+                    ? 'text-gray-400 '
+                    : 'text-gray-800 cursor-pointer'">
                     <ChevronRight />
                 </span>
             </div>
