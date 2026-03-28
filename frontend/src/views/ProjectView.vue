@@ -109,7 +109,7 @@ async function crearPlantillaPET() {
   tarjetas.value = nuevasTarjetas.map(card => ({
     id: card.id,
     titulo: card.title,
-    tareas: [] // luego puedes recargar tareas si quieres
+    tareas: [],
   }));
 
   tarjetas.value = await cargarTarjetas(IDproyecto);
