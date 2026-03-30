@@ -163,6 +163,20 @@ const paso = ref(0);
                     <ChevronRight />
                 </span>
             </div> -->
+            <!--  Controlar el paso 
+            <div class="w-full items-center flex justify-between px-20 mt-6 mb-1">
+                <span @click="paso > 1 && (paso = paso - 1)" :class="paso == 1
+                    ? 'text-gray-400 '
+                    : 'text-gray-800 cursor-pointer'">
+                    <ChevronRight class="rotate-180" />
+                </span>
+                <span class="hover:cursor-default">{{ paso }}/4</span>
+                <span @click="paso < 4 && (paso = paso + 1)" :class="paso == 4
+                    ? 'text-gray-400 '
+                    : 'text-gray-800 cursor-pointer'">
+                    <ChevronRight />
+                </span>
+            </div> -->
             </div>
         </div>
     </div>
