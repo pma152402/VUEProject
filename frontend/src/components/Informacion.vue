@@ -43,7 +43,7 @@ const paso = ref(0);
     <div v-if="paso >= 1" class="fixed inset-0 z-3000 bg-neutral-900/70 w-full h-full">
         <!-- Guia -->
         <div
-            class="bg-neutral-200 rounded-lg px-8 pt-6 pb-4 flex flex-col items-start absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-130 border-r-6  border-l-6 border-neutral-400/30">
+            class="bg-neutral-200 rounded-lg px-8 pt-6 pb-4 flex flex-col items-start absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-fit md:w-130 border-r-6  border-l-6 border-neutral-400/30">
             <!-- X -->
             <div @click="paso = 0"
                 class="absolute top-3 right-4 text-xl hover:cursor-pointer text-gray-400 hover:text-gray-800">
@@ -52,7 +52,7 @@ const paso = ref(0);
             <!-- -->
             <div>
 
-                <h3 class="text-5xl font-bold">Guía rápida</h3>
+                <h3 class="text-4xl md:text-5xl font-bold">Guía rápida</h3>
                 <!-- Primer paso-->
                 <div v-if="paso == 1">
                     <h4 class="font-light text-lg mt-1 ml-1">Cómo crear tarjetas y tareas</h4>
@@ -62,7 +62,7 @@ const paso = ref(0);
                         <p class="inline">que necesites:</p>
                     </div>
 
-                    <div class="mb-2 mt-6 w-full pr-10 pl-15 flex justify-between font-light text-sm italic">
+                    <div class="mb-2 mt-6 w-full pr-10 pl-15 gap-6 flex flex-col md:gap-2 md:flex-row justify-betweenfont-light text-sm italic">
                         <div>
                             En la barra de acciones:
 
